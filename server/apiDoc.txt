@@ -1,0 +1,24 @@
+User
+
+GET users\get
+res
+{
+    "status":1,
+    "result": [
+      {  name: String,
+        loginName: String,
+        password:  String,
+        email: String,
+        phone: String,
+        photo: String,
+        usergroup: String,
+        lastVisit: Number,
+        registrated: Number,
+        online: Boolean
+      }
+  ] 
+}
+if error
+
+{"status":0,"error_code":21,"error_message":"No category with specified categoryID"}
+

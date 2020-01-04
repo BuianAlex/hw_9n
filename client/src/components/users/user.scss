@@ -1,0 +1,47 @@
+.error {
+  color: red;
+}
+.user-table {
+  table {
+    width: 100%;
+    margin-top: 1rem;
+    line-height: 2rem;
+  }
+  thead {
+    background-color: rgb(6, 90, 105);
+    color: #fff;
+  }
+  tbody {
+    tr {
+      border: 2px solid #000;
+      cursor: pointer;
+      &:nth-child(2n) {
+        background-color: rgb(248, 247, 193);
+        &:hover {
+          background-color: rgba(8, 8, 8, 0.329);
+        }
+      }
+      &:nth-child(2n-1) {
+        &:hover {
+          background-color: rgba(8, 8, 8, 0.329);
+        }
+      }
+    }
+  }
+}
+button {
+  margin-right: 1rem;
+}
+.checkbox {
+  width: 10px;
+}
+.name {
+  width: 150px;
+}
+.selected {
+  padding-left: 1rem;
+  background-color: rgb(6, 90, 105);
+
+  color: #fff;
+  line-height: 2rem;
+}
