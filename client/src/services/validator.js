@@ -27,7 +27,7 @@ export default function Validator(str) {
     return false;
   };
   this.noSpeсialChar = function() {
-    if (/[-\/\\^$*+?()|[\]{}]/g.test(testStr)) {
+    if (/[-\/\\^$*?()|[\]{}]/g.test(testStr)) {
       return true;
     }
     return false;

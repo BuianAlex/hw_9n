@@ -51,7 +51,13 @@ export default function Card(props) {
     } else {
       setSaveBtnstate(true);
     }
-  });
+  }, [
+    nameFild.error,
+    loginFild.error,
+    passFild.error,
+    emailFild.error,
+    phoneFild.error
+  ]);
   const cardClose = e => {
     e.preventDefault();
     props.onClose();

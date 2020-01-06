@@ -1,0 +1,23 @@
+.fild {
+  position: relative;
+  margin: 0;
+  margin-bottom: 2rem;
+  input {
+    width: 80%;
+    padding: 0.5rem;
+  }
+}
+label {
+  display: block;
+}
+.errors {
+  width: 100%;
+  position: absolute;
+  color: red;
+  font-size: 0.8rem;
+  left: 50%;
+  bottom: -2%;
+  transform: translate(-50%, 100%);
+
+  //line-height: 1.5rem;
+}

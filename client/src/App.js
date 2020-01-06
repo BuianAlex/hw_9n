@@ -1,6 +1,7 @@
 import React from "react";
 import Main from "./components/main/main";
-import LoginPage from "./components/login/login";
+import LoginPage from "./components/logIn/login";
+import SingupPage from "./components/signUp/signup";
 import { getLocalUser } from "./services/localStorage";
 
 import logo from "./logo.svg";
@@ -23,6 +24,10 @@ export default function App() {
         <Route path="/login">
           <LoginPage />
         </Route>
+        <Route path="/signup">
+          <SingupPage />
+        </Route>
+
         <PrivateRoute path="/">
           <Main />
         </PrivateRoute>
