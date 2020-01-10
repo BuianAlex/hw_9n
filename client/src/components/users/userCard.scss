@@ -1,7 +1,7 @@
 .card {
   position: fixed;
   width: 60%;
-  max-height: 100vh;
+  max-height: 95vh;
   padding: 0 1rem;
   top: 50%;
   left: 50%;
@@ -9,7 +9,11 @@
   background-color: #fff;
   box-shadow: 0px 0px 9px 5px rgba(0, 0, 0, 0.19);
   z-index: 100;
+  overflow: hidden;
   form {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
   }
   button {
     padding: 0.5rem 1rem;

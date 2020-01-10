@@ -1,32 +1,70 @@
-import React from "react";
+import React, { useContext, useEffect, memo } from "react";
+import { TableContext } from "./tablecontext";
 
-function Row(props) {
+const Row = memo(({ userData }) => {
+  const { actionSelect, actionShowUser } = useContext(TableContext);
+  useEffect(() => {
+    console.log(userData._id);
+  });
   return (
     <tr
       onClick={e => {
-        props.actionShowUser(e, props.userData._id);
+        actionShowUser(e, userData._id);
       }}
     >
       <td className="checkbox">
         <input
           type="checkbox"
           name="select"
-          checked={props.userData.isSelected || false}
+          checked={userData.isSelected || false}
           onChange={() => {
-            props.actionSelect(props.userData._id);
+            actionSelect(userData._id);
           }}
         />
       </td>
-      <td className="name">{props.userData.name}</td>
-      <td>{props.userData.loginName}</td>
-      <td>{props.userData.email}</td>
-      <td>{props.userData.phone}</td>
-      <td>{props.userData.usergroup}</td>
-      <td>{props.userData.lastVisit}</td>
-      <td>{props.userData.registrated}</td>
-      <td>{props.userData._id}</td>
+      <td className="name">{userData.name}</td>
+      <td>{userData.loginName}</td>
+      <td>{userData.email}</td>
+      <td>{userData.phone}</td>
+      <td>{userData.usergroup}</td>
+      <td>{userData.lastVisit}</td>
+      <td>{userData.registrated}</td>
+      {/* <td>{userData._id}</td> */}
     </tr>
   );
-}
+});
+
+// function Row({ userData }) {
+//   const { actionSelect, actionShowUser } = useContext(TableContext);
+//   useEffect(() => {
+//     console.log(userData._id);
+//   });
+//   return (
+//     <tr
+//       onClick={e => {
+//         actionShowUser(e, userData._id);
+//       }}
+//     >
+//       <td className="checkbox">
+//         <input
+//           checked={userData.isSelected || false}
+//           onChange={() => {
+//             actionSelect(userData._id);
+//           }}
+//         />
+//       </td>
+//       <td className="name">{userData.name}</td>
+//       <td>{userData.loginName}</td>
+//       <td>{userData.email}</td>
+//       <td>{userData.phone}</td>
+//       <td>{userData.usergroup}</td>
+//       <td>{userData.lastVisit}</td>
+//       <td>{userData.registrated}</td>
+//       {/* <td>{userData._id}</td> */}
+//     </tr>
+//   );
+// }
+// type="checkbox"
+// name="select"
 
 export default React.memo(Row);

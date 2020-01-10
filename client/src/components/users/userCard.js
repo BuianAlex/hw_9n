@@ -4,9 +4,6 @@ import Validator from "../../services/validator";
 import { createUser, updateUser } from "../../services/api";
 
 export default function Card(props) {
-  //const [userData, setUserData] = useState(props.userData);
-  console.log(props.userData._id);
-
   const [nameFild, setUserNameFild] = useState({
     value: props.userData.name || ""
   });

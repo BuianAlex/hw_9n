@@ -2,12 +2,14 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import InputFild from "../iputFild/inputFild";
 import "./signup.scss";
 import { Link } from "react-router-dom";
+import { createUser } from "../../services/api";
 
 export default function Login() {
   const [login, setLogin] = useState(false);
   const [password, setPassword] = useState(false);
   const [email, setEmail] = useState(true);
   const [phone, setPhone] = useState(true);
+  const [formError, setFormError] = useState(false);
 
   const signBtn = useRef();
 
@@ -19,12 +21,22 @@ export default function Login() {
     }
   }, [login, password, email, phone]);
 
-  const actionLogin = () => {};
+  const actionSignup = async e => {
+    e.preventDefault();
+    const user = {
+      loginName: login,
+      password: password,
+      email: email,
+      phone: phone
+    };
+    const res = await createUser(user);
+    setFormError(res.error);
+  };
 
   return (
     <>
-      <h2>Sign Up</h2>
-      <form>
+      <h2 className="welcome-text">Sign Up</h2>
+      <form className="login-form">
         <InputFild
           set={{
             type: "text",
@@ -59,7 +71,10 @@ export default function Login() {
           cb={setPhone}
         />
         <Link to="/ligin">Login</Link>
-        <button ref={signBtn}>SignUp</button>
+        <button ref={signBtn} onClick={actionSignup}>
+          SignUp
+        </button>
+        {formError && <span className="form-err">{formError} </span>}
       </form>
     </>
   );

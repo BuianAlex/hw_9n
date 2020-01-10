@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./user.scss";
 import { getAllUsers, deleteUser } from "../../services/api";
+import { TableContext } from "./tablecontext";
 import UserCard from "./userCard";
 import TableRow from "./userTableRow";
 
@@ -39,6 +40,8 @@ export default function UserWorkBench() {
   };
 
   const actionSelect = id => {
+    console.log(id);
+
     let calcSelected = 0;
     const data = userData.map(item => {
       if (item._id === id) {
@@ -80,42 +83,40 @@ export default function UserWorkBench() {
         <button>Filter</button>
       </div>
       {userData ? (
-        <div className="user-table">
-          <table>
-            <thead>
-              <tr>
-                <th className="checkbox">
-                  <input type="checkbox" name="select" disabled />
-                </th>
-                <th>Name</th>
-                <th>Login Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Usergroup</th>
-                <th>Last Visit</th>
-                <th>Registrated</th>
-                <th>ID</th>
-              </tr>
-            </thead>
-            <tbody>
-              {userData
-                ? userData.map(item => (
-                    <TableRow
-                      key={item._id}
-                      userData={item}
-                      actionSelect={actionSelect}
-                      actionShowUser={actionShowUser}
-                    />
-                  ))
-                : false}
-            </tbody>
-            <tfoot>
-              <tr>{/* <td>/td>
+        <TableContext.Provider value={{ actionSelect, actionShowUser }}>
+          <div className="user-table">
+            <table>
+              <thead>
+                <tr>
+                  <th className="checkbox">
+                    <input type="checkbox" name="select" disabled />
+                  </th>
+                  <th>Name</th>
+                  <th>Login Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Usergroup</th>
+                  <th>Last Visit</th>
+                  <th>Registrated</th>
+                  {/* <th>ID</th> */}
+                </tr>
+              </thead>
+              <tbody>
+                {userData
+                  ? userData.map(item => (
+                      <TableRow key={item._id} userData={item} />
+                    ))
+                  : false}
+              </tbody>
+              <tfoot>
+                <tr>{/* <td>/td>
               <td></td> */}</tr>
-            </tfoot>
-          </table>
-          <div className="selected">Selected: {usersSelected}</div>
-        </div>
+              </tfoot>
+            </table>
+
+            <div className="selected">Selected: {usersSelected}</div>
+          </div>
+        </TableContext.Provider>
       ) : (
         <div className="error">{errrors}</div>
       )}

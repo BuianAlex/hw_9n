@@ -1,10 +1,12 @@
 const router = require("express").Router();
 const service = require("./service");
-const authentication = require("./passport-mlw");
+const validate = require("../middleWare/validate-middleware");
+const validator = require("./validator");
+// const authentication = require("./passport-mlw");
 
-router.post("/login", authentication, (req, res, next) => {
-  res.status(200).send("Login");
-});
+// router.post("/login", authentication, (req, res, next) => {
+//   res.status(200).send("Login");
+// });
 
 router.get("/get", (req, res, next) => {
   service
@@ -20,7 +22,7 @@ router.get("/get-one/:id", (req, res, next) => {
     .catch(next);
 });
 
-router.post("/create", (req, res, next) => {
+router.post("/create", validate(validator.create), (req, res, next) => {
   service
     .create(req.body)
     .then(data => res.send(JSON.stringify({ status: "1", result: "ok" })))

@@ -37,6 +37,9 @@ const update = (id, body) => {
 const create = body => {
   //TODO: test if user exist  error massage
   body.registrated = Date.now();
+  if (!body.usergroup) {
+    body.usergroup = "user";
+  }
 
   const newUser = new userQuery(body);
   console.log(newUser);

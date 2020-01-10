@@ -1,4 +1,6 @@
 import React from "react";
+import Cookies from "js-cookie";
+import { useCookies } from "react-cookie";
 import Main from "./components/main/main";
 import LoginPage from "./components/logIn/login";
 import SingupPage from "./components/signUp/signup";
@@ -9,10 +11,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  Redirect,
-  useHistory,
-  useLocation
+  Redirect
 } from "react-router-dom";
 
 const isLogined = getLocalUser() || false;

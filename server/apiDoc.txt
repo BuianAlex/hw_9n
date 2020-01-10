@@ -19,6 +19,27 @@ res
   ] 
 }
 if error
-
 {"status":0,"error_code":21,"error_message":"No category with specified categoryID"}
 
+/login  - http status allways 200
+
+req
+ {"loginName": String "password": String}
+res OK
+  {
+    "status":1,
+    "result": [
+      {  name: String,
+        loginName: String,
+        email: String,
+        phone: String,
+        photo: String,
+        usergroup: String,
+      }
+    ] 
+  }
+res error
+  {
+    "status":0,
+    "error": String 
+  }
