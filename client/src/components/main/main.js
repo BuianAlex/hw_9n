@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import User from "../users/workbench";
 import { logoutUser } from "../../services/api";
+import { UserContext } from "./../users/userContext";
 import "./main.scss";
 
 const routes = [
@@ -26,10 +27,24 @@ const routes = [
 ];
 
 export default function SidebarExample() {
+  const { user } = useContext(UserContext);
   return (
     <Router>
       <div style={{ display: "flex" }}>
         <div className="side-bar">
+          <div className="user">
+            <img src={user.photo} alt="user" className="user-img" />
+            <h4 className="user-welcome">Hi, {user.loginName}</h4>
+            <p className="user-right">
+              You have <strong>{user.usergroup}</strong> right
+            </p>
+            <button onClick={logoutUser} className="user-logout">
+              Logout
+            </button>
+          </div>
+
+          <hr />
+
           <ul style={{ listStyleType: "none", padding: 0 }}>
             <li>
               <NavLink to="/" exact activeClassName="active">
@@ -48,9 +63,6 @@ export default function SidebarExample() {
             </li>
             <li>
               <hr />
-              <button onClick={logoutUser} className="logout">
-                Logout
-              </button>
             </li>
           </ul>
         </div>

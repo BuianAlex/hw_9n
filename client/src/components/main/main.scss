@@ -1,5 +1,5 @@
 .side-bar {
-  //padding: 10px;
+  padding-top: 10px;
   width: 10%;
   min-width: 140px;
   height: 100vh;
@@ -16,17 +16,34 @@
   }
 }
 .logout {
-  display: block;
-  margin-top: 1rem;
-  margin-left: 10px;
-  padding: 5px 10px;
-
-  background-color: transparent;
+}
+.user {
+  padding: 10px;
   color: #ffffff;
-  outline: none;
-  border: 1px solid #ffffff;
-  cursor: pointer;
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.26);
+  &-welcome {
+    font-size: 1rem;
+    margin: 0;
+  }
+  &-right {
+    font-size: 0.7rem;
+  }
+  &-logout {
+    display: block;
+    margin-top: 1rem;
+
+    padding: 5px 10px;
+
+    background-color: transparent;
+    color: #ffffff;
+    outline: none;
+    border: 1px solid #ffffff;
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.26);
+    }
+  }
+  &-img {
+    width: 100%;
+    height: auto;
   }
 }

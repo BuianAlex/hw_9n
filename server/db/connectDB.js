@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const autoIncrement = require("mongoose-auto-increment");
 mongoose.connect("mongodb://localhost/test", { useNewUrlParser: true });
 const db = mongoose.connection;
+autoIncrement.initialize(db);
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function() {
   console.log("db connected!");
@@ -38,8 +40,6 @@ userScheme.pre("save", function(next) {
 
     bcrypt.hash(user.password, salt, function(err, hash) {
       if (err) return next(err);
-      console.log(hash);
-
       user.password = hash;
       next();
     });
@@ -49,6 +49,7 @@ userScheme.pre("save", function(next) {
 userScheme.methods.validatePassword = async function validatePassword(data) {
   return bcrypt.compare(data, this.password);
 };
+userScheme.plugin(autoIncrement.plugin, { model: "user", field: "userId" });
 
 const userQuery = mongoose.model("user", userScheme);
 

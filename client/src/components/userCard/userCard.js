@@ -3,6 +3,7 @@ import "./userCard.scss";
 import InputFild from "../iputFild/inputFild";
 import { createUser, updateUser } from "../../services/api";
 import { UserContext } from "./../users/userContext";
+import * as moment from "moment";
 
 export default function Card({ userData, onClose }) {
   const { user } = useContext(UserContext);
@@ -12,7 +13,6 @@ export default function Card({ userData, onClose }) {
   const [phone, setPhone] = useState(true);
   const [formError, setFormError] = useState(false);
   const [usergroup, setUsergroup] = useState(userData.usergroup || "user");
-  // const [saveBtn, setSaveBtn] = useState(false);
   const saveBtn = useRef();
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function Card({ userData, onClose }) {
   return (
     <div className="card">
       <div className="card-header">
-        <h2>{userData._id ? `UserID: ${userData._id}` : "New User"}</h2>
+        <h2>{userData.userId ? `UserID: ${userData.userId}` : "New User"}</h2>
         <span
           className={
             userData.online ? "status status-online" : "status status-offline"
@@ -132,8 +132,18 @@ export default function Card({ userData, onClose }) {
                 </select>
               </p>
             </label>
-            {userData.registrated && <p>Registrated: {userData.registrated}</p>}
-            {userData.registrated && <p>Last Visit: {userData.lastVisit}</p>}
+            {userData.registrated && (
+              <p>
+                Registrated:{" "}
+                {moment(userData.registrated).format("MMM DD hh:mm:ss")}
+              </p>
+            )}
+            {userData.registrated && (
+              <p>
+                Last Visit:{" "}
+                {moment(userData.lastVisit).format("MMM DD hh:mm:ss")}
+              </p>
+            )}
           </div>
         </div>
 

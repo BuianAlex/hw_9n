@@ -4,9 +4,9 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const path = require("path");
 const passport = require("passport");
-
+require("dotenv").config();
+const port = process.env.PORT || 31415;
 // require("./db/connectDB");
-const port = process.NODE_PORT || 8080;
 const app = express();
 const initPassport = require("./middleWare/passport-config");
 
@@ -35,13 +35,12 @@ app.post(
   "/login",
   checkNotAuthenticated,
   passport.authenticate("local", { failWithError: true }),
-  //
   (req, res, next) => {
     if (req.user) {
-      const { name, loginName, email, phone, usergroup } = req.user;
+      const { name, loginName, email, phone, usergroup, photo } = req.user;
       res.status(200).send({
         status: 1,
-        result: { name, loginName, email, phone, usergroup }
+        result: { name, loginName, email, phone, usergroup, photo }
       });
     }
   },
@@ -62,12 +61,12 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "index.html"));
 });
 
-app.listen(process.env.PORT || port, () =>
-  console.log(`Server listening on port ${port}!`)
-);
+app.listen(port, () => console.log(`Server listening on port ${port}!`));
 
 app.use((error, req, res, next) => {
   if (error.status) {
+    console.log(error);
+
     res.send(error);
   } else {
     let answer = new Error();

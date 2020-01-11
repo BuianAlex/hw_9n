@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, memo } from "react";
+import React, { useContext, memo } from "react";
 import { TableContext } from "./tablecontext";
+import * as moment from "moment";
 
 const Row = memo(({ userData }) => {
   const { actionSelect, actionShowUser } = useContext(TableContext);
@@ -24,8 +25,8 @@ const Row = memo(({ userData }) => {
       <td>{userData.email}</td>
       <td>{userData.phone}</td>
       <td>{userData.usergroup}</td>
-      <td>{userData.lastVisit}</td>
-      <td>{userData.registrated}</td>
+      <td>{moment(userData.lastVisit).format("MMM DD hh:mm:ss")}</td>
+      <td>{moment(userData.registrated).format("MMM DD hh:mm:ss")}</td>
       {/* <td>{userData._id}</td> */}
     </tr>
   );

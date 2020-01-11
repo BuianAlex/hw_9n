@@ -9,8 +9,6 @@ import TableRow from "./userTableRow";
 
 export default function UserWorkBench() {
   const { user } = useContext(UserContext);
-  console.log(user);
-
   const [userData, setUserData] = useState([]);
   const [errrors, setErrrors] = useState([]);
   const [userCard, setUserCard] = useState({ open: false, data: {} });
@@ -40,13 +38,13 @@ export default function UserWorkBench() {
       !e.target.classList.contains("checkbox")
     ) {
       const user = userData.find(item => item._id === id);
+      console.log(user);
+
       setUserCard(state => ({ ...state, open: true, data: user }));
     }
   };
 
   const actionSelect = id => {
-    console.log(id);
-
     let calcSelected = 0;
     const data = userData.map(item => {
       if (item._id === id) {
@@ -79,7 +77,7 @@ export default function UserWorkBench() {
       )}
       <h2>Users</h2>
       {user.usergroup === "admin" && (
-        <div className="header">
+        <div className="action-bar">
           <button onClick={actionAddNew}>ADD User</button>
           <input type="text" placeholder="Find user" />
           <button>Find</button>
