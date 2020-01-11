@@ -2,20 +2,21 @@ import axios from "axios";
 import { setLocalUser, removeLocalUser } from "./localStorage";
 
 export async function loginUser(user) {
-  let res = {};
+  let apiRes = {};
   try {
     const servRes = await axios.post("/login", user);
 
     if (servRes.data.status === 1) {
       setLocalUser(servRes.data.result);
-      return "ok";
+      apiRes.result = true;
     }
   } catch (error) {
     if (error.response.status === 500) {
-      return "Server does not respond.";
+      apiRes.error = "Server does not respond.";
     }
-    return error.response.data.message;
+    apiRes.error = error.response.data.message;
   }
+  return apiRes;
 }
 
 export async function logoutUser() {
@@ -92,16 +93,24 @@ export async function deleteUser(usersId) {
 // }
 
 export async function createUser(userData) {
-  let res = {};
+  let apiRes = {};
   try {
     const servRes = await axios.post("/users/create", userData);
+    console.log(servRes.data.status);
+
+    if (servRes.data.status === 1) {
+      apiRes.result = true;
+    } else {
+      apiRes.error = servRes.data.error;
+    }
   } catch (error) {
     if (error.response.status === 500) {
-      res.error = "Server does not respond.";
+      apiRes.error = "Server does not respond.";
     }
   }
-  return res;
+  return apiRes;
 }
+
 export async function updateUser(id, userData) {
   let res = {};
   try {

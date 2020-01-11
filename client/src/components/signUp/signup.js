@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import InputFild from "../iputFild/inputFild";
-import "./signup.scss";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import "./signup.scss";
+
+import InputFild from "../iputFild/inputFild";
 import { createUser } from "../../services/api";
 
 export default function Login() {
@@ -29,8 +30,17 @@ export default function Login() {
       email: email,
       phone: phone
     };
+
     const res = await createUser(user);
-    setFormError(res.error);
+    if (!res.error) {
+      //TODO: loader and message if OK
+      setFormError("registration successful".toUpperCase());
+      setTimeout(() => {
+        document.location.href = "/";
+      }, 2000);
+    } else {
+      setFormError(res.error);
+    }
   };
 
   return (
@@ -43,7 +53,7 @@ export default function Login() {
             id: "login",
             label: "Login"
           }}
-          cb={setLogin}
+          value={{ val: login, set: setLogin }}
         />
         <InputFild
           set={{
@@ -51,7 +61,7 @@ export default function Login() {
             id: "password",
             label: "Password"
           }}
-          cb={setPassword}
+          value={{ val: password, set: setPassword }}
         />
         <InputFild
           set={{
@@ -59,16 +69,15 @@ export default function Login() {
             id: "email",
             label: "E-mail"
           }}
-          cb={setEmail}
+          value={{ val: "", set: setEmail }}
         />
         <InputFild
           set={{
             type: "text",
             id: "phone",
-            label: "Phone",
-            value: "+38"
+            label: "Phone"
           }}
-          cb={setPhone}
+          value={{ val: "+38", set: setPhone }}
         />
         <Link to="/ligin">Login</Link>
         <button ref={signBtn} onClick={actionSignup}>

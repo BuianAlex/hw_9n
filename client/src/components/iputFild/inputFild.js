@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import Validator from "../../services/validator";
 import "./inputFild.scss";
 
-export default function InputFild(props) {
-  const [fild, setFild] = useState(props.set.value || "");
+export default function InputFild({ set, value }) {
+  const [fild, setFild] = useState(value.val || "");
 
   const [errorMessage, setErrorMessage] = useState(false);
 
@@ -67,9 +67,7 @@ export default function InputFild(props) {
               setErrorMessage("Phone number is not valid");
             }
           }
-
           break;
-
         default:
           break;
       }
@@ -79,11 +77,11 @@ export default function InputFild(props) {
 
   useEffect(() => {
     if (!errorMessage) {
-      props.cb(fild);
+      value.set(fild);
     } else {
-      props.cb(false);
+      value.set(false);
     }
-  }, [errorMessage, fild]);
+  }, [errorMessage, fild, value]);
 
   const fildBlur = e => {
     setIsBlur(true);
@@ -91,10 +89,10 @@ export default function InputFild(props) {
 
   return (
     <div className="fild">
-      <label htmlFor={props.set.id}>{props.set.label}</label>
+      <label htmlFor={set.id}>{set.label}</label>
       <input
-        type={props.set.type}
-        id={props.set.id}
+        type={set.type}
+        id={set.id}
         value={fild}
         onChange={fildChange}
         onBlur={fildBlur}

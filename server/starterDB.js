@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 mongoose.connect("mongodb://localhost/test", { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -6,6 +7,8 @@ db.once("open", function() {
   console.log("db connected!");
   saveNewUser();
 });
+
+SALT_WORK_FACTOR = 10;
 
 const userScheme = mongoose.Schema({
   name: String,
@@ -26,6 +29,24 @@ const userScheme = mongoose.Schema({
   online: Boolean
 });
 
+userScheme.pre("save", function(next) {
+  let user = this;
+
+  if (!user.isModified("password")) return next();
+
+  bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+    if (err) return next(err);
+
+    bcrypt.hash(user.password, salt, function(err, hash) {
+      if (err) return next(err);
+      console.log(hash);
+
+      user.password = hash;
+      next();
+    });
+  });
+});
+
 const userQuery = mongoose.model("user", userScheme);
 
 const readline = require("readline");
@@ -43,10 +64,18 @@ function userName() {
   });
 }
 
-function userPasword() {
+function userPassword() {
   return new Promise(resolve => {
     rl.question("Set user password (min: 6 characters): ", pass => {
       resolve(pass);
+    });
+  });
+}
+
+function userGroup() {
+  return new Promise(resolve => {
+    rl.question("Set user group user(U), admin(A): ", group => {
+      resolve(group);
     });
   });
 }
@@ -65,11 +94,23 @@ async function saveNewUser() {
     user.loginName = await userName();
   } while (user.loginName.length < 3);
   do {
-    user.password = await userPasword();
+    user.password = await userPassword();
   } while (user.password.length < 6);
+  user.usergroup = await userGroup();
 
-  const save = await toSave(user.username);
+  const save = await toSave(user.loginName);
   if (save === "y") {
+    switch (user.usergroup) {
+      case "U":
+        user.usergroup = "user";
+        break;
+      case "A":
+        user.usergroup = "admin";
+        break;
+      default:
+        user.usergroup = "user";
+        break;
+    }
     const newUser = new userQuery(user);
     const res = await newUser.save();
     process.stdout.write("New user was created: \n" + res);

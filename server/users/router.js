@@ -25,7 +25,7 @@ router.get("/get-one/:id", (req, res, next) => {
 router.post("/create", validate(validator.create), (req, res, next) => {
   service
     .create(req.body)
-    .then(data => res.send(JSON.stringify({ status: "1", result: "ok" })))
+    .then(data => res.send(JSON.stringify({ status: "1", result: true })))
     .catch(err =>
       res.send(JSON.stringify({ status: "0", error_message: err.errors }))
     );

@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import InputFild from "../iputFild/inputFild";
+import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import "./login.scss";
-import { Link, Redirect, Switch } from "react-router-dom";
+import InputFild from "../iputFild/inputFild";
 import { loginUser } from "../../services/api";
-import { removeLocalUser } from "../../services/localStorage";
 
 export default function Login() {
-  //removeLocalUser();
   const [login, setLogin] = useState(false);
   const [password, setPassword] = useState(false);
   const [formError, setFormError] = useState(false);
@@ -23,10 +21,10 @@ export default function Login() {
   const actionLogin = async e => {
     e.preventDefault();
     const servRes = await loginUser({ loginName: login, password: password });
-    if (servRes === "ok") {
+    if (servRes.result) {
       document.location.href = "/";
     } else {
-      setFormError(servRes);
+      setFormError(servRes.error);
     }
   };
 
@@ -40,7 +38,7 @@ export default function Login() {
             id: "login",
             label: "Login"
           }}
-          cb={setLogin}
+          value={{ val: login, set: setLogin }}
         />
         <InputFild
           set={{
@@ -48,7 +46,7 @@ export default function Login() {
             id: "password",
             label: "Password"
           }}
-          cb={setPassword}
+          value={{ val: password, set: setPassword }}
         />
         <button ref={loginBtn} onClick={actionLogin}>
           Login
@@ -56,7 +54,6 @@ export default function Login() {
         <Link to="/signup">SignUp</Link>
         <span className="form-err">{formError} </span>
       </form>
-      {/* <Switch>{isLoginOK && <Redirect to="/" />}</Switch> */}
     </>
   );
 }

@@ -40,9 +40,7 @@ const create = body => {
   if (!body.usergroup) {
     body.usergroup = "user";
   }
-
   const newUser = new userQuery(body);
-  console.log(newUser);
   return newUser.save();
 };
 

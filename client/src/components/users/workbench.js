@@ -1,11 +1,16 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./user.scss";
 import { getAllUsers, deleteUser } from "../../services/api";
 import { TableContext } from "./tablecontext";
-import UserCard from "./userCard";
+import { UserContext } from "./userContext";
+
+import UserCard from "./../userCard/userCard";
 import TableRow from "./userTableRow";
 
 export default function UserWorkBench() {
+  const { user } = useContext(UserContext);
+  console.log(user);
+
   const [userData, setUserData] = useState([]);
   const [errrors, setErrrors] = useState([]);
   const [userCard, setUserCard] = useState({ open: false, data: {} });
@@ -72,16 +77,20 @@ export default function UserWorkBench() {
       {userCard.open && (
         <UserCard onClose={actionCardClose} userData={userCard.data} />
       )}
-      <div className="header">
-        <button onClick={actionAddNew}>ADD User</button>
-        <input type="text" placeholder="Find user" />
-        <button>Find</button>
-        <button onClick={actionDeleteSelected} disabled={usersSelected === 0}>
-          Delete
-        </button>
+      <h2>Users</h2>
+      {user.usergroup === "admin" && (
+        <div className="header">
+          <button onClick={actionAddNew}>ADD User</button>
+          <input type="text" placeholder="Find user" />
+          <button>Find</button>
+          <button onClick={actionDeleteSelected} disabled={usersSelected === 0}>
+            Delete
+          </button>
 
-        <button>Filter</button>
-      </div>
+          <button>Filter</button>
+        </div>
+      )}
+
       {userData ? (
         <TableContext.Provider value={{ actionSelect, actionShowUser }}>
           <div className="user-table">
@@ -91,7 +100,7 @@ export default function UserWorkBench() {
                   <th className="checkbox">
                     <input type="checkbox" name="select" disabled />
                   </th>
-                  <th>Name</th>
+                  {/* <th>Name</th> */}
                   <th>Login Name</th>
                   <th>Email</th>
                   <th>Phone</th>

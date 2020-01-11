@@ -1,12 +1,13 @@
-import React from "react";
-import Cookies from "js-cookie";
-import { useCookies } from "react-cookie";
+import React, { useState, useEffect, useContext } from "react";
+// import Cookies from "js-cookie";
+// import { useCookies } from "react-cookie";
 import Main from "./components/main/main";
 import LoginPage from "./components/logIn/login";
 import SingupPage from "./components/signUp/signup";
 import { getLocalUser } from "./services/localStorage";
+import { UserContext } from "./components/users/userContext";
 
-import logo from "./logo.svg";
+// import logo from "./logo.svg";
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,24 +15,29 @@ import {
   Redirect
 } from "react-router-dom";
 
-const isLogined = getLocalUser() || false;
+const isLogined = getLocalUser();
 
 export default function App() {
-  return (
-    <Router>
-      <Switch>
-        <Route path="/login">
-          <LoginPage />
-        </Route>
-        <Route path="/signup">
-          <SingupPage />
-        </Route>
+  const [user, setUser] = useState(isLogined);
+  console.log(user);
 
-        <PrivateRoute path="/">
-          <Main />
-        </PrivateRoute>
-      </Switch>
-    </Router>
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      <Router>
+        <Switch>
+          <Route path="/login">
+            <LoginPage />
+          </Route>
+          <Route path="/signup">
+            <SingupPage />
+          </Route>
+
+          <PrivateRoute path="/">
+            <Main />
+          </PrivateRoute>
+        </Switch>
+      </Router>
+    </UserContext.Provider>
   );
 }
 
