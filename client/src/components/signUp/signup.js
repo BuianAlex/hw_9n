@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./signup.scss";
-
 import InputFild from "../iputFild/inputFild";
+import Spiner from "../spinner/spinner";
+import FormMessage from "../formMessage/formMessage";
 import { createUser } from "../../services/api";
 
 export default function Login() {
@@ -10,19 +11,22 @@ export default function Login() {
   const [password, setPassword] = useState(false);
   const [email, setEmail] = useState(true);
   const [phone, setPhone] = useState(true);
-  const [formError, setFormError] = useState(false);
+  const [formMessage, setFormMessage] = useState(false);
+  const [saveBtn, setSaveBtn] = useState(false);
+  const [spinnerState, setSpinerState] = useState(false);
 
   const signBtn = useRef();
 
   useEffect(() => {
     if (login && password && email !== false && phone !== false) {
-      signBtn.current.disabled = false;
+      setSaveBtn(true);
     } else {
-      signBtn.current.disabled = true;
+      setSaveBtn(false);
     }
   }, [login, password, email, phone]);
 
   const actionSignup = async e => {
+    setSpinerState(true);
     e.preventDefault();
     const user = {
       loginName: login,
@@ -30,16 +34,16 @@ export default function Login() {
       email: email,
       phone: phone
     };
-
-    const res = await createUser(user);
-    if (!res.error) {
+    const servRes = await createUser(user);
+    setSpinerState(false);
+    if (!servRes.error) {
       //TODO: loader and message if OK
-      setFormError("registration successful".toUpperCase());
+      setFormMessage({ msg: "registration successful", type: 0 });
       setTimeout(() => {
         document.location.href = "/";
       }, 2000);
     } else {
-      setFormError(res.error);
+      setFormMessage({ msg: servRes.error, type: 2 });
     }
   };
 
@@ -48,42 +52,50 @@ export default function Login() {
       <h2 className="welcome-text">Sign Up</h2>
       <form className="login-form">
         <InputFild
-          set={{
+          options={{
             type: "text",
             id: "login",
-            label: "Login"
+            label: "Login:",
+            value: "",
+            disabled: false
           }}
-          value={{ val: login, set: setLogin }}
+          onValid={setLogin}
         />
         <InputFild
-          set={{
+          options={{
             type: "password",
             id: "password",
-            label: "Password"
+            label: "Password:",
+            value: ""
           }}
-          value={{ val: password, set: setPassword }}
+          onValid={setPassword}
         />
         <InputFild
-          set={{
+          options={{
             type: "text",
             id: "email",
-            label: "E-mail"
+            label: "E-mail:",
+            value: ""
           }}
-          value={{ val: "", set: setEmail }}
+          onValid={setEmail}
         />
         <InputFild
-          set={{
+          options={{
             type: "text",
             id: "phone",
-            label: "Phone"
+            label: "Phone:",
+            value: "+38"
           }}
-          value={{ val: "+38", set: setPhone }}
+          onValid={setPhone}
         />
+        {spinnerState && <Spiner />}
+        {formMessage && (
+          <FormMessage messange={formMessage.msg} type={formMessage.type} />
+        )}
         <Link to="/ligin">Login</Link>
-        <button ref={signBtn} onClick={actionSignup}>
+        <button ref={signBtn} onClick={actionSignup} disabled={!saveBtn}>
           SignUp
         </button>
-        {formError && <span className="form-err">{formError} </span>}
       </form>
     </>
   );

@@ -2,8 +2,6 @@ const { userQuery } = require("../db/connectDB");
 
 const get = () =>
   userQuery.find({}).then(data => {
-    console.log(data);
-
     if (data.length > 0) {
       return { status: 1, result: data };
     } else {
@@ -49,7 +47,6 @@ const create = body => {
 const remove = id => userQuery.findByIdAndRemove(id);
 
 const deleteMany = idS => userQuery.deleteMany({ _id: idS });
-console.log(deleteMany);
 
 module.exports = {
   get,

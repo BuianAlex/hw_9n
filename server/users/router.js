@@ -32,7 +32,7 @@ router.post(
   }
 );
 
-router.put("/update/:id", (req, res, next) => {
+router.put("/update/:id", onlyAdmin, (req, res, next) => {
   service
     .update(req.params.id, req.body)
     .then(() => res.send("Success!"))

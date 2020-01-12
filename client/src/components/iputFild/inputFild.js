@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import Validator from "../../services/validator";
 import "./inputFild.scss";
 
-export default function InputFild({ set, value }) {
-  const [fild, setFild] = useState(value.val || "");
-
+export default function InputFild({ options, onValid }) {
+  const [fild, setFild] = useState(options.value || "");
   const [errorMessage, setErrorMessage] = useState(false);
-
   const [isBlur, setIsBlur] = useState(false);
 
   const fildChange = e => {
@@ -77,11 +75,11 @@ export default function InputFild({ set, value }) {
 
   useEffect(() => {
     if (!errorMessage) {
-      value.set(fild);
+      onValid(fild);
     } else {
-      value.set(false);
+      onValid(false);
     }
-  }, [errorMessage, fild, value]);
+  }, [errorMessage, fild, onValid]);
 
   const fildBlur = e => {
     setIsBlur(true);
@@ -89,13 +87,14 @@ export default function InputFild({ set, value }) {
 
   return (
     <div className="fild">
-      <label htmlFor={set.id}>{set.label}</label>
+      <label htmlFor={options.id}>{options.label}</label>
       <input
-        type={set.type}
-        id={set.id}
+        type={options.type}
+        id={options.id}
         value={fild}
         onChange={fildChange}
         onBlur={fildBlur}
+        disabled={options.disabled}
       />
       <span className="errors">{isBlur && errorMessage}</span>
     </div>

@@ -1,0 +1,24 @@
+.form-message {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 2rpx;
+}
+.successful {
+  background-color: #e0f2f1;
+  color: #004d40;
+}
+.warning {
+  background-color: #fff9c4;
+  color: #f57f17;
+}
+.error {
+  background-color: #ffcdd2;
+  color: #b71c1c;
+}
+.form-message-text {
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  line-height: 20px;
+  letter-spacing: 2px;
+  font-style: italic;
+}

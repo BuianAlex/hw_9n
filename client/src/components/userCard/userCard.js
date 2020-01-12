@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./userCard.scss";
 import InputFild from "../iputFild/inputFild";
+import SelectFild from "../selectFild/selectFild";
+import Spiner from "../spinner/spinner";
+import FormMessage from "../formMessage/formMessage";
 import { createUser, updateUser } from "../../services/api";
 import { UserContext } from "./../users/userContext";
 import * as moment from "moment";
@@ -11,9 +14,10 @@ export default function Card({ userData, onClose }) {
   const [password, setPassword] = useState(false);
   const [email, setEmail] = useState(true);
   const [phone, setPhone] = useState(true);
-  const [formError, setFormError] = useState(false);
+  const [formMessage, setFormMessage] = useState(false);
   const [usergroup, setUsergroup] = useState(userData.usergroup || "user");
-  const saveBtn = useRef();
+  const [saveBtn, setSaveBtn] = useState(false);
+  const [spinnerState, setSpinerState] = useState(false);
 
   useEffect(() => {
     if (userData._id) {
@@ -26,15 +30,18 @@ export default function Card({ userData, onClose }) {
       phone !== false &&
       user.usergroup === "admin"
     ) {
-      saveBtn.current.disabled = false;
+      if (
+        userData.loginName !== login ||
+        userData.email !== email ||
+        userData.phone !== phone ||
+        userData.usergroup !== usergroup
+      ) {
+        setSaveBtn(true);
+      }
     } else {
-      saveBtn.current.disabled = true;
+      setSaveBtn(false);
     }
-  }, [login, password, email, phone]);
-
-  const actionSetGroup = e => {
-    setUsergroup(e.target.value);
-  };
+  }, [login, password, email, phone, usergroup]);
 
   const cardClose = e => {
     e.preventDefault();
@@ -43,25 +50,36 @@ export default function Card({ userData, onClose }) {
 
   const cardSave = async e => {
     e.preventDefault();
+    setSpinerState(true);
     if (userData._id) {
-      const res = await updateUser(userData._id, {
+      const apiRes = await updateUser(userData._id, {
         loginName: login,
         email: email,
         phone: phone,
-        usergroup: usergroup
+        usergroup: usergroup,
+        photo: "user.svg"
       });
-      console.log("upd");
+      console.log(apiRes);
+
+      setSpinerState(false);
+      if (apiRes.result) {
+        setFormMessage({ msg: "user successfully updated", type: 0 });
+      } else {
+        setFormMessage({ msg: apiRes.error, type: 2 });
+      }
     } else {
-      const res = await createUser({
+      const apiRes = await createUser({
         loginName: login,
         password: password,
         email: email,
         phone: phone,
         usergroup: usergroup
       });
+      setSpinerState(false);
+      setFormMessage({ msg: "user successfully created", type: 0 });
       console.log("new");
     }
-    onClose();
+    //onClose();
   };
 
   return (
@@ -79,59 +97,71 @@ export default function Card({ userData, onClose }) {
       <form>
         <div className="form-body">
           <div className="user-photo-wr ">
-            <img src="./noavatar92.png" alt="user" className="user-photo" />
+            <img
+              src={userData.photo || "./user.svg"}
+              alt="user"
+              className="user-photo"
+            />
             {/* <button>{photo.value ? "New photo" : "ADD photo"}</button> */}
           </div>
           <div className="text-filds">
             <InputFild
-              set={{
+              options={{
                 type: "text",
                 id: "login",
-                label: "Login"
+                label: "Login:",
+                value: userData.loginName,
+                disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
               }}
-              value={{ val: userData.loginName || " ", set: setLogin }}
+              onValid={setLogin}
             />
             {!userData._id && (
               <InputFild
-                set={{
+                options={{
                   type: "password",
                   id: "password",
-                  label: "Password"
+                  label: "Password:",
+                  value: "",
+                  disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
                 }}
-                value={{ val: "", set: setPassword }}
+                onValid={setPassword}
               />
             )}
             <InputFild
-              set={{
+              options={{
                 type: "text",
                 id: "email",
-                label: "E-mail"
+                label: "E-mail:",
+                value: userData.email,
+                disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
               }}
-              value={{ val: userData.email || "", set: setEmail }}
+              onValid={setEmail}
             />
             <InputFild
-              set={{
+              options={{
                 type: "text",
                 id: "phone",
-                label: "Phone"
+                label: "Phone:",
+                value: userData.phone || "+38",
+                disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
               }}
-              value={{ val: userData.phone || "+38", set: setPhone }}
+              onValid={setPhone}
+            />
+            <SelectFild
+              options={{
+                id: "usergroup",
+                value: usergroup,
+                label: "Usergroup:",
+                disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN,
+                selectors: [
+                  { val: "user", name: "User" },
+                  { val: "admin", name: "Admin" },
+                  { val: "superAdmin", name: "SuperAdmin" }
+                ]
+              }}
+              onChange={setUsergroup}
             />
 
-            <label htmlFor="usergroup">
-              Usergroup
-              <p>
-                <select
-                  id="usergroup"
-                  value={usergroup}
-                  onChange={actionSetGroup}
-                >
-                  <option value="user">user</option>
-                  <option value="admin">admin</option>
-                  <option value="superAdmin">superAdmin </option>
-                </select>
-              </p>
-            </label>
             {userData.registrated && (
               <p>
                 Registrated:{" "}
@@ -146,11 +176,12 @@ export default function Card({ userData, onClose }) {
             )}
           </div>
         </div>
-
         <div className="form-footer">
-          <button onClick={cardSave} ref={saveBtn}>
-            Save
-          </button>
+          {spinnerState && <Spiner />}
+          {formMessage && (
+            <FormMessage messange={formMessage.msg} type={formMessage.type} />
+          )}
+          {saveBtn && <button onClick={cardSave}>Save</button>}
           <button onClick={cardClose}>Close</button>
         </div>
       </form>

@@ -13,8 +13,9 @@ export async function loginUser(user) {
   } catch (error) {
     if (error.response.status === 500) {
       apiRes.error = "Server does not respond.";
+    } else {
+      apiRes.error = error.response.data.message;
     }
-    apiRes.error = error.response.data.message;
   }
   return apiRes;
 }
@@ -112,13 +113,18 @@ export async function createUser(userData) {
 }
 
 export async function updateUser(id, userData) {
-  let res = {};
+  let apiRes = {};
   try {
     const servRes = await axios.put(`/users/update/${id}`, userData);
+    if (servRes.data.status === 200) {
+      apiRes.result = true;
+    }
   } catch (error) {
-    if (error) {
-      res.error = "Server does not respond.";
+    if (error.response.status === 500) {
+      apiRes.error = "Server does not respond.";
+    } else {
+      apiRes.error = error.response.data.message;
     }
   }
-  return res;
+  return apiRes;
 }

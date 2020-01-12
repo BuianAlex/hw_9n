@@ -3,9 +3,11 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  NavLink
+  NavLink,
+  Redirect
 } from "react-router-dom";
 import User from "../users/workbench";
+import Stats from "../stats/stats";
 import { logoutUser } from "../../services/api";
 import { UserContext } from "./../users/userContext";
 import "./main.scss";
@@ -14,23 +16,27 @@ const routes = [
   {
     path: "/",
     exact: true,
-    main: () => <h2>Stats</h2>
+    main: () => <h2 className="section-header">Main page</h2>
   },
   {
     path: "/users",
     main: User
   },
   {
-    path: "/comments",
-    main: () => <h2>comments</h2>
+    path: "/posts",
+    main: () => <h2 className="section-header">Posts</h2>
   }
+  // {
+  //   path: "/stats",
+  //   main: Stats //() => <h2 className="section-header">Stats</h2>
+  // }
 ];
 
 export default function SidebarExample() {
   const { user } = useContext(UserContext);
   return (
     <Router>
-      <div style={{ display: "flex" }}>
+      <div className="main">
         <div className="side-bar">
           <div className="user">
             <img src={user.photo} alt="user" className="user-img" />
@@ -39,7 +45,7 @@ export default function SidebarExample() {
               You have <strong>{user.usergroup}</strong> right
             </p>
             <button onClick={logoutUser} className="user-logout">
-              Logout
+              Logout...
             </button>
           </div>
 
@@ -47,10 +53,11 @@ export default function SidebarExample() {
 
           <ul style={{ listStyleType: "none", padding: 0 }}>
             <li>
-              <NavLink to="/" exact activeClassName="active">
-                Stats
+              <NavLink activeClassName="active" exact to="/">
+                Main page
               </NavLink>
             </li>
+
             <li>
               <NavLink activeClassName="active" exact to="/users">
                 Users
@@ -58,13 +65,18 @@ export default function SidebarExample() {
             </li>
             <li>
               <NavLink activeClassName="active" exact to="/comments">
-                Comments
+                Posts
               </NavLink>
             </li>
-            <li>
-              <hr />
-            </li>
+            {user.usergroup === process.env.REACT_APP_USER_ADMIN && (
+              <li>
+                <NavLink to="/stats" exact activeClassName="active">
+                  APP stats
+                </NavLink>
+              </li>
+            )}
           </ul>
+          <hr />
         </div>
 
         <div style={{ flex: 1, padding: "10px" }}>
@@ -77,9 +89,33 @@ export default function SidebarExample() {
                 children={<route.main />}
               />
             ))}
+            <AdminPrivateRoute path="/stats">
+              <Stats />
+            </AdminPrivateRoute>
           </Switch>
         </div>
       </div>
     </Router>
+  );
+}
+
+function AdminPrivateRoute({ children, ...rest }) {
+  const { user } = useContext(UserContext);
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        user.usergroup === process.env.REACT_APP_USER_ADMIN ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/",
+              state: { from: location }
+            }}
+          />
+        )
+      }
+    />
   );
 }

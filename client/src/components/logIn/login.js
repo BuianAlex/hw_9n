@@ -2,29 +2,37 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./login.scss";
 import InputFild from "../iputFild/inputFild";
+import Spiner from "../spinner/spinner";
+import FormMessage from "../formMessage/formMessage";
 import { loginUser } from "../../services/api";
 
 export default function Login() {
   const [login, setLogin] = useState(false);
   const [password, setPassword] = useState(false);
-  const [formError, setFormError] = useState(false);
+  const [formMessage, setFormMessage] = useState(false);
+  const [spinnerState, setSpinerState] = useState(false);
+  const [saveBtn, setSaveBtn] = useState(false);
   const loginBtn = useRef();
 
   useEffect(() => {
     if (login && password) {
-      loginBtn.current.disabled = false;
+      setSaveBtn(true);
     } else {
-      loginBtn.current.disabled = true;
+      setSaveBtn(false);
     }
   }, [login, password]);
 
   const actionLogin = async e => {
     e.preventDefault();
+    setSpinerState(true);
     const servRes = await loginUser({ loginName: login, password: password });
+    console.log(servRes);
+
+    setSpinerState(false);
     if (servRes.result) {
       document.location.href = "/";
     } else {
-      setFormError(servRes.error);
+      setFormMessage({ msg: servRes.error, type: 2 });
     }
   };
 
@@ -33,26 +41,32 @@ export default function Login() {
       <h2 className="welcome-text">Welcome</h2>
       <form className="login-form">
         <InputFild
-          set={{
+          options={{
             type: "text",
             id: "login",
-            label: "Login"
+            label: "Login:",
+            value: "",
+            disabled: false
           }}
-          value={{ val: login, set: setLogin }}
+          onValid={setLogin}
         />
         <InputFild
-          set={{
+          options={{
             type: "password",
             id: "password",
-            label: "Password"
+            label: "Password:",
+            value: ""
           }}
-          value={{ val: password, set: setPassword }}
+          onValid={setPassword}
         />
-        <button ref={loginBtn} onClick={actionLogin}>
+        {spinnerState && <Spiner />}
+        {formMessage && (
+          <FormMessage messange={formMessage.msg} type={formMessage.type} />
+        )}
+        <button ref={loginBtn} onClick={actionLogin} disabled={!saveBtn}>
           Login
         </button>
         <Link to="/signup">SignUp</Link>
-        <span className="form-err">{formError} </span>
       </form>
     </>
   );

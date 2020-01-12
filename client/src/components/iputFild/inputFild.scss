@@ -6,6 +6,12 @@
     width: 80%;
     padding: 0.5rem;
   }
+  input:disabled {
+    background: #ffff;
+    color: #000000;
+    //border: none;
+    //padding-left: 0;
+  }
 }
 label {
   display: block;
@@ -14,10 +20,8 @@ label {
   width: 100%;
   position: absolute;
   color: red;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   left: 50%;
   bottom: -2%;
   transform: translate(-50%, 100%);
-
-  //line-height: 1.5rem;
 }

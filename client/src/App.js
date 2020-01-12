@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
+import dotenv from "dotenv";
+
 // import Cookies from "js-cookie";
 // import { useCookies } from "react-cookie";
 import Main from "./components/main/main";
@@ -14,13 +16,11 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-
+dotenv.config();
 const isLogined = getLocalUser();
 
 export default function App() {
   const [user, setUser] = useState(isLogined);
-  console.log(user);
-
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <Router>

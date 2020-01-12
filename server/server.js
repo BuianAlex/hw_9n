@@ -9,6 +9,7 @@ const port = process.env.PORT || 31415;
 // require("./db/connectDB");
 const app = express();
 const initPassport = require("./middleWare/passport-config");
+const HttpError = require("./middleWare/error-middleware");
 
 initPassport(passport);
 
@@ -45,10 +46,13 @@ app.post(
     }
   },
   (err, req, res, next) => {
-    res.status(401).send({
-      message: `Sorry, the member name and password
-     you entered do not match. Please try again`
-    });
+    next(
+      new HttpError(
+        `Sorry, the member name and password
+    you entered do not match. Please try agai`,
+        401
+      )
+    );
   }
 );
 
@@ -66,7 +70,7 @@ app.listen(port, () => console.log(`Server listening on port ${port}!`));
 app.use((error, req, res, next) => {
   if (error.status) {
     console.log(error);
-
+    res.status(error.status);
     res.send(error);
   } else {
     let answer = new Error();
@@ -80,9 +84,7 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
       return next();
     }
-    res.status(401).send({
-      message: "Unauthorized"
-    });
+    next(new HttpError("Unauthorized", 401));
   } else {
     return next();
   }
