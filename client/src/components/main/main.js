@@ -6,10 +6,10 @@ import {
   NavLink,
   Redirect
 } from "react-router-dom";
-import User from "../users/workbench";
+import User from "../usersPage/workbench";
 import Stats from "../stats/stats";
 import { logoutUser } from "../../services/api";
-import { UserContext } from "./../users/userContext";
+import { UserContext } from "../usersPage/userContext";
 import "./main.scss";
 
 const routes = [
@@ -26,13 +26,9 @@ const routes = [
     path: "/posts",
     main: () => <h2 className="section-header">Posts</h2>
   }
-  // {
-  //   path: "/stats",
-  //   main: Stats //() => <h2 className="section-header">Stats</h2>
-  // }
 ];
 
-export default function SidebarExample() {
+export default function Main() {
   const { user } = useContext(UserContext);
   return (
     <Router>

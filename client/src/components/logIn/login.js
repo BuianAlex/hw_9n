@@ -26,8 +26,6 @@ export default function Login() {
     e.preventDefault();
     setSpinerState(true);
     const servRes = await loginUser({ loginName: login, password: password });
-    console.log(servRes);
-
     setSpinerState(false);
     if (servRes.result) {
       document.location.href = "/";

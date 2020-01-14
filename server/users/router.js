@@ -3,6 +3,7 @@ const service = require("./service");
 const validate = require("../middleWare/validate-middleware");
 const validator = require("./validator");
 const { onlyAdmin } = require("../middleWare/permissions-middleware");
+const HttpError = require("./../middleWare/error-middleware");
 
 router.get("/get", (req, res, next) => {
   service
@@ -26,24 +27,28 @@ router.post(
     service
       .create(req.body)
       .then(data => res.send(JSON.stringify({ status: "1", result: true })))
-      .catch(err =>
-        res.send(JSON.stringify({ status: "0", error_message: err.errors }))
-      );
+      .catch(err => {
+        if (err.code === 11000) {
+          next(new HttpError("Login Name is already used", 409));
+        } else {
+          next();
+        }
+      });
   }
 );
 
 router.put("/update/:id", onlyAdmin, (req, res, next) => {
   service
     .update(req.params.id, req.body)
-    .then(() => res.send("Success!"))
+    .then(() => res.send(JSON.stringify({ result: true })))
     .catch(next);
 });
 
-router.post("/delete/", (req, res, next) => {
+router.post("/delete/", onlyAdmin, (req, res, next) => {
   console.log(req.body);
   service
     .deleteMany(req.body)
-    .then(() => res.send("Success!"))
+    .then(() => res.send(JSON.stringify({ result: true })))
     .catch(next);
 });
 

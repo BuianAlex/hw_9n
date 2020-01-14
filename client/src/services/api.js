@@ -57,43 +57,24 @@ export async function getAllUsers() {
 }
 
 export async function deleteUser(usersId) {
-  let res = {};
+  let apiRes = {};
   try {
     const servRes = await axios.post("/users/delete", usersId);
-    // if (servRes.data.result && servRes.data.result.length > 0) {
-    //   res.result = servRes.data.result;
-    // } else {
-    //   res.error = "No comments yet";
-    // }lastName
+    console.log(servRes);
+    apiRes.result = servRes.data.result;
   } catch (error) {
-    console.error(error);
-
-    if (error) {
-      res.error = "Server does not respond.";
+    if (error.response.status === 500) {
+      apiRes.error = "Server does not respond.";
+    } else {
+      apiRes.error = error.response.data.message;
     }
   }
-  return res;
+  return apiRes;
 }
-// export async function deleteUser(usersId) {
-//   let res = {};
-//   try {
-//     const servRes = await axios.post("/users/delete", usersId);
-//     // if (servRes.data.result && servRes.data.result.length > 0) {
-//     //   res.result = servRes.data.result;
-//     // } else {
-//     //   res.error = "No comments yet";
-//     // }
-//   } catch (error) {
-//     console.error(error);
-
-//     if (error) {
-//       res.error = "Server does not respond.";
-//     }
-//   }
-//   return res;
-// }
 
 export async function createUser(userData) {
+  //temp userData.photo
+  userData.photo = "user.svg";
   let apiRes = {};
   try {
     const servRes = await axios.post("/users/create", userData);
@@ -108,6 +89,8 @@ export async function createUser(userData) {
     if (error.response.status === 500) {
       apiRes.error = "Server does not respond.";
     }
+    apiRes.error = error.response.data.message;
+    // TODO: type of user
   }
   return apiRes;
 }
@@ -116,9 +99,7 @@ export async function updateUser(id, userData) {
   let apiRes = {};
   try {
     const servRes = await axios.put(`/users/update/${id}`, userData);
-    if (servRes.data.status === 200) {
-      apiRes.result = true;
-    }
+    apiRes.result = servRes.data.result;
   } catch (error) {
     if (error.response.status === 500) {
       apiRes.error = "Server does not respond.";

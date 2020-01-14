@@ -5,10 +5,10 @@ import SelectFild from "../selectFild/selectFild";
 import Spiner from "../spinner/spinner";
 import FormMessage from "../formMessage/formMessage";
 import { createUser, updateUser } from "../../services/api";
-import { UserContext } from "./../users/userContext";
+import { UserContext } from "../usersPage/userContext";
 import * as moment from "moment";
 
-export default function Card({ userData, onClose }) {
+export default function Card({ userData, onClose, updateTable }) {
   const { user } = useContext(UserContext);
   const [login, setLogin] = useState(false);
   const [password, setPassword] = useState(false);
@@ -50,6 +50,7 @@ export default function Card({ userData, onClose }) {
 
   const cardSave = async e => {
     e.preventDefault();
+    setFormMessage(false);
     setSpinerState(true);
     if (userData._id) {
       const apiRes = await updateUser(userData._id, {
@@ -59,11 +60,10 @@ export default function Card({ userData, onClose }) {
         usergroup: usergroup,
         photo: "user.svg"
       });
-      console.log(apiRes);
-
       setSpinerState(false);
       if (apiRes.result) {
         setFormMessage({ msg: "user successfully updated", type: 0 });
+        updateTable();
       } else {
         setFormMessage({ msg: apiRes.error, type: 2 });
       }
@@ -76,8 +76,12 @@ export default function Card({ userData, onClose }) {
         usergroup: usergroup
       });
       setSpinerState(false);
-      setFormMessage({ msg: "user successfully created", type: 0 });
-      console.log("new");
+      if (!apiRes.error) {
+        setFormMessage({ msg: "New user was created successfully", type: 0 });
+        updateTable();
+      } else {
+        setFormMessage({ msg: apiRes.error, type: 2 });
+      }
     }
     //onClose();
   };

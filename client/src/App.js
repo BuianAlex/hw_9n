@@ -7,7 +7,7 @@ import Main from "./components/main/main";
 import LoginPage from "./components/logIn/login";
 import SingupPage from "./components/signUp/signup";
 import { getLocalUser } from "./services/localStorage";
-import { UserContext } from "./components/users/userContext";
+import { UserContext } from "./components/usersPage/userContext";
 
 // import logo from "./logo.svg";
 import {
