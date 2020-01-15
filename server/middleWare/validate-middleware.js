@@ -10,19 +10,21 @@ class InvalidRequestError extends HttpError {
 
 let validate = (validator, ...args) => (req, res, next) => {
   let validatorFnc;
-  console.log(args);
   if (args.length > 0) {
     validatorFnc = validator(...args.map(arg => arg(req)));
   } else {
     validatorFnc = validator;
   }
-
   if (!validatorFnc(req.body)) {
-    let answer = new Error();
-    answer.message = "Invalid data";
-    return next(new InvalidRequestError(validatorFnc.errors));
+    console.log(validatorFnc.errors);
+
+    // let answer = new Error();
+    // answer.message = "Invalid data";
+    // next(new InvalidRequestError(validatorFnc.errors));
+    next(new HttpError("Invalid data"));
+  } else {
+    next();
   }
-  next();
 };
 
 module.exports = validate;

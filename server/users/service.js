@@ -2,11 +2,37 @@ const { userQuery } = require("../db/connectDB");
 
 const get = () =>
   userQuery.find({}).then(data => {
+    let cleanedData = [];
     if (data.length > 0) {
-      return { status: 1, result: data };
-    } else {
-      return { status: 0, error_message: "No users yet" };
+      cleanedData = data.map(item => {
+        const {
+          _id,
+          userId,
+          loginName,
+          email,
+          phone,
+          photo,
+          usergroup,
+          lastVisit,
+          registrated,
+          online
+        } = item;
+
+        return {
+          _id,
+          userId,
+          loginName,
+          email,
+          phone,
+          photo,
+          usergroup,
+          lastVisit,
+          registrated,
+          online
+        };
+      });
     }
+    return cleanedData;
   });
 
 const getOne = id =>
@@ -25,7 +51,9 @@ const update = (id, body) => {
       .findOne({ _id: id })
       .then(data => {
         Object.keys(body).forEach(key => {
-          data[key] = body[key];
+          if (key !== "password") {
+            data[key] = body[key];
+          }
         });
         return data.save();
       })
@@ -35,7 +63,6 @@ const update = (id, body) => {
 };
 
 const create = body => {
-  //TODO: test if user exist  error massage
   body.registrated = Date.now();
   if (!body.usergroup) {
     body.usergroup = "user";

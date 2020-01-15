@@ -5,11 +5,11 @@ export async function loginUser(user) {
   let apiRes = {};
   try {
     const servRes = await axios.post("/login", user);
-
-    if (servRes.data.status === 1) {
+    if (typeof servRes.data.result === "object") {
       setLocalUser(servRes.data.result);
       apiRes.result = true;
     }
+    console.error("servRes.data.result");
   } catch (error) {
     if (error.response.status === 500) {
       apiRes.error = "Server does not respond.";
@@ -34,26 +34,23 @@ export async function logoutUser() {
 }
 
 export async function getAllUsers() {
-  let res = {};
+  let apiRes = {};
   try {
     const servRes = await axios.get("/users/get");
-    if (servRes.data.status === 1) {
-      if (servRes.data.result && servRes.data.result.length > 0) {
-        res.result = servRes.data.result;
-      } else {
-        res.error = "No users in the database";
-      }
+    if (servRes.data.result.length > 0) {
+      apiRes.result = servRes.data.result;
+    } else {
+      apiRes.error = "No users in the database";
     }
   } catch (error) {
     if (error.response.status === 401) {
       removeLocalUser();
       document.location.href = "/";
-      console.log(error.code);
     } else {
-      res.error = "Server does not respond.";
+      apiRes.error = "Server does not respond.";
     }
   }
-  return res;
+  return apiRes;
 }
 
 export async function deleteUser(usersId) {

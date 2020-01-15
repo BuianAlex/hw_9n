@@ -2,13 +2,16 @@ const router = require("express").Router();
 const service = require("./service");
 const validate = require("../middleWare/validate-middleware");
 const validator = require("./validator");
-const { onlyAdmin } = require("../middleWare/permissions-middleware");
+const {
+  onlyAdmin,
+  userCreate
+} = require("../middleWare/permissions-middleware");
 const HttpError = require("./../middleWare/error-middleware");
 
 router.get("/get", (req, res, next) => {
   service
     .get()
-    .then(data => res.send(JSON.stringify(data)))
+    .then(data => res.send(JSON.stringify({ result: data })))
     .catch(next);
 });
 
@@ -21,12 +24,12 @@ router.get("/get-one/:id", (req, res, next) => {
 
 router.post(
   "/create",
-  onlyAdmin,
+  userCreate,
   validate(validator.create),
   (req, res, next) => {
     service
       .create(req.body)
-      .then(data => res.send(JSON.stringify({ status: "1", result: true })))
+      .then(data => res.send(JSON.stringify({ result: true })))
       .catch(err => {
         if (err.code === 11000) {
           next(new HttpError("Login Name is already used", 409));
@@ -37,12 +40,17 @@ router.post(
   }
 );
 
-router.put("/update/:id", onlyAdmin, (req, res, next) => {
-  service
-    .update(req.params.id, req.body)
-    .then(() => res.send(JSON.stringify({ result: true })))
-    .catch(next);
-});
+router.put(
+  "/update/:id",
+  onlyAdmin,
+  validate(validator.edit),
+  (req, res, next) => {
+    service
+      .update(req.params.id, req.body)
+      .then(() => res.send(JSON.stringify({ result: true })))
+      .catch(next);
+  }
+);
 
 router.post("/delete/", onlyAdmin, (req, res, next) => {
   console.log(req.body);

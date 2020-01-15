@@ -3,7 +3,6 @@ const HttpError = require("./error-middleware");
 function onlyAdmin(req, res, next) {
   if (req.user) {
     if (req.user.usergroup !== process.env.USER_ADMIN) {
-      console.log("cke");
       next(new HttpError("Forbidden for your user group", 403));
     }
     next();
@@ -12,4 +11,11 @@ function onlyAdmin(req, res, next) {
   }
 }
 
-module.exports = { onlyAdmin };
+function userCreate(req, res, next) {
+  if (req.body.hasOwnProperty("usergroup")) {
+    onlyAdmin(req, res, next);
+  } else {
+    next();
+  }
+}
+module.exports = { onlyAdmin, userCreate };

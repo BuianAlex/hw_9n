@@ -1,33 +1,10 @@
 User
 
-GET users\get
-res
-{
-    "status":1,
-    "result": [
-      {  name: String,
-        loginName: String,
-        password:  String,
-        email: String,
-        phone: String,
-        photo: String,
-        usergroup: String,
-        lastVisit: Number,
-        registrated: Number,
-        online: Boolean
-      }
-  ] 
-}
-if error
-{"status":0,"error_code":21,"error_message":"No category with specified categoryID"}
-
-
-/login  - http status allways 200
+POST /login 
 req
  {"loginName": String "password": String}
-res OK
+res 200
   {
-    "status":1,
     "result": [
       {  name: String,
         loginName: String,
@@ -40,10 +17,34 @@ res OK
   }
 res error
   {
-    "status":0,
-    "error": String 
+    "status": 401,
+    "message": `Sorry, the member name and password
+    you entered do not match. Please try again` 
+  }
+or
+  {
+    "status": 400,
+    "message": "Invalid data"
   }
 
+
+GET users/get
+res
+[
+  {
+    _id:String,
+    userId: Number,
+    loginName: String,
+    email: String,
+    phone: String,
+    photo: String,
+    usergroup: String,
+    lastVisit: Number,
+    registrated: Number,
+    online: Boolean
+  }
+]
+ 
 POST /users/create
 req
  {"loginName": String, - required!!!

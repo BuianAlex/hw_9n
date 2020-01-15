@@ -10,6 +10,8 @@ const port = process.env.PORT || 31415;
 const app = express();
 const initPassport = require("./middleWare/passport-config");
 const HttpError = require("./middleWare/error-middleware");
+const validate = require("./middleWare/validate-middleware");
+const validator = require("./users/validator");
 
 initPassport(passport);
 
@@ -34,25 +36,30 @@ app.use("/users", checkAuthenticated, users);
 
 app.post(
   "/login",
+  validate(validator.login),
   checkNotAuthenticated,
   passport.authenticate("local", { failWithError: true }),
   (req, res, next) => {
     if (req.user) {
       const { name, loginName, email, phone, usergroup, photo } = req.user;
       res.status(200).send({
-        status: 1,
-        result: { name, loginName, email, phone, usergroup, photo }
+        result: {
+          name,
+          loginName,
+          email,
+          phone,
+          usergroup,
+          photo
+        }
       });
     }
   },
   (err, req, res, next) => {
-    next(
-      new HttpError(
-        `Sorry, the member name and password
-    you entered do not match. Please try agai`,
-        401
-      )
-    );
+    if (err.status == 401) {
+      err.message = `Sorry, the member name and password
+    you entered do not match. Please try again`;
+    }
+    next(new HttpError(err.message, err.status));
   }
 );
 
@@ -68,8 +75,8 @@ app.get("*", (req, res) => {
 app.listen(port, () => console.log(`Server listening on port ${port}!`));
 
 app.use((error, req, res, next) => {
+  console.error(error);
   if (error.status) {
-    console.log(error);
     res.status(error.status);
     res.send(error);
   } else {

@@ -35,7 +35,11 @@ export default function Main() {
       <div className="main">
         <div className="side-bar">
           <div className="user">
-            <img src={user.photo} alt="user" className="user-img" />
+            <img
+              src={user.photo || "./user.svg"}
+              alt="user"
+              className="user-img"
+            />
             <h4 className="user-welcome">Hi, {user.loginName}</h4>
             <p className="user-right">
               You have <strong>{user.usergroup}</strong> right
@@ -60,7 +64,7 @@ export default function Main() {
               </NavLink>
             </li>
             <li>
-              <NavLink activeClassName="active" exact to="/comments">
+              <NavLink activeClassName="active" exact to="/posts">
                 Posts
               </NavLink>
             </li>
