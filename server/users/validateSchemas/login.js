@@ -1,4 +1,4 @@
-const ajv = require("ajv")();
+const ajv = require("ajv")({ $data: true });
 
 require("ajv-keywords")(ajv);
 

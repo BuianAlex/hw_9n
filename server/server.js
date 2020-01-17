@@ -5,11 +5,11 @@ const session = require("express-session");
 const path = require("path");
 const fs = require("fs");
 const passport = require("passport");
-const morgan = require("morgan");
-const json = require("morgan-json");
+// const morgan = require("morgan");
+// const json = require("morgan-json");
 
 require("dotenv").config();
-require("./db/connectDB");
+//require("./db/connectDB");
 const app = express();
 const initPassport = require("./middleWare/passportConfig");
 const HttpError = require("./middleWare/errorMiddleware");
@@ -20,19 +20,19 @@ const accessLogStream = fs.createWriteStream(
   { flags: "a" }
 );
 
-const port = process.env.PORT || 31415;
-const format = json({
-  method: ":method",
-  url: ":url",
-  status: ":status",
-  length: ":res[content-length]",
-  responseTime: ":response-time ms"
-});
+const port = process.env.PORT;
+// const format = json({
+//   method: ":method",
+//   url: ":url",
+//   status: ":status",
+//   length: ":res[content-length]",
+//   responseTime: ":response-time ms"
+// });
 
 initPassport(passport);
 
 app.use(compression());
-app.use(morgan(format, { stream: accessLogStream }));
+//app.use(morgan(format, { stream: accessLogStream }));
 app.use(
   session({
     secret: "keyboard cat",
@@ -82,14 +82,11 @@ app.post(
 
 app.get("/logout", function(req, res) {
   req.logout();
-  res.redirect("/");
 });
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "index.html"));
 });
-
-app.listen(port, () => console.log(`Server listening on port ${port}!`));
 
 app.use((error, req, res, next) => {
   console.error(error);
@@ -102,6 +99,8 @@ app.use((error, req, res, next) => {
     res.status(500).send(answer);
   }
 });
+
+app.listen(port, () => console.log(`Server listening on port ${port}!`));
 
 function checkAuthenticated(req, res, next) {
   if (req.path !== "/create") {
