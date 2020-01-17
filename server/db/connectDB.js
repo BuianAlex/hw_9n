@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const autoIncrement = require("mongoose-auto-increment");
-mongoose.connect("mongodb://localhost/test", { useNewUrlParser: true });
+mongoose.connect(process.env.DB_CONECT, { useNewUrlParser: true });
 const db = mongoose.connection;
 autoIncrement.initialize(db);
 db.on("error", console.error.bind(console, "connection error:"));

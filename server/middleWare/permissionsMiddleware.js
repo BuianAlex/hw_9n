@@ -1,4 +1,4 @@
-const HttpError = require("./error-middleware");
+const HttpError = require("./errorMiddleware");
 
 function onlyAdmin(req, res, next) {
   if (req.user) {

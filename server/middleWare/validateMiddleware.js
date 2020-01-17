@@ -1,4 +1,4 @@
-const HttpError = require("./error-middleware");
+const HttpError = require("./errorMiddleware");
 
 class InvalidRequestError extends HttpError {
   constructor(errors, msg = "Invalid data") {

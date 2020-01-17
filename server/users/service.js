@@ -42,7 +42,7 @@ const getOne = id =>
       return { status: 1, result: data };
     })
     .catch(err => {
-      return { status: 0, error_message: "Not found" };
+      return { status: 0, errorMessage: "Not found" };
     });
 
 const update = (id, body) => {

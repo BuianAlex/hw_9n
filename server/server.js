@@ -3,19 +3,36 @@ const compression = require("compression");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const path = require("path");
+const fs = require("fs");
 const passport = require("passport");
+const morgan = require("morgan");
+const json = require("morgan-json");
+
 require("dotenv").config();
-const port = process.env.PORT || 31415;
-// require("./db/connectDB");
+require("./db/connectDB");
 const app = express();
-const initPassport = require("./middleWare/passport-config");
-const HttpError = require("./middleWare/error-middleware");
-const validate = require("./middleWare/validate-middleware");
+const initPassport = require("./middleWare/passportConfig");
+const HttpError = require("./middleWare/errorMiddleware");
+const validate = require("./middleWare/validateMiddleware");
 const validator = require("./users/validator");
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
+
+const port = process.env.PORT || 31415;
+const format = json({
+  method: ":method",
+  url: ":url",
+  status: ":status",
+  length: ":res[content-length]",
+  responseTime: ":response-time ms"
+});
 
 initPassport(passport);
 
 app.use(compression());
+app.use(morgan(format, { stream: accessLogStream }));
 app.use(
   session({
     secret: "keyboard cat",

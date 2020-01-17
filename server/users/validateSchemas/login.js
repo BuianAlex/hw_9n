@@ -13,7 +13,7 @@ const schema = {
     }
   },
   required: ["loginName", "password"],
-  additionalProperties: true
+  additionalProperties: false
 };
 
 const validate = ajv.compile(schema);

@@ -1,12 +1,12 @@
 const router = require("express").Router();
 const service = require("./service");
-const validate = require("../middleWare/validate-middleware");
-const validator = require("./validator");
 const {
   onlyAdmin,
   userCreate
-} = require("../middleWare/permissions-middleware");
-const HttpError = require("./../middleWare/error-middleware");
+} = require("../middleWare/permissionsMiddleware");
+const HttpError = require("../middleWare/errorMiddleware");
+const validate = require("../middleWare/validateMiddleware");
+const validator = require("./validator");
 
 router.get("/get", (req, res, next) => {
   service
