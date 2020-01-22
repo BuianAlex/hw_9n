@@ -4,7 +4,7 @@ import { setLocalUser, removeLocalUser } from "./localStorage";
 export async function loginUser(user) {
   let apiRes = {};
   try {
-    const servRes = await axios.post("/login", user);
+    const servRes = await axios.post("./users/login", user);
     if (typeof servRes.data.result === "object") {
       setLocalUser(servRes.data.result);
       apiRes.result = true;
@@ -22,7 +22,7 @@ export async function loginUser(user) {
 
 export async function logoutUser() {
   try {
-    const servRes = await axios.get("/logout");
+    await axios.get("./users/logout");
     removeLocalUser();
     document.location.href = "/";
   } catch (error) {

@@ -2,15 +2,28 @@ import React, { useState, useEffect } from "react";
 import Validator from "../../services/validator";
 import "./inputFild.scss";
 
-export default function InputFild({ options, onValid }) {
-  const [fild, setFild] = useState(options.value || "");
-  const [errorMessage, setErrorMessage] = useState(false);
-  const [isBlur, setIsBlur] = useState(false);
+interface IOptions {
+  type: string;
+  id: string;
+  value: string;
+  disabled: boolean;
+  label: string;
+}
 
-  const fildChange = e => {
-    let inputValue = e.target.value.trim();
+interface IProps {
+  options: IOptions;
+  onValid: (param: string | boolean) => boolean;
+}
+
+const InputFild: React.FC<IProps> = ({ options, onValid }) => {
+  const [fild, setFild] = useState<string>(options.value || "");
+  const [errorMessage, setErrorMessage] = useState<string | boolean>(false);
+  const [isBlur, setIsBlur] = useState<boolean>(false);
+
+  const fildChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    let inputValue: string = e.target.value.trim();
     const testValue = new Validator(inputValue);
-    let isSpecial = testValue.noSpeсialChar();
+    let isSpecial: boolean = testValue.noSpeсialChar();
     if (isSpecial) {
       setIsBlur(true);
       setErrorMessage(`Not allowed special characters ( -/^$*?()|[]{}\\ )`);
@@ -75,28 +88,31 @@ export default function InputFild({ options, onValid }) {
 
   useEffect(() => {
     if (!errorMessage) {
-      onValid(fild);
+      if (options.id === "phone") {
+        onValid("");
+      } else {
+        onValid(fild);
+      }
     } else {
       onValid(false);
     }
   }, [errorMessage, fild, onValid]);
 
-  const fildBlur = e => {
-    setIsBlur(true);
-  };
-
   return (
-    <div className="fild">
-      <label htmlFor={options.id}>{options.label}</label>
+    <div className="mui-textfield">
       <input
         type={options.type}
         id={options.id}
         value={fild}
         onChange={fildChange}
-        onBlur={fildBlur}
+        onBlur={e => {
+          setIsBlur(true);
+        }}
         disabled={options.disabled}
       />
+      <label htmlFor={options.id}>{options.label}</label>
       <span className="errors">{isBlur && errorMessage}</span>
     </div>
   );
-}
+};
+export default InputFild;

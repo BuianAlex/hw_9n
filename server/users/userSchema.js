@@ -1,17 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const autoIncrement = require("mongoose-auto-increment");
-mongoose.connect(process.env.DB_CONECT, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true
-});
-mongoose.set("useCreateIndex", true);
-const db = mongoose.connection;
-autoIncrement.initialize(db);
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", function() {
-  console.log("db connected!");
-});
 
 SALT_WORK_FACTOR = 10;
 
@@ -57,6 +46,4 @@ userScheme.methods.validatePassword = async function validatePassword(data) {
 };
 userScheme.plugin(autoIncrement.plugin, { model: "user", field: "userId" });
 
-const userQuery = mongoose.model("user", userScheme);
-
-module.exports = { userQuery };
+module.exports = mongoose.model("user", userScheme);

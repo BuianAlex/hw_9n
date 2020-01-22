@@ -7,7 +7,7 @@ import {
   Redirect
 } from "react-router-dom";
 import User from "../usersPage/workbench";
-import Stats from "../stats/stats";
+import Stats from "../stats/statsPage";
 import { logoutUser } from "../../services/api";
 import { UserContext } from "../usersPage/userContext";
 import "./main.scss";
@@ -42,7 +42,7 @@ export default function Main() {
             />
             <h4 className="user-welcome">Hi, {user.loginName}</h4>
             <p className="user-right">
-              You have <strong>{user.usergroup}</strong> right
+              You are <strong>{user.usergroup}</strong>
             </p>
             <button onClick={logoutUser} className="user-logout">
               Logout...
@@ -51,7 +51,7 @@ export default function Main() {
 
           <hr />
 
-          <ul style={{ listStyleType: "none", padding: 0 }}>
+          <ul className="bar-nav">
             <li>
               <NavLink activeClassName="active" exact to="/">
                 Main page
@@ -79,7 +79,7 @@ export default function Main() {
           <hr />
         </div>
 
-        <div style={{ flex: 1, padding: "10px" }}>
+        <div className="work-flow">
           <Switch>
             {routes.map((route, index) => (
               <Route

@@ -1,35 +1,12 @@
-const { userQuery } = require("../db/connectDB");
+const userQuery = require("./userSchema");
+const normalise = require("./normaliseUserData");
 
 const get = () =>
   userQuery.find({}).then(data => {
     let cleanedData = [];
     if (data.length > 0) {
       cleanedData = data.map(item => {
-        const {
-          _id,
-          userId,
-          loginName,
-          email,
-          phone,
-          photo,
-          usergroup,
-          lastVisit,
-          registrated,
-          online
-        } = item;
-
-        return {
-          _id,
-          userId,
-          loginName,
-          email,
-          phone,
-          photo,
-          usergroup,
-          lastVisit,
-          registrated,
-          online
-        };
+        return normalise(item);
       });
     }
     return cleanedData;
@@ -37,9 +14,9 @@ const get = () =>
 
 const getOne = id =>
   userQuery
-    .findOne({ _id: id })
+    .findOne({ userId: id })
     .then(data => {
-      return { status: 1, result: data };
+      return data;
     })
     .catch(err => {
       return { status: 0, errorMessage: "Not found" };
@@ -48,14 +25,18 @@ const getOne = id =>
 const update = (id, body) => {
   return new Promise((resolve, reject) => {
     userQuery
-      .findOne({ _id: id })
+      .findOne({ userId: id })
       .then(data => {
-        Object.keys(body).forEach(key => {
-          if (key !== "password") {
-            data[key] = body[key];
-          }
-        });
-        return data.save();
+        if (data) {
+          Object.keys(body).forEach(key => {
+            if (key !== "password") {
+              data[key] = body[key];
+            }
+          });
+          return data.save();
+        } else {
+          return null;
+        }
       })
       .then(resolve)
       .catch(reject);
@@ -73,7 +54,7 @@ const create = body => {
 
 const remove = id => userQuery.findByIdAndRemove(id);
 
-const deleteMany = idS => userQuery.deleteMany({ _id: idS });
+const deleteMany = idS => userQuery.deleteMany({ userId: idS });
 
 module.exports = {
   get,

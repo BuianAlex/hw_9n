@@ -8,16 +8,17 @@ const Row = memo(({ userData }) => {
   return (
     <tr
       onClick={e => {
-        actionShowUser(e, userData._id);
+        actionShowUser(e, userData.userId);
       }}
     >
       <td className="checkbox">
         <input
+          className="checkbox-input"
           type="checkbox"
           name="select"
           checked={userData.isSelected || false}
           onChange={() => {
-            actionSelect(userData._id);
+            actionSelect(userData.userId);
           }}
         />
       </td>

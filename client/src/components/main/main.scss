@@ -1,12 +1,15 @@
 .main {
-  padding-left: 140px;
+  padding-left: 160px;
+  background-color: #eee;
+  padding-right: 20px;
+  height: 100vh;
 }
 .side-bar {
   position: fixed;
   left: 0;
   padding-top: 10px;
   width: 10%;
-  min-width: 140px;
+  width: 140px;
   height: 100vh;
   background: #065a69;
   a {
@@ -21,7 +24,12 @@
     background-color: rgba(255, 255, 255, 0.26);
   }
 }
-.logout {
+.bar-nav {
+  list-style: none;
+  padding: 0;
+}
+.work-flow {
+  //margin-left: 200px;
 }
 .user {
   padding: 10px;

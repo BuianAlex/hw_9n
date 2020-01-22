@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "NODE_ENV=dev nodemon server.js",
+    "test": "NODE_ENV=test PORT=3030 mocha --exit",
     "stop": "lsof -ti :8080 | xargs kill"
   },
   "author": "",
@@ -15,11 +16,13 @@
     "ajv-keywords": "^3.4.1",
     "bcrypt": "^3.0.7",
     "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "compression": "^1.7.4",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
-    "mongoose": "^5.8.3",
+    "mongoose": "^5.8.7",
     "mongoose-auto-increment": "^5.0.1",
     "morgan": "^1.9.1",
     "morgan-json": "^1.1.0",
@@ -30,6 +33,6 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.19.1"
+    "eslint-plugin-import": "^2.20.0"
   }
 }

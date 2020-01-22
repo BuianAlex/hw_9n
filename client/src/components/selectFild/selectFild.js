@@ -9,23 +9,20 @@ const SelectFild = memo(({ options, onChange }) => {
   };
 
   return (
-    <div className="fild">
-      <label htmlFor={options.id}>
-        {options.label}
-
-        <select
-          id={options.id}
-          value={selectVal}
-          onChange={actionChange}
-          disabled={options.disabled}
-        >
-          {options.selectors.map((item, i) => (
-            <option key={i} value={item.val}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </label>
+    <div className="mui-select">
+      <select
+        id={options.id}
+        value={selectVal}
+        onChange={actionChange}
+        disabled={options.disabled}
+      >
+        {options.selectors.map((item, i) => (
+          <option key={i} value={item.val}>
+            {item.name}
+          </option>
+        ))}
+      </select>
+      <label htmlFor={options.id}>{options.label}</label>
     </div>
   );
 });

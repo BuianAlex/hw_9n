@@ -20,7 +20,7 @@ export default function Card({ userData, onClose, updateTable }) {
   const [spinnerState, setSpinerState] = useState(false);
 
   useEffect(() => {
-    if (userData._id) {
+    if (userData.userId) {
       setPassword(true);
     }
     if (
@@ -52,8 +52,8 @@ export default function Card({ userData, onClose, updateTable }) {
     e.preventDefault();
     setFormMessage(false);
     setSpinerState(true);
-    if (userData._id) {
-      const apiRes = await updateUser(userData._id, {
+    if (userData.userId) {
+      const apiRes = await updateUser(userData.userId, {
         loginName: login,
         email: email,
         phone: phone,
@@ -98,7 +98,7 @@ export default function Card({ userData, onClose, updateTable }) {
           {userData.online ? "onLine" : "offLine"}
         </span>
       </div>
-      <form>
+      <form className="mui-form">
         <div className="form-body">
           <div className="user-photo-wr ">
             <img
@@ -119,7 +119,7 @@ export default function Card({ userData, onClose, updateTable }) {
               }}
               onValid={setLogin}
             />
-            {!userData._id && (
+            {!userData.userId && (
               <InputFild
                 options={{
                   type: "password",
@@ -185,8 +185,17 @@ export default function Card({ userData, onClose, updateTable }) {
           {formMessage && (
             <FormMessage messange={formMessage.msg} type={formMessage.type} />
           )}
-          {saveBtn && <button onClick={cardSave}>Save</button>}
-          <button onClick={cardClose}>Close</button>
+          {saveBtn && (
+            <button
+              onClick={cardSave}
+              className="mui-btn  mui-btn--raised mui-btn--primary"
+            >
+              Save
+            </button>
+          )}
+          <button onClick={cardClose} className="mui-btn mui-btn--raised">
+            Close
+          </button>
         </div>
       </form>
     </div>

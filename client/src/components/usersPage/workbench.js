@@ -18,7 +18,7 @@ export default function UserWorkBench() {
   const [usersSelected, setUsersSelected] = useState(0);
   const [spinnerState, setSpinerState] = useState(false);
   const [formMessage, setFormMessage] = useState(false);
-
+  const [selectAll, setSelectAll] = useState(false);
   useEffect(() => {
     getUsers();
   }, []);
@@ -54,7 +54,7 @@ export default function UserWorkBench() {
       e.target.type !== "checkbox" &&
       !e.target.classList.contains("checkbox")
     ) {
-      const user = userData.find(item => item._id === id);
+      const user = userData.find(item => item.userId === id);
       setUserCard(state => ({ ...state, open: true, data: user }));
     }
   };
@@ -62,7 +62,7 @@ export default function UserWorkBench() {
   const actionSelect = id => {
     let calcSelected = 0;
     const data = userData.map(item => {
-      if (item._id === id) {
+      if (item.userId === id || !id) {
         item.isSelected = !item.isSelected;
       }
       if (item.isSelected) {
@@ -79,17 +79,13 @@ export default function UserWorkBench() {
     let toDelete = [];
     userData.forEach(item => {
       if (item.isSelected) {
-        toDelete.push(item._id);
+        toDelete.push(item.userId);
       }
     });
     const apiRes = await deleteUser(toDelete);
-    //setSpinerState(false);
+    setSpinerState(false);
     if (apiRes.result) {
-      //setFormMessage({ msg: "user successfully deleted", type: 0 });
       getUsers();
-      // setTimeout(() => {
-      //   setFormMessage(false);
-      // }, 5000);
     } else {
       setFormMessage({ msg: apiRes.error, type: 2 });
     }
@@ -101,16 +97,25 @@ export default function UserWorkBench() {
         <UserCard
           onClose={actionCardClose}
           userData={userCard.data}
-          updateTable={updateTable}
+          updateTable={getUsers}
         />
       )}
       <h2 className="section-header">Users</h2>
       {user.usergroup === "admin" && (
         <div className="action-bar">
-          <button onClick={actionAddNew}>ADD User</button>
+          <button
+            onClick={actionAddNew}
+            className="mui-btn mui-btn--small mui-btn--raised"
+          >
+            ADD User
+          </button>
           {/* <input type="text" placeholder="Find user" />
           <button>Find</button> */}
-          <button onClick={actionDeleteSelected} disabled={usersSelected === 0}>
+          <button
+            onClick={actionDeleteSelected}
+            disabled={usersSelected === 0}
+            className="mui-btn mui-btn--small mui-btn--raised mui-btn--danger"
+          >
             Delete
           </button>
           {/* 
@@ -123,7 +128,17 @@ export default function UserWorkBench() {
             <thead>
               <tr>
                 <th className="checkbox">
-                  <input type="checkbox" name="select" disabled />
+                  <input
+                    type="checkbox"
+                    name="select"
+                    checked={selectAll}
+                    onChange={() => {
+                      console.log();
+
+                      setSelectAll(!selectAll);
+                      actionSelect();
+                    }}
+                  />
                 </th>
                 {/* <th>Name</th> */}
                 <th>Login Name</th>
@@ -137,9 +152,9 @@ export default function UserWorkBench() {
             </thead>
             <tbody>
               {userData
-                ? userData.map(item => (
-                    <TableRow key={item._id} userData={item} />
-                  ))
+                ? userData.map(item => {
+                    return <TableRow key={item.userId} userData={item} />;
+                  })
                 : false}
             </tbody>
             <tfoot>

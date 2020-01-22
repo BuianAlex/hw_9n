@@ -50,7 +50,7 @@ export default function Login() {
   return (
     <>
       <h2 className="welcome-text">Sign Up</h2>
-      <form className="login-form">
+      <form className="mui-panel login-form">
         <InputFild
           options={{
             type: "text",
@@ -92,10 +92,19 @@ export default function Login() {
         {formMessage && (
           <FormMessage messange={formMessage.msg} type={formMessage.type} />
         )}
-        <Link to="/ligin">Login</Link>
-        <button ref={signBtn} onClick={actionSignup} disabled={!saveBtn}>
-          SignUp
-        </button>
+        <div className="form-bottom">
+          <Link to="/ligin" className="mui-btn mui-btn--flat">
+            Login
+          </Link>
+          <button
+            ref={signBtn}
+            onClick={actionSignup}
+            disabled={!saveBtn}
+            className="mui-btn   mui-btn--raised mui-btn--primary"
+          >
+            SignUp
+          </button>
+        </div>
       </form>
     </>
   );
