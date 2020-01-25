@@ -5,14 +5,13 @@ require("ajv-keywords")(ajv);
 const schema = {
   type: "object",
   properties: {
-    name: {
-      type: "string"
-    },
     loginName: {
-      type: "string"
+      type: "string",
+      minLength: 3
     },
     password: {
-      type: "string"
+      type: "string",
+      minLength: 6
     },
     email: {
       type: "string"

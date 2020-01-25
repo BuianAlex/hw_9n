@@ -4,7 +4,7 @@ import InputFild from "../iputFild/inputFild";
 import SelectFild from "../selectFild/selectFild";
 import Spiner from "../spinner/spinner";
 import FormMessage from "../formMessage/formMessage";
-import { createUser, updateUser } from "../../services/api";
+import { createUser, updateUser, uploadUserPhoto } from "../../services/api";
 import { UserContext } from "../usersPage/userContext";
 import * as moment from "moment";
 
@@ -18,6 +18,17 @@ export default function Card({ userData, onClose, updateTable }) {
   const [usergroup, setUsergroup] = useState(userData.usergroup || "user");
   const [saveBtn, setSaveBtn] = useState(false);
   const [spinnerState, setSpinerState] = useState(false);
+  const [userPhoto, setUserPoto] = useState(
+    userData.photo !== undefined && userData.photo.length > 0
+      ? userData.photo[0].fileName
+      : false
+  );
+  const [imgPath, setImgPath] = useState(
+    userData.photo !== undefined && userData.photo.length > 0
+      ? userData.photo[0].storePath
+      : false
+  );
+  const [uploadMsg, setUploadMsg] = useState(false);
 
   useEffect(() => {
     if (userData.userId) {
@@ -34,18 +45,34 @@ export default function Card({ userData, onClose, updateTable }) {
         userData.loginName !== login ||
         userData.email !== email ||
         userData.phone !== phone ||
-        userData.usergroup !== usergroup
+        userData.usergroup !== usergroup ||
+        userData.photo !== userPhoto
       ) {
         setSaveBtn(true);
       }
     } else {
       setSaveBtn(false);
     }
-  }, [login, password, email, phone, usergroup]);
+  }, [login, password, email, phone, usergroup, userPhoto]);
 
   const cardClose = e => {
     e.preventDefault();
     onClose();
+  };
+
+  const uploadPhoto = async e => {
+    e.preventDefault();
+    const apiRes = await uploadUserPhoto(e.target.files);
+
+    if (apiRes.fileName) {
+      setUserPoto(apiRes.fileName);
+      setImgPath(`/uploads/`);
+    }
+    if (apiRes.error) {
+      setUploadMsg({ msg: apiRes.error, type: 2 });
+    } else {
+      setUploadMsg(false);
+    }
   };
 
   const cardSave = async e => {
@@ -58,11 +85,11 @@ export default function Card({ userData, onClose, updateTable }) {
         email: email,
         phone: phone,
         usergroup: usergroup,
-        photo: "user.svg"
+        photo: userPhoto
       });
       setSpinerState(false);
       if (apiRes.result) {
-        setFormMessage({ msg: "user successfully updated", type: 0 });
+        setFormMessage({ msg: "User successfully updated", type: 0 });
         updateTable();
       } else {
         setFormMessage({ msg: apiRes.error, type: 2 });
@@ -73,7 +100,8 @@ export default function Card({ userData, onClose, updateTable }) {
         password: password,
         email: email,
         phone: phone,
-        usergroup: usergroup
+        usergroup: usergroup,
+        photo: userPhoto
       });
       setSpinerState(false);
       if (!apiRes.error) {
@@ -83,7 +111,6 @@ export default function Card({ userData, onClose, updateTable }) {
         setFormMessage({ msg: apiRes.error, type: 2 });
       }
     }
-    //onClose();
   };
 
   return (
@@ -102,11 +129,17 @@ export default function Card({ userData, onClose, updateTable }) {
         <div className="form-body">
           <div className="user-photo-wr ">
             <img
-              src={userData.photo || "./user.svg"}
-              alt="user"
+              src={userPhoto ? imgPath + userPhoto : "/img/user.svg"}
+              alt="user-photo"
               className="user-photo"
             />
-            {/* <button>{photo.value ? "New photo" : "ADD photo"}</button> */}
+            <div className="upload-btn-wrapper">
+              <button className="mui-btn mui-btn--raised">Upload photo</button>
+              <input type="file" name="myfile" onChange={uploadPhoto} />
+            </div>
+            {uploadMsg && (
+              <FormMessage messange={uploadMsg.msg} type={uploadMsg.type} />
+            )}
           </div>
           <div className="text-filds">
             <InputFild

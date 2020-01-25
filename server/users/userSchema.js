@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const autoIncrement = require("mongoose-auto-increment");
+const fotoStore = require("./../files/filesSchema");
 
 SALT_WORK_FACTOR = 10;
 
 const userScheme = mongoose.Schema({
-  name: String,
   loginName: {
     type: String,
     required: true,
@@ -18,7 +18,7 @@ const userScheme = mongoose.Schema({
   },
   email: String,
   phone: String,
-  photo: String,
+  photo: [{ type: mongoose.Schema.Types.ObjectId, ref: fotoStore }],
   usergroup: String,
   lastVisit: Number,
   registrated: Number,
@@ -26,7 +26,7 @@ const userScheme = mongoose.Schema({
 });
 
 userScheme.pre("save", function(next) {
-  let user = this;
+  const user = this;
 
   if (!user.isModified("password")) return next();
 
@@ -39,6 +39,10 @@ userScheme.pre("save", function(next) {
       next();
     });
   });
+});
+
+userScheme.post("save", function(doc) {
+  console.log(typeof doc);
 });
 
 userScheme.methods.validatePassword = async function validatePassword(data) {

@@ -20,23 +20,24 @@ describe("GET users lits or find one", () => {
         });
     });
 
-    it("Get list should have length = 2 staus 200", done => {
+    it("Get list should be staus 200", done => {
       authenticatedUser.get("/users/get").end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a("object");
         res.body.should.have.property("result");
-        res.body.result.should.have.lengthOf(2);
         done();
       });
     });
 
     it("Get one user should be status 200", done => {
-      authenticatedUser.get("/users/get-one/193").end((err, res) => {
-        res.should.have.status(200);
-        res.body.should.be.a("object");
-        res.body.should.have.property("result");
-        done();
-      });
+      authenticatedUser
+        .get(`/users/get-one/${process.env.TEST_USER_ID}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("object");
+          res.body.should.have.property("result");
+          done();
+        });
     });
 
     it("Get not exist user should be rejected staus 404", done => {
@@ -75,7 +76,7 @@ describe("GET users lits or find one", () => {
     it("Get one user should be rejected status 401", done => {
       chai
         .request(server)
-        .get("/users/get-one/193")
+        .get(`/users/get-one/${process.env.TEST_USER_ID}`)
         .end((err, res) => {
           res.should.have.status(401);
           res.body.message.should.eql("Unauthorized");

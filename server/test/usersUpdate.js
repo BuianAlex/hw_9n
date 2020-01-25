@@ -60,7 +60,7 @@ describe(`Test the "/update/:id" route`, () => {
 
     it("Update user with not valid properties should be rejected status 400", done => {
       authenticatedUser
-        .put(`/users/update/193`)
+        .put(`/users/update/${process.env.TEST_USER_ID}`)
         .send({})
         .end(function(err, res) {
           res.should.have.status(400);

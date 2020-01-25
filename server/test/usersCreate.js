@@ -32,7 +32,7 @@ describe("Test the /user/create route", () => {
         password: "12345q",
         email: "test@test.re",
         phone: "+380935753848",
-        photo: "nicePhoto.png"
+        photo: "19220_2.jpg"
       };
       chai
         .request(server)
@@ -50,7 +50,7 @@ describe("Test the /user/create route", () => {
 
     it("LoginName is exist in db - should be rejected status 409", done => {
       const qwerty = {
-        loginName: "Testic",
+        loginName: "Alex",
         password: "12345q"
       };
       chai

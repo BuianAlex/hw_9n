@@ -1,57 +1,81 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-mongoose.connect("mongodb://localhost/test", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-const db = mongoose.connection;
+process.env.DB_CONECT = "mongodb://localhost/test";
+process.env.NODE_ENV === "dev";
 
+const mongoose = require("mongoose");
+const autoIncrement = require("mongoose-auto-increment");
+
+mongoose.connect(process.env.DB_CONECT, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useFindAndModify: false
+});
+mongoose.set("useCreateIndex", true);
+const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function() {
-  console.log("db connected!");
+  if (process.env.NODE_ENV === "dev") {
+    console.log("db connected!");
+  }
   saveNewUser();
 });
+autoIncrement.initialize(db);
 
-SALT_WORK_FACTOR = 10;
+const userQuery = require("./../users/userSchema");
 
-const userScheme = mongoose.Schema({
-  name: String,
-  loginName: {
-    type: String,
-    required: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  email: String,
-  phone: String,
-  photo: String,
-  usergroup: String,
-  lastVisit: Number,
-  registrated: Number,
-  online: Boolean
-});
+// const mongoose = require("mongoose");
+// const bcrypt = require("bcrypt");
+// mongoose.connect("mongodb://localhost/test", {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// });
+// const db = mongoose.connection;
 
-userScheme.pre("save", function(next) {
-  let user = this;
+// db.on("error", console.error.bind(console, "connection error:"));
+// db.once("open", function() {
+//   console.log("db connected!");
+//   saveNewUser();
+// });
 
-  if (!user.isModified("password")) return next();
+// SALT_WORK_FACTOR = 10;
 
-  bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-    if (err) return next(err);
+// const userScheme = mongoose.Schema({
+//   name: String,
+//   loginName: {
+//     type: String,
+//     required: true
+//   },
+//   password: {
+//     type: String,
+//     required: true
+//   },
+//   email: String,
+//   phone: String,
+//   photo: String,
+//   usergroup: String,
+//   lastVisit: Number,
+//   registrated: Number,
+//   online: Boolean
+// });
 
-    bcrypt.hash(user.password, salt, function(err, hash) {
-      if (err) return next(err);
-      console.log(hash);
+// userScheme.pre("save", function(next) {
+//   let user = this;
 
-      user.password = hash;
-      next();
-    });
-  });
-});
+//   if (!user.isModified("password")) return next();
 
-const userQuery = mongoose.model("user", userScheme);
+//   bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+//     if (err) return next(err);
+
+//     bcrypt.hash(user.password, salt, function(err, hash) {
+//       if (err) return next(err);
+//       console.log(hash);
+
+//       user.password = hash;
+//       next();
+//     });
+//   });
+// });
+
+// const userQuery = mongoose.model("user", userScheme);
 
 const readline = require("readline");
 
@@ -125,3 +149,4 @@ async function saveNewUser() {
     process.exit(0);
   }
 }
+saveNewUser();

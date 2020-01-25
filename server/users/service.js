@@ -1,20 +1,28 @@
+const csv = require("csv-parser");
+const fs = require("fs");
 const userQuery = require("./userSchema");
+const fileQuery = require("./../files/service");
 const normalise = require("./normaliseUserData");
+const HttpError = require("../middleWare/errorMiddleware");
 
 const get = () =>
-  userQuery.find({}).then(data => {
-    let cleanedData = [];
-    if (data.length > 0) {
-      cleanedData = data.map(item => {
-        return normalise(item);
-      });
-    }
-    return cleanedData;
-  });
+  userQuery
+    .find({})
+    .populate("photo")
+    .then(data => {
+      let cleanedData = [];
+      if (data.length > 0) {
+        cleanedData = data.map(item => {
+          return normalise(item);
+        });
+      }
+      return cleanedData;
+    });
 
 const getOne = id =>
   userQuery
     .findOne({ userId: id })
+    .populate("photo")
     .then(data => {
       return data;
     })
@@ -26,11 +34,25 @@ const update = (id, body) => {
   return new Promise((resolve, reject) => {
     userQuery
       .findOne({ userId: id })
-      .then(data => {
+      .populate("photo")
+      .then(async data => {
         if (data) {
-          Object.keys(body).forEach(key => {
-            if (key !== "password") {
-              data[key] = body[key];
+          if (body.photo) {
+            if (!data.photo.length) {
+              const fileData = await fileQuery.saveFile(body);
+              data.photo = fileData._id;
+            }
+            if (data.photo.length && data.photo[0].fileName !== body.photo) {
+              const fileData = await fileQuery.saveFile(body);
+              data.photo = fileData._id;
+            }
+          }
+
+          Object.keys(body).forEach(async key => {
+            if (key === "photo") {
+              if (key !== "password" && key !== "photo") {
+                data[key] = body[key];
+              }
             }
           });
           return data.save();
@@ -43,12 +65,30 @@ const update = (id, body) => {
   });
 };
 
-const create = body => {
+const create = async body => {
+  const testIfExist = await userQuery.find({ loginName: body.loginName });
+  if (testIfExist.length > 0) {
+    return new Promise((resolve, reject) => {
+      reject(new HttpError("", 409));
+    });
+  }
   body.registrated = Date.now();
+
+  if (body.photo) {
+    const fileData = await fileQuery.saveFile(body);
+    body.photo = fileData._id;
+  }
+
   if (!body.usergroup) {
     body.usergroup = "user";
   }
+
   const newUser = new userQuery(body);
+  newUser.save();
+};
+
+const addMany = data => {
+  const newUser = new userQuery(data);
   return newUser.save();
 };
 
@@ -62,5 +102,6 @@ module.exports = {
   create,
   update,
   remove,
-  deleteMany
+  deleteMany,
+  addMany
 };

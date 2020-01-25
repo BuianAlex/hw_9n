@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import "./user.scss";
-import { getAllUsers, deleteUser } from "../../services/api";
+import { getAllUsers, deleteUser, sendCsv } from "../../services/api";
 import { TableContext } from "./tablecontext";
 import { UserContext } from "./userContext";
 import Spiner from "../spinner/spinner";
 import UserCard from "../userCard/userCard";
+import Popup from "../popup/popup";
 import TableRow from "./userTableRow";
 import FormMessage from "../formMessage/formMessage";
 
@@ -39,7 +40,7 @@ export default function UserWorkBench() {
     }
   };
 
-  const updateTable = useCallback(() => getUsers());
+  // const updateTable = useCallback(() => getUsers());
 
   const actionCardClose = () => {
     setUserCard(state => ({ ...state, open: false, data: {} }));
@@ -91,6 +92,12 @@ export default function UserWorkBench() {
     }
   };
 
+  const actionSendCsv = async e => {
+    e.preventDefault();
+    const apiRes = await sendCsv(e.target.files);
+    console.log(apiRes);
+  };
+
   return (
     <>
       {userCard.open && (
@@ -100,6 +107,7 @@ export default function UserWorkBench() {
           updateTable={getUsers}
         />
       )}
+      <Popup />
       <h2 className="section-header">Users</h2>
       {user.usergroup === "admin" && (
         <div className="action-bar">
@@ -109,6 +117,10 @@ export default function UserWorkBench() {
           >
             ADD User
           </button>
+          <div className="upload-btn-wrapper">
+            <button className="mui-btn mui-btn--raised">ADD from csv</button>
+            <input type="file" name="myfile" onChange={actionSendCsv} />
+          </div>
           {/* <input type="text" placeholder="Find user" />
           <button>Find</button> */}
           <button

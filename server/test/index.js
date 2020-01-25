@@ -9,3 +9,4 @@ require("./usersCreate");
 require("./usersUpdate");
 require("./usersDelete");
 require("./usersGet");
+require("./uploadPhoto");

@@ -16,6 +16,9 @@ const schema = {
     },
     usergroup: {
       type: "string"
+    },
+    photo: {
+      type: "string"
     }
   },
   required: ["loginName"],

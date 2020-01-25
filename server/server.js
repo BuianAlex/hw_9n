@@ -43,14 +43,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(path.join(__dirname, "client")));
+app.use(express.static(path.join(__dirname, "build")));
 
 const users = require("./users/router");
+const files = require("./files/router");
 
 app.use("/users", users);
+app.use("/files", files);
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "index.html"));
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+app.use(function(req, res, next) {
+  var err = new Error("Not Found");
+  err.status = 404;
+  next(err);
 });
 
 app.use((error, req, res, next) => {

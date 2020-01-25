@@ -1,11 +1,11 @@
 const LocalStrategy = require("passport-local").Strategy;
-// const { userQuery } = require("../db/connectDB");
 const userQuery = require("./../users/userSchema");
 
 function initialize(passport) {
   const authenticateUser = async (username, password, done) => {
     userQuery
       .findOne({ loginName: username })
+      .populate("photo")
       .then(user => {
         if (user) {
           user.lastVisit = Date.now();

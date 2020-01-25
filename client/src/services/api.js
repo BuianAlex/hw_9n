@@ -71,7 +71,7 @@ export async function deleteUser(usersId) {
 
 export async function createUser(userData) {
   //temp userData.photo
-  userData.photo = "user.svg";
+  // userData.photo = "user.svg";
   let apiRes = {};
   try {
     const servRes = await axios.post("/users/create", userData);
@@ -97,6 +97,67 @@ export async function updateUser(id, userData) {
   try {
     const servRes = await axios.put(`/users/update/${id}`, userData);
     apiRes.result = servRes.data.result;
+  } catch (error) {
+    if (error.response.status === 500) {
+      apiRes.error = "Server does not respond.";
+    } else {
+      apiRes.error = error.response.data.message;
+    }
+  }
+  return apiRes;
+}
+
+export async function uploadUserPhoto(file) {
+  let apiRes = {};
+  try {
+    const formData = new FormData();
+    formData.append("photo", file[0]);
+    const servRes = await axios.post("files/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+    apiRes.fileName = servRes.data.result;
+  } catch (error) {
+    if (error.response.status === 500) {
+      apiRes.error = "Server does not respond.";
+    } else {
+      apiRes.error = error.response.data.message;
+    }
+  }
+  return apiRes;
+}
+
+// export async function sendCsv(file) {
+//   let apiRes = {};
+//   try {
+//     const formData = new FormData();
+//     formData.append("usercsv", file[0]);
+//     const servRes = await axios.post("files/usercsv", formData, {
+//       headers: {
+//         "Content-Type": "multipart/form-data"
+//       }
+//     });
+//     apiRes.fileName = servRes.data.result;
+//   } catch (error) {
+//     if (error.response.status === 500) {
+//       apiRes.error = "Server does not respond.";
+//     } else {
+//       apiRes.error = error.response.data.message;
+//     }
+//   }
+//   return apiRes;
+// }
+
+export async function sendCsv(file) {
+  let apiRes = {};
+  try {
+    const servRes = await axios.post("users/csv", file, {
+      headers: {
+        "Content-Type": "text/csv"
+      }
+    });
+    apiRes.fileName = servRes.data.result;
   } catch (error) {
     if (error.response.status === 500) {
       apiRes.error = "Server does not respond.";

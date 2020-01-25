@@ -30,13 +30,18 @@ const routes = [
 
 export default function Main() {
   const { user } = useContext(UserContext);
+
   return (
     <Router>
       <div className="main">
         <div className="side-bar">
           <div className="user">
             <img
-              src={user.photo || "./user.svg"}
+              src={
+                user.photo.length > 0
+                  ? user.photo[0].storePath + user.photo[0].fileName
+                  : "./img/user.svg"
+              }
               alt="user"
               className="user-img"
             />
