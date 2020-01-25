@@ -13,13 +13,14 @@ export default function UserWorkBench() {
   const { user } = useContext(UserContext);
   const [userData, setUserData] = useState([]);
   const [userCard, setUserCard] = useState({
-    open: false,
+    open: true,
     data: {}
   });
   const [usersSelected, setUsersSelected] = useState(0);
   const [spinnerState, setSpinerState] = useState(false);
   const [formMessage, setFormMessage] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
+  const [csvRes, setcsvRes] = useState({ data: {}, show: false });
   useEffect(() => {
     getUsers();
   }, []);
@@ -51,6 +52,8 @@ export default function UserWorkBench() {
   };
 
   const actionShowUser = (e, id) => {
+    console.log(id);
+
     if (
       e.target.type !== "checkbox" &&
       !e.target.classList.contains("checkbox")
@@ -95,7 +98,9 @@ export default function UserWorkBench() {
   const actionSendCsv = async e => {
     e.preventDefault();
     const apiRes = await sendCsv(e.target.files);
+    setcsvRes({ data: apiRes, show: true });
     console.log(apiRes);
+    getUsers();
   };
 
   return (
@@ -107,7 +112,7 @@ export default function UserWorkBench() {
           updateTable={getUsers}
         />
       )}
-      <Popup />
+      {/* {//csvRes.show && <Popup data={csvRes.data} />} */}
       <h2 className="section-header">Users</h2>
       {user.usergroup === "admin" && (
         <div className="action-bar">

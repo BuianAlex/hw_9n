@@ -41,10 +41,6 @@ userScheme.pre("save", function(next) {
   });
 });
 
-userScheme.post("save", function(doc) {
-  console.log(typeof doc);
-});
-
 userScheme.methods.validatePassword = async function validatePassword(data) {
   return bcrypt.compare(data, this.password);
 };

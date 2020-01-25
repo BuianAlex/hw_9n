@@ -122,12 +122,10 @@ router.post(
       });
   }
 );
-router.post("/csv", (req, res, next) => {
-  // const source = fs.createReadStream(file.photo.path);
+router.post("/csv", checkPermissios.onlyAdmin, (req, res, next) => {
   const form = new formidable.IncomingForm();
 
   form.parse(req, (err, fields, file) => {
-    console.log(file.csvFile.type);
     if (file.csvFile.size === 0) {
       next(new HttpError("", 400));
     } else if (file.csvFile.type !== "text/csv") {
@@ -139,64 +137,17 @@ router.post("/csv", (req, res, next) => {
         .pipe(csv("loginName", "password", "email", "phone", "photo"))
         .on("data", data => results.push(data))
         .on("end", async () => {
-          let senRes = {
-            valid: [],
-            saved: [],
-            error: [],
-            duplicate: [],
-            unnounError: []
-          };
-          results.map(async user => {
-            if (validator.create(user)) {
-              senRes.valid.push(user);
-            } else {
-              senRes.error.push(user);
-            }
-          });
-          if (senRes.valid.length) {
-            const promisMap = senRes.valid.map(async user => {
-              let redd;
-              try {
-                redd = await service.addMany(user);
-                console.log(redd);
-                senRes.saved.push(user);
-              } catch (error) {
-                console.log(error.code);
-                if (error.code === 11000) {
-                  senRes.duplicate.push(user);
-                } else {
-                  senRes.unnounError.push(user);
-                }
-              }
-              return redd;
+          service
+            .addFromCsv(results)
+            .then(data => {
+              res.send({ result: data });
+            })
+            .catch(err => {
+              next(err);
             });
-            const resres = await Promise.all(promisMap);
-            console.log("aft");
-
-            res.send({ res: senRes });
-          } else {
-            res.send({ res: senRes });
-          }
-          // console.log(senRes);
-
-          // [
-          //   { NAME: 'Daffy Duck', AGE: '24' },
-          //   { NAME: 'Bugs Bunny', AGE: '22' }
-          // ]
         });
-      // const dest = fs.createWriteStream(
-      //   path.join(__dirname, "./../build/uploads/", file.csvFile.name)
-      // );
-      // source.pipe(dest);
-      // source.on("end", function() {
-      //   res.send({ result: file.csvFile.name });
-      // });
-      // source.on("error", function(error) {
-      //   next(error);
-      // });
     }
   });
-  // res.send("dfd");
 });
 
 module.exports = router;

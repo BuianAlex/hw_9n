@@ -4,7 +4,7 @@ const userQuery = require("./userSchema");
 const fileQuery = require("./../files/service");
 const normalise = require("./normaliseUserData");
 const HttpError = require("../middleWare/errorMiddleware");
-
+const validator = require("./validator");
 const get = () =>
   userQuery
     .find({})
@@ -87,9 +87,43 @@ const create = async body => {
   newUser.save();
 };
 
-const addMany = data => {
-  const newUser = new userQuery(data);
-  return newUser.save();
+const addFromCsv = async data => {
+  let isValid = [];
+  let dbRes = {
+    saved: [],
+    schemaError: [],
+    duplicate: [],
+    unnounError: []
+  };
+  //validator
+  data.map(user => {
+    if (validator.create(user)) {
+      isValid.push(user);
+    } else {
+      dbRes.schemaError.push(user);
+    }
+  });
+  //save to db
+  if (isValid.length) {
+    const promisMap = isValid.map(async user => {
+      let reqDb;
+      try {
+        reqDb = await userQuery(user).save();
+        dbRes.saved.push(user);
+      } catch (error) {
+        if (error.code === 11000) {
+          dbRes.duplicate.push(user);
+        } else {
+          dbRes.unnounError.push(user);
+        }
+      }
+      return reqDb;
+    });
+    await Promise.all(promisMap);
+    return dbRes;
+  } else {
+    return dbRes;
+  }
 };
 
 const remove = id => userQuery.findByIdAndRemove(id);
@@ -103,5 +137,5 @@ module.exports = {
   update,
   remove,
   deleteMany,
-  addMany
+  addFromCsv
 };

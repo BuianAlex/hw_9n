@@ -1,7 +1,11 @@
 .popup {
-  position: absolute;
+  position: fixed;
   width: 50%;
   height: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border: 1px solid #000;
-  background-color: #000;
+  background-color: #fff;
+  z-index: 1000;
 }

@@ -57,7 +57,6 @@ export async function deleteUser(usersId) {
   let apiRes = {};
   try {
     const servRes = await axios.post("/users/delete", usersId);
-    console.log(servRes);
     apiRes.result = servRes.data.result;
   } catch (error) {
     if (error.response.status === 500) {
@@ -128,36 +127,18 @@ export async function uploadUserPhoto(file) {
   return apiRes;
 }
 
-// export async function sendCsv(file) {
-//   let apiRes = {};
-//   try {
-//     const formData = new FormData();
-//     formData.append("usercsv", file[0]);
-//     const servRes = await axios.post("files/usercsv", formData, {
-//       headers: {
-//         "Content-Type": "multipart/form-data"
-//       }
-//     });
-//     apiRes.fileName = servRes.data.result;
-//   } catch (error) {
-//     if (error.response.status === 500) {
-//       apiRes.error = "Server does not respond.";
-//     } else {
-//       apiRes.error = error.response.data.message;
-//     }
-//   }
-//   return apiRes;
-// }
-
 export async function sendCsv(file) {
   let apiRes = {};
   try {
-    const servRes = await axios.post("users/csv", file, {
+    const formData = new FormData();
+    formData.append("csvFile", file[0]);
+    const servRes = await axios.post("/users/csv", formData, {
       headers: {
-        "Content-Type": "text/csv"
+        "Content-Type": "multipart/form-data"
       }
     });
-    apiRes.fileName = servRes.data.result;
+
+    apiRes.result = servRes.data.result;
   } catch (error) {
     if (error.response.status === 500) {
       apiRes.error = "Server does not respond.";

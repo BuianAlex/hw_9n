@@ -9,6 +9,6 @@ import "./popup.scss";
 // import { UserContext } from "../usersPage/userContext";
 // import * as moment from "moment";
 
-export default function Popup({ onClose }) {
+export default function Popup({ data }) {
   return <div className="popup"></div>;
 }
