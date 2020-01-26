@@ -1,8 +1,6 @@
 const fileQuery = require("./filesSchema");
 
 const saveFile = user => {
-  console.log(user);
-
   return new fileQuery({
     fileName: user.photo,
     fileAltText: user.loginName,

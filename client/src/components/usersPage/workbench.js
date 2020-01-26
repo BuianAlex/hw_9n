@@ -13,7 +13,7 @@ export default function UserWorkBench() {
   const { user } = useContext(UserContext);
   const [userData, setUserData] = useState([]);
   const [userCard, setUserCard] = useState({
-    open: true,
+    open: false,
     data: {}
   });
   const [usersSelected, setUsersSelected] = useState(0);

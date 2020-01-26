@@ -13,7 +13,6 @@ router.post("/upload", (req, res, next) => {
   var form = new formidable.IncomingForm();
 
   form.parse(req, (err, fields, file) => {
-    console.log(file.photo.type);
     if (file.photo.size === 0) {
       next(new HttpError("", 400));
     } else if (
@@ -22,7 +21,6 @@ router.post("/upload", (req, res, next) => {
       file.photo.type !== "image/svg+xml"
     ) {
       next(new HttpError("Not accessible file type", 400));
-      //next(new HttpError("", 400));
     } else if (
       fs.existsSync(
         path.join(__dirname, "./../build/img/users", file.photo.name)

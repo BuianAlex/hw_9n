@@ -137,14 +137,18 @@ router.post("/csv", checkPermissios.onlyAdmin, (req, res, next) => {
         .pipe(csv("loginName", "password", "email", "phone", "photo"))
         .on("data", data => results.push(data))
         .on("end", async () => {
-          service
-            .addFromCsv(results)
-            .then(data => {
-              res.send({ result: data });
-            })
-            .catch(err => {
-              next(err);
-            });
+          if (results.length) {
+            service
+              .addFromCsv(results)
+              .then(data => {
+                res.send({ result: data });
+              })
+              .catch(err => {
+                next(err);
+              });
+          } else {
+            next(new HttpError("", 406));
+          }
         });
     }
   });

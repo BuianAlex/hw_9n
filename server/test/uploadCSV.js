@@ -20,28 +20,65 @@ describe("Upload users CSV  by admin", () => {
       });
   });
 
-  it("Upload - should be status 200", done => {
+  it("Upload - should be status 200 saved - 39, schemaError - 2, duplicate - 2 ", done => {
     authenticatedUser
       .post("/users/csv")
       .set("Content-Type", "multipart/form-data")
       .attach(
         "csvFile",
-        path.join(__dirname, `./files/MOCK_DATA.csv`),
+        path.join(__dirname, `./files/MOCK_DATA_TEST.csv`),
         "MOCK_DATA.csv"
       )
       .end((err, res) => {
         if (err) {
           console.error(err);
         } else {
-          console.log(res.body);
+          res.body.result.saved.should.be.have.lengthOf(39);
+          res.body.result.schemaError.should.be.have.lengthOf(2);
+          res.body.result.duplicate.should.be.have.lengthOf(2);
+        }
+        done();
+      });
+  });
+
+  it("Upload data which do not match with schema", done => {
+    authenticatedUser
+      .post("/users/csv")
+      .set("Content-Type", "multipart/form-data")
+      .attach(
+        "csvFile",
+        path.join(__dirname, `./files/dicerolls.csv`),
+        "dicerolls.csv"
+      )
+      .end((err, res) => {
+        if (err) {
+          console.error(err);
+        } else {
+          res.should.have.status(200);
+          res.body.result.saved.should.be.empty;
+        }
+        done();
+      });
+  });
+
+  it("Upload data which is not valid csv structure", done => {
+    authenticatedUser
+      .post("/users/csv")
+      .set("Content-Type", "multipart/form-data")
+      .attach("csvFile", path.join(__dirname, `./files/dich.csv`), "dich.csv")
+      .end((err, res) => {
+        if (err) {
+          console.error(err);
+        } else {
+          res.should.have.status(406);
         }
         done();
       });
   });
 });
 
-describe("Test upload userCSV", () => {
-  it("Send valid csv", done => {
+describe("Test upload userCSV without admin rights", () => {
+  it("Send valid csv - should rejected 403", done => {
     chai
       .request(server)
       .post("/users/csv")
@@ -49,13 +86,14 @@ describe("Test upload userCSV", () => {
       .attach(
         "csvFile",
         path.join(__dirname, `./files/MOCK_DATA.csv`),
-        "dicerolls.csv"
+        "MOCK_DATA.cs"
       )
       .end((err, res) => {
         if (err) {
           console.error(err);
         } else {
-          console.log(res.body);
+          res.should.have.status(403);
+          res.body.message.should.eql("Forbidden");
         }
         done();
       });
