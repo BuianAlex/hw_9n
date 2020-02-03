@@ -1,0 +1,9 @@
+const OPEN_MODAL = 'OPEN_MODAL'
+const CLOSE_MODAL = 'CLOSE_MODAL'
+const USER_LIMIT = 'USER_LIMIT'
+
+export default {
+  OPEN_MODAL,
+  CLOSE_MODAL,
+  USER_LIMIT
+}

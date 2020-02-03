@@ -1,45 +1,45 @@
-import React, { useState, useEffect, useContext } from "react";
-import "./userCard.scss";
-import InputFild from "../iputFild/inputFild";
-import SelectFild from "../selectFild/selectFild";
-import Spiner from "../spinner/spinner";
-import FormMessage from "../formMessage/formMessage";
-import { createUser, updateUser, uploadUserPhoto } from "../../services/api";
-import { UserContext } from "../usersPage/userContext";
-import * as moment from "moment";
+import React, { useState, useEffect, useContext } from 'react'
+import './userCard.scss'
+import InputFild from '../iputFild/inputFild'
+import SelectFild from '../selectFild/selectFild'
+import Spiner from '../spinner/spinner'
+import FormMessage from '../formMessage/formMessage'
+import { createUser, updateUser, uploadUserPhoto } from '../../services/api'
+import { UserContext } from '../UsersPage/userContext'
+import * as moment from 'moment'
 
 export default function Card({ userData, onClose, updateTable }) {
-  const { user } = useContext(UserContext);
-  const [login, setLogin] = useState(false);
-  const [password, setPassword] = useState(false);
-  const [email, setEmail] = useState(true);
-  const [phone, setPhone] = useState(true);
-  const [formMessage, setFormMessage] = useState(false);
-  const [usergroup, setUsergroup] = useState(userData.usergroup || "user");
-  const [saveBtn, setSaveBtn] = useState(false);
-  const [spinnerState, setSpinerState] = useState(false);
+  const { user } = useContext(UserContext)
+  const [login, setLogin] = useState(false)
+  const [password, setPassword] = useState(false)
+  const [email, setEmail] = useState(true)
+  const [phone, setPhone] = useState(true)
+  const [formMessage, setFormMessage] = useState(false)
+  const [usergroup, setUsergroup] = useState(userData.usergroup || 'user')
+  const [saveBtn, setSaveBtn] = useState(false)
+  const [spinnerState, setSpinerState] = useState(false)
   const [userPhoto, setUserPoto] = useState(
     userData.photo !== undefined && userData.photo.length > 0
       ? userData.photo[0].fileName
-      : false
-  );
+      : ''
+  )
   const [imgPath, setImgPath] = useState(
     userData.photo !== undefined && userData.photo.length > 0
       ? userData.photo[0].storePath
       : false
-  );
-  const [uploadMsg, setUploadMsg] = useState(false);
+  )
+  const [uploadMsg, setUploadMsg] = useState(false)
 
   useEffect(() => {
     if (userData.userId) {
-      setPassword(true);
+      setPassword(true)
     }
     if (
       login &&
       password &&
       email !== false &&
       phone !== false &&
-      user.usergroup === "admin"
+      user.usergroup === 'admin'
     ) {
       if (
         userData.loginName !== login ||
@@ -48,37 +48,37 @@ export default function Card({ userData, onClose, updateTable }) {
         userData.usergroup !== usergroup ||
         userData.photo !== userPhoto
       ) {
-        setSaveBtn(true);
+        setSaveBtn(true)
       }
     } else {
-      setSaveBtn(false);
+      setSaveBtn(false)
     }
-  }, [login, password, email, phone, usergroup, userPhoto]);
+  }, [login, password, email, phone, usergroup, userPhoto])
 
   const cardClose = e => {
-    e.preventDefault();
-    onClose();
-  };
+    e.preventDefault()
+    onClose()
+  }
 
   const uploadPhoto = async e => {
-    e.preventDefault();
-    const apiRes = await uploadUserPhoto(e.target.files);
+    e.preventDefault()
+    const apiRes = await uploadUserPhoto(e.target.files)
 
     if (apiRes.fileName) {
-      setUserPoto(apiRes.fileName);
-      setImgPath(`/uploads/`);
+      setUserPoto(apiRes.fileName)
+      setImgPath(`/uploads/`)
     }
     if (apiRes.error) {
-      setUploadMsg({ msg: apiRes.error, type: 2 });
+      setUploadMsg({ msg: apiRes.error, type: 2 })
     } else {
-      setUploadMsg(false);
+      setUploadMsg(false)
     }
-  };
+  }
 
   const cardSave = async e => {
-    e.preventDefault();
-    setFormMessage(false);
-    setSpinerState(true);
+    e.preventDefault()
+    setFormMessage(false)
+    setSpinerState(true)
     if (userData.userId) {
       const apiRes = await updateUser(userData.userId, {
         loginName: login,
@@ -86,13 +86,13 @@ export default function Card({ userData, onClose, updateTable }) {
         phone: phone,
         usergroup: usergroup,
         photo: userPhoto
-      });
-      setSpinerState(false);
+      })
+      setSpinerState(false)
       if (apiRes.result) {
-        setFormMessage({ msg: "User successfully updated", type: 0 });
-        updateTable();
+        setFormMessage({ msg: 'User successfully updated', type: 0 })
+        updateTable()
       } else {
-        setFormMessage({ msg: apiRes.error, type: 2 });
+        setFormMessage({ msg: apiRes.error, type: 2 })
       }
     } else {
       const apiRes = await createUser({
@@ -102,51 +102,44 @@ export default function Card({ userData, onClose, updateTable }) {
         phone: phone,
         usergroup: usergroup,
         photo: userPhoto
-      });
-      setSpinerState(false);
+      })
+      setSpinerState(false)
       if (!apiRes.error) {
-        setFormMessage({ msg: "New user was created successfully", type: 0 });
-        updateTable();
+        setFormMessage({ msg: 'New user was created successfully', type: 0 })
+        updateTable()
       } else {
-        setFormMessage({ msg: apiRes.error, type: 2 });
+        setFormMessage({ msg: apiRes.error, type: 2 })
       }
     }
-  };
+  }
 
   return (
-    <div className="card">
-      <div className="card-header">
-        <h2>{userData.userId ? `UserID: ${userData.userId}` : "New User"}</h2>
-        <span
-          className={
-            userData.online ? "status status-online" : "status status-offline"
-          }
-        >
-          {userData.online ? "onLine" : "offLine"}
-        </span>
-      </div>
-      <form className="mui-form">
-        <div className="form-body">
-          <div className="user-photo-wr ">
+    <div className='card-backGround'>
+      <div className='card'>
+        <div className='card-header'>
+          <h2>{userData.userId ? `UserID: ${userData.userId}` : 'New User'}</h2>
+        </div>
+        <form className='mui-form card-body'>
+          <div className='user-photo-wr '>
             <img
-              src={userPhoto ? imgPath + userPhoto : "/img/user.svg"}
-              alt="user-photo"
-              className="user-photo"
+              src={userPhoto ? imgPath + userPhoto : '/img/user.svg'}
+              alt='user-photo'
+              className='user-photo'
             />
-            <div className="upload-btn-wrapper">
-              <button className="mui-btn mui-btn--raised">Upload photo</button>
-              <input type="file" name="myfile" onChange={uploadPhoto} />
+            <div className='upload-btn-wrapper'>
+              <button className='mui-btn mui-btn--raised'>Upload photo</button>
+              <input type='file' name='myfile' onChange={uploadPhoto} />
             </div>
             {uploadMsg && (
               <FormMessage messange={uploadMsg.msg} type={uploadMsg.type} />
             )}
           </div>
-          <div className="text-filds">
+          <div className='text-filds'>
             <InputFild
               options={{
-                type: "text",
-                id: "login",
-                label: "Login:",
+                type: 'text',
+                id: 'login',
+                label: 'Login:',
                 value: userData.loginName,
                 disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
               }}
@@ -155,10 +148,10 @@ export default function Card({ userData, onClose, updateTable }) {
             {!userData.userId && (
               <InputFild
                 options={{
-                  type: "password",
-                  id: "password",
-                  label: "Password:",
-                  value: "",
+                  type: 'password',
+                  id: 'password',
+                  label: 'Password:',
+                  value: '',
                   disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
                 }}
                 onValid={setPassword}
@@ -166,9 +159,9 @@ export default function Card({ userData, onClose, updateTable }) {
             )}
             <InputFild
               options={{
-                type: "text",
-                id: "email",
-                label: "E-mail:",
+                type: 'text',
+                id: 'email',
+                label: 'E-mail:',
                 value: userData.email,
                 disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
               }}
@@ -176,24 +169,25 @@ export default function Card({ userData, onClose, updateTable }) {
             />
             <InputFild
               options={{
-                type: "text",
-                id: "phone",
-                label: "Phone:",
-                value: userData.phone || "+38",
+                type: 'text',
+                id: 'phone',
+                label: 'Phone:',
+                value: userData.phone || '+38',
                 disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
               }}
               onValid={setPhone}
             />
             <SelectFild
               options={{
-                id: "usergroup",
+                id: 'usergroup',
                 value: usergroup,
-                label: "Usergroup:",
+                label: 'Usergroup:',
                 disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN,
                 selectors: [
-                  { val: "user", name: "User" },
-                  { val: "admin", name: "Admin" },
-                  { val: "superAdmin", name: "SuperAdmin" }
+                  { val: 'user', name: 'User' },
+                  { val: 'editor', name: 'Editor' },
+                  { val: 'admin', name: 'Admin' },
+                  { val: 'superAdmin', name: 'SuperAdmin' }
                 ]
               }}
               onChange={setUsergroup}
@@ -201,19 +195,19 @@ export default function Card({ userData, onClose, updateTable }) {
 
             {userData.registrated && (
               <p>
-                Registrated:{" "}
-                {moment(userData.registrated).format("MMM DD hh:mm:ss")}
+                Registrated:{' '}
+                {moment(userData.registrated).format('MMM DD hh:mm:ss')}
               </p>
             )}
             {userData.registrated && (
               <p>
-                Last Visit:{" "}
-                {moment(userData.lastVisit).format("MMM DD hh:mm:ss")}
+                Last Visit:{' '}
+                {moment(userData.lastVisit).format('MMM DD hh:mm:ss')}
               </p>
             )}
           </div>
-        </div>
-        <div className="form-footer">
+        </form>
+        <div className='form-footer'>
           {spinnerState && <Spiner />}
           {formMessage && (
             <FormMessage messange={formMessage.msg} type={formMessage.type} />
@@ -221,16 +215,16 @@ export default function Card({ userData, onClose, updateTable }) {
           {saveBtn && (
             <button
               onClick={cardSave}
-              className="mui-btn  mui-btn--raised mui-btn--primary"
+              className='mui-btn  mui-btn--raised mui-btn--primary'
             >
               Save
             </button>
           )}
-          <button onClick={cardClose} className="mui-btn mui-btn--raised">
+          <button onClick={cardClose} className='mui-btn mui-btn--raised'>
             Close
           </button>
         </div>
-      </form>
+      </div>
     </div>
-  );
+  )
 }

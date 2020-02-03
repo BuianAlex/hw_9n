@@ -1,11 +1,11 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const autoIncrement = require("mongoose-auto-increment");
-const fotoStore = require("./../files/filesSchema");
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+const autoIncrement = require('mongoose-auto-increment')
+const fotoStore = require('./../files/filesSchema')
 
-SALT_WORK_FACTOR = 10;
+SALT_WORK_FACTOR = 10
 
-const userScheme = mongoose.Schema({
+const scheme = mongoose.Schema({
   loginName: {
     type: String,
     required: true,
@@ -16,6 +16,8 @@ const userScheme = mongoose.Schema({
     type: String,
     required: true
   },
+  gender: String,
+  country: String,
   email: String,
   phone: String,
   photo: [{ type: mongoose.Schema.Types.ObjectId, ref: fotoStore }],
@@ -23,27 +25,30 @@ const userScheme = mongoose.Schema({
   lastVisit: Number,
   registrated: Number,
   online: Boolean
-});
+})
 
-userScheme.pre("save", function(next) {
-  const user = this;
+scheme.pre('save', function(next) {
+  const user = this
 
-  if (!user.isModified("password")) return next();
+  if (!user.isModified('password')) return next()
 
   bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-    if (err) return next(err);
+    if (err) return next(err)
 
     bcrypt.hash(user.password, salt, function(err, hash) {
-      if (err) return next(err);
-      user.password = hash;
-      next();
-    });
-  });
-});
+      if (err) return next(err)
+      user.password = hash
+      next()
+    })
+  })
+})
 
-userScheme.methods.validatePassword = async function validatePassword(data) {
-  return bcrypt.compare(data, this.password);
-};
-userScheme.plugin(autoIncrement.plugin, { model: "user", field: "userId" });
+scheme.methods.validatePassword = async function validatePassword(data) {
+  return bcrypt.compare(data, this.password)
+}
 
-module.exports = mongoose.model("user", userScheme);
+scheme.plugin(autoIncrement.plugin, { model: 'user', field: 'userId' })
+
+const userScheme = mongoose.model('user', scheme)
+
+module.exports = userScheme
