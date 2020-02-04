@@ -10,7 +10,7 @@ const initialState = {
 
 export default (state = initialState, action: any) => {
   switch (action.type) {
-    case actions.USER_LIMIT:
+    case actions.TABLE_SIZE:
       return update(state, {
         tableSize: {
           limit: { $set: action.payload }

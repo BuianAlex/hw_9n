@@ -4,7 +4,7 @@ import { actions } from '../constants'
 const setTableSize = (payload: any) => {
   return (dispatch: Dispatch) => {
     dispatch({
-      type: actions.USER_LIMIT,
+      type: actions.TABLE_SIZE,
       payload
     })
   }
