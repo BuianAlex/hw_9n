@@ -5,17 +5,16 @@ import Pagination from 'rc-pagination'
 import 'rc-pagination/assets/index.css'
 import { getAllUsers, deleteUser, sendCsv } from '../../services/api'
 import { TableContext } from './tablecontext'
-import { UserContext } from './userContext'
 import Spiner from '../spinner/spinner'
-import UserCard from '../userCard/userCard'
+import UserCard from '../userCard/UserCardContainer'
 import TableRow from './userTableRow'
 import SelectFild from '../selectFild/selectFild'
-import FormMessage from '../formMessage/formMessage'
+import FormMessage from '../FormMessage/FormMessage'
 import tablePageRange from '../../utils/tablePageRange'
+import { userRole } from '../../constants'
 
 const UsersPage = props => {
-  const { sendUsersCsv, setTableSize, tableSize } = props
-  const { user } = useContext(UserContext)
+  const { sendUsersCsv, setTableSize, tableSize, mainUser } = props
   const [userData, setUserData] = useState([])
   const [userCard, setUserCard] = useState({
     open: false,
@@ -125,7 +124,7 @@ const UsersPage = props => {
         />
       )}
       <h2 className='section-header'>Users</h2>
-      {user.usergroup === 'admin' && (
+      {mainUser.usergroup === userRole.USER_ADMIN && (
         <div className='action-bar'>
           <button
             onClick={actionAddNew}

@@ -10,11 +10,12 @@ import {
 
 import User from '../UsersPage'
 import Stats from '../stats/statsPage'
-import { logoutUser } from '../../services/api'
-import { UserContext } from '../UsersPage/userContext'
+// import { logoutUser } from '../../services/api'
+import { userRole } from '../../constants'
 
 import Modal from '../Modal'
 import './MainPage.scss'
+let currentUser
 
 const routes = [
   {
@@ -32,9 +33,9 @@ const routes = [
   }
 ]
 
-export default function Main() {
-  const { user } = useContext(UserContext)
-  console.log('mm')
+export default function Main(props) {
+  const { mainUser, userLogOut } = props
+  currentUser = mainUser
 
   return (
     <>
@@ -45,18 +46,19 @@ export default function Main() {
             <div className='user'>
               <img
                 src={
-                  user.photo.length > 0
-                    ? user.photo[0].storePath + user.photo[0].fileName
+                  currentUser.photo.length > 0
+                    ? currentUser.photo[0].storePath +
+                      currentUser.photo[0].fileName
                     : './img/user.svg'
                 }
                 alt='user'
                 className='user-img'
               />
-              <h4 className='user-welcome'>Hi, {user.loginName}</h4>
+              <h4 className='user-welcome'>Hi, {currentUser.loginName}</h4>
               <p className='user-right'>
-                You are <strong>{user.usergroup}</strong>
+                You are <strong>{currentUser.usergroup}</strong>
               </p>
-              <button onClick={logoutUser} className='user-logout'>
+              <button onClick={userLogOut} className='user-logout'>
                 Logout...
               </button>
             </div>
@@ -80,7 +82,7 @@ export default function Main() {
                   Posts
                 </NavLink>
               </li>
-              {user.usergroup === process.env.REACT_APP_USER_ADMIN && (
+              {currentUser.usergroup === userRole.USER_ADMIN && (
                 <li>
                   <NavLink to='/stats' exact activeClassName='active'>
                     APP stats
@@ -113,12 +115,11 @@ export default function Main() {
 }
 
 function AdminPrivateRoute({ children, ...rest }) {
-  const { user } = useContext(UserContext)
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        user.usergroup === process.env.REACT_APP_USER_ADMIN ? (
+        currentUser.usergroup === userRole.USER_ADMIN ? (
           children
         ) : (
           <Redirect

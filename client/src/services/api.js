@@ -4,23 +4,24 @@ import { setLocalUser, removeLocalUser } from './localStorage'
 //axios.defaults.baseURL = process.env.REACT_APP_API_HOST;
 
 export async function loginUser(user) {
-  let apiRes = {}
-  try {
-    const servRes = await axios.post('./users/login', user)
-    if (typeof servRes.data.result === 'object') {
-      setLocalUser(servRes.data.result)
-      apiRes.result = true
-    }
-  } catch (error) {
-    if (error.response.status === 500) {
-      apiRes.error = 'Server does not respond.'
-    } else {
-      apiRes.error = error.response.data.message
-    }
-  }
-  console.log(apiRes)
+  return axios.post('./users/login', user)
+  // let apiRes = {}
+  // try {
+  //   const servRes = await axios.post('./users/login', user)
+  //   if (typeof servRes.data.result === 'object') {
+  //     setLocalUser(servRes.data.result)
+  //     apiRes.result = true
+  //   }
+  // } catch (error) {
+  //   if (error.response.status === 500) {
+  //     apiRes.error = 'Server does not respond.'
+  //   } else {
+  //     apiRes.error = error.response.data.message
+  //   }
+  // }
+  // console.log(apiRes)
 
-  return apiRes
+  // return apiRes
 }
 
 export async function logoutUser() {

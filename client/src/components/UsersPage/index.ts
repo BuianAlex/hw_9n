@@ -40,7 +40,8 @@ function sendUsersCsv(file: HTMLInputElement & EventTarget) {
 }
 const mapStateToProps = (state: any) => {
   return {
-    tableSize: parseInt(state.select.tableSize.limit, 10)
+    tableSize: parseInt(state.select.tableSize.limit, 10),
+    mainUser: state.user.userInfo
   }
 }
 

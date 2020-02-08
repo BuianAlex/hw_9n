@@ -1,6 +1,6 @@
 import React from 'react'
 import './Modal.scss'
-import FormMessage from '../formMessage/formMessage'
+import FormMessage from '../FormMessage/FormMessage'
 interface IResult {
   saved: Array<object>
   schemaError: Array<object>
@@ -33,7 +33,7 @@ const Modal: React.FC<IModal> = ({ mainModal, closeModal }) => {
                 )
               })}
 
-            {error && <FormMessage type={2} messange={error} />}
+            {/* {error && <FormMessage />} */}
             <div className='buttons'>
               <div className='mui-btn mui-btn--raised' onClick={closeModal}>
                 <span className='button-text'>CLOSE</span>

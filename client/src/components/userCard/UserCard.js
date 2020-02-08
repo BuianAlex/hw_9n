@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
-import './userCard.scss'
+import './UserCard.scss'
 import InputFild from '../iputFild/inputFild'
 import SelectFild from '../selectFild/selectFild'
 import Spiner from '../spinner/spinner'
-import FormMessage from '../formMessage/formMessage'
+import FormMessage from '../FormMessage/FormMessage'
 import { createUser, updateUser, uploadUserPhoto } from '../../services/api'
-import { UserContext } from '../UsersPage/userContext'
+import { userRole } from '../../constants'
 import * as moment from 'moment'
 
-export default function Card({ userData, onClose, updateTable }) {
-  const { user } = useContext(UserContext)
+export default function Card({ userData, onClose, updateTable, mainUser }) {
   const [login, setLogin] = useState(false)
   const [password, setPassword] = useState(false)
   const [email, setEmail] = useState(true)
@@ -39,7 +38,7 @@ export default function Card({ userData, onClose, updateTable }) {
       password &&
       email !== false &&
       phone !== false &&
-      user.usergroup === 'admin'
+      mainUser.usergroup === userRole.USER_ADMIN
     ) {
       if (
         userData.loginName !== login ||
@@ -141,7 +140,7 @@ export default function Card({ userData, onClose, updateTable }) {
                 id: 'login',
                 label: 'Login:',
                 value: userData.loginName,
-                disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
+                disabled: mainUser.usergroup !== userRole.USER_ADMIN
               }}
               onValid={setLogin}
             />
@@ -152,7 +151,7 @@ export default function Card({ userData, onClose, updateTable }) {
                   id: 'password',
                   label: 'Password:',
                   value: '',
-                  disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
+                  disabled: mainUser.usergroup !== userRole.USER_ADMIN
                 }}
                 onValid={setPassword}
               />
@@ -163,7 +162,7 @@ export default function Card({ userData, onClose, updateTable }) {
                 id: 'email',
                 label: 'E-mail:',
                 value: userData.email,
-                disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
+                disabled: mainUser.usergroup !== userRole.USER_ADMIN
               }}
               onValid={setEmail}
             />
@@ -173,7 +172,7 @@ export default function Card({ userData, onClose, updateTable }) {
                 id: 'phone',
                 label: 'Phone:',
                 value: userData.phone || '+38',
-                disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN
+                disabled: mainUser.usergroup !== userRole.USER_ADMIN
               }}
               onValid={setPhone}
             />
@@ -182,7 +181,7 @@ export default function Card({ userData, onClose, updateTable }) {
                 id: 'usergroup',
                 value: usergroup,
                 label: 'Usergroup:',
-                disabled: user.usergroup !== process.env.REACT_APP_USER_ADMIN,
+                disabled: mainUser.usergroup !== userRole.USER_ADMIN,
                 selectors: [
                   { val: 'user', name: 'User' },
                   { val: 'editor', name: 'Editor' },

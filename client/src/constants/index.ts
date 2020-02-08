@@ -1,3 +1,4 @@
-import actions from "./actions";
+import actions from './actions'
+import userRole from './user'
 
-export { actions };
+export { userRole, actions }
