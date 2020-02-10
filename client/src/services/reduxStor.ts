@@ -1,20 +1,34 @@
-import { applyMiddleware, compose, createStore } from 'redux'
-import reducers from '../reducers'
-import thunk from 'redux-thunk'
-import { persistCombineReducers } from 'redux-persist'
-import storage from 'redux-persist/lib/storage' // or whatever storage you are using
+import { applyMiddleware, compose, createStore, combineReducers } from 'redux';
+import reducers from '../reducers';
+import thunk from 'redux-thunk';
+import { persistCombineReducers, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // or whatever storage you are using
 
 const config = {
   key: 'root',
-  storage
-}
+  storage,
+  blacklist: ['user']
+};
 
-const reducer = persistCombineReducers(config, reducers)
+const userPersistConfig = {
+  key: 'user',
+  storage,
+  blacklist: ['isLoginError', 'isWaitResponse']
+};
+
+const { user, modal, select } = reducers;
+const rootReducer = combineReducers({
+  modal: modal,
+  select: select,
+  user: persistReducer(userPersistConfig, user)
+});
+
+const reducer = persistReducer(config, rootReducer);
 
 const store = createStore(
   reducer,
   undefined,
   compose(applyMiddleware(...[thunk]))
-)
+);
 
-export default store
+export default store;

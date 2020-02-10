@@ -2,12 +2,12 @@ import React from 'react'
 import './FormMessage.scss'
 
 interface Props {
-  messsageText: string
-  messageType: number
+  messageText: string | undefined
+  messageType: number | undefined
 }
 
 const FormMessage: React.FC<Props> = props => {
-  const { messageType, messsageText } = props
+  const { messageType, messageText } = props
   let messangeClass: String = ''
   switch (messageType) {
     case 0:
@@ -25,7 +25,7 @@ const FormMessage: React.FC<Props> = props => {
   }
   return (
     <div className={`form-message ${messangeClass}`}>
-      <span className={`form-message-text`}>{messsageText} </span>
+      <span className={`form-message-text`}>{messageText} </span>
     </div>
   )
 }

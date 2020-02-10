@@ -1,54 +1,32 @@
-import React, { useState, useEffect } from 'react'
-import { Link, Switch, Redirect, Route } from 'react-router-dom'
-import './LoginPage.scss'
-import InputFild from '../iputFild/inputFild'
-import Spiner from '../spinner/spinner'
-import FormMessage from '../FormMessage/FormMessage'
-
-// type ILoginRequest = (login: string, password: string) => any
-
-interface IProps {
-  loginRequest: (login: string, password: string) => void
-  isLogined: boolean
-  isFormMessage: boolean
-  messageType: number
-  messsageText: string
-  isWaitResponse: boolean
-}
-
-interface IFild {
-  isValid: boolean
-  validValue: string
-}
+import React, { useState, useEffect } from 'react';
+import { Link, Switch, Redirect } from 'react-router-dom';
+import './LoginPage.scss';
+import { IProps, IFild } from './LoginPageInterfaces';
+import InputFild from '../iputFild/inputFild';
+import Spiner from '../spinner/spinner';
+import FormMessage from '../FormMessage/FormMessage';
 
 const LoginPage: React.FC<IProps> = props => {
-  const {
-    loginRequest,
-    isLogined,
-    isFormMessage,
-    messageType,
-    messsageText,
-    isWaitResponse
-  } = props
+  const { userLogIn, isLogined, isWaitResponse, formMessage } = props;
 
   const [login, setLogin] = useState<IFild>({
     isValid: false,
     validValue: ''
-  })
+  });
   const [password, setPassword] = useState<IFild>({
     isValid: false,
     validValue: ''
-  })
-  const [spinnerState, setSpinerState] = useState(false)
-  const [saveBtn, setSaveBtn] = useState(false)
+  });
+
+  const [saveBtn, setSaveBtn] = useState(false);
 
   useEffect(() => {
     if (login.isValid && password.isValid) {
-      setSaveBtn(true)
+      setSaveBtn(true);
     } else {
-      setSaveBtn(false)
+      setSaveBtn(false);
     }
-  }, [login, password])
+  }, [login, password]);
 
   return (
     <>
@@ -77,14 +55,17 @@ const LoginPage: React.FC<IProps> = props => {
           onValid={setPassword}
         />
         {isWaitResponse && <Spiner />}
-        {isFormMessage && (
-          <FormMessage messageType={messageType} messsageText={messsageText} />
+        {formMessage.state && (
+          <FormMessage
+            messageType={formMessage.type}
+            messageText={formMessage.msg}
+          />
         )}
         <div className='form-bottom'>
           <button
             onClick={e => {
-              e.preventDefault()
-              loginRequest(login.validValue, password.validValue)
+              e.preventDefault();
+              userLogIn(login.validValue, password.validValue);
             }}
             disabled={!saveBtn}
             className='mui-btn   mui-btn--raised mui-btn--primary'
@@ -106,7 +87,7 @@ const LoginPage: React.FC<IProps> = props => {
         )}
       </Switch>
     </>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

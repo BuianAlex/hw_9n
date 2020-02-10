@@ -1,51 +1,64 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import './signup.scss'
-import InputFild from '../iputFild/inputFild'
-import Spiner from '../spinner/spinner'
-import FormMessage from '../FormMessage/FormMessage'
-import { createUser } from '../../services/api'
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import './signup.scss';
+import InputFild from '../iputFild/inputFild';
+import Spiner from '../spinner/spinner';
+import FormMessage from '../FormMessage/FormMessage';
+import { createUser } from '../../services/api';
 
 export default function Login() {
-  const [login, setLogin] = useState(false)
-  const [password, setPassword] = useState(false)
-  const [email, setEmail] = useState(true)
-  const [phone, setPhone] = useState(true)
-  const [formMessage, setFormMessage] = useState(false)
-  const [saveBtn, setSaveBtn] = useState(false)
-  const [spinnerState, setSpinerState] = useState(false)
-
-  const signBtn = useRef()
+  const [login, setLogin] = useState({
+    isValid: false,
+    validValue: ''
+  });
+  const [password, setPassword] = useState({
+    isValid: false,
+    validValue: ''
+  });
+  const [email, setEmail] = useState({
+    isValid: false,
+    validValue: ''
+  });
+  const [phone, setPhone] = useState({
+    isValid: false,
+    validValue: ''
+  });
+  const [formMessage, setFormMessage] = useState({
+    isValid: false,
+    validValue: ''
+  });
+  const [saveBtn, setSaveBtn] = useState(false);
+  const [spinnerState, setSpinerState] = useState(false);
 
   useEffect(() => {
-    if (login && password && email !== false && phone !== false) {
-      setSaveBtn(true)
+    if (login.isValid && password.isValid && email.isValid && phone.isValid) {
+      setSaveBtn(true);
     } else {
-      setSaveBtn(false)
+      setSaveBtn(false);
     }
-  }, [login, password, email, phone])
+  }, [login, password, email, phone]);
 
   const actionSignup = async e => {
-    setSpinerState(true)
-    e.preventDefault()
+    setSpinerState(true);
+    e.preventDefault();
     const user = {
-      loginName: login,
-      password: password,
-      email: email,
-      phone: phone
-    }
-    const servRes = await createUser(user)
-    setSpinerState(false)
+      loginName: login.validValue,
+      password: password.validValue,
+      email: email.validValue,
+      phone: phone.validValue
+    };
+    const servRes = await createUser(user);
+    setSpinerState(false);
     if (!servRes.error) {
       //TODO: loader and message if OK
-      setFormMessage({ msg: 'registration successful', type: 0 })
+      setFormMessage({ msg: 'registration successful', type: 0 });
       setTimeout(() => {
-        document.location.href = '/'
-      }, 2000)
+        document.location.href = '/';
+      }, 2000);
     } else {
-      setFormMessage({ msg: servRes.error, type: 2 })
+      setFormMessage({ msg: servRes.error, type: 2 });
     }
-  }
+  };
 
   return (
     <>
@@ -56,6 +69,7 @@ export default function Login() {
             type: 'text',
             id: 'login',
             label: 'Login:',
+            isRequired: true,
             value: '',
             disabled: false
           }}
@@ -65,6 +79,7 @@ export default function Login() {
           options={{
             type: 'password',
             id: 'password',
+            isRequired: true,
             label: 'Password:',
             value: ''
           }}
@@ -97,7 +112,6 @@ export default function Login() {
             Login
           </Link>
           <button
-            ref={signBtn}
             onClick={actionSignup}
             disabled={!saveBtn}
             className='mui-btn   mui-btn--raised mui-btn--primary'
@@ -107,5 +121,5 @@ export default function Login() {
         </div>
       </form>
     </>
-  )
+  );
 }

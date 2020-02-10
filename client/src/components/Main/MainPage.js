@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react';
 
 import {
   BrowserRouter as Router,
@@ -6,16 +6,15 @@ import {
   Route,
   NavLink,
   Redirect
-} from 'react-router-dom'
+} from 'react-router-dom';
 
-import User from '../UsersPage'
-import Stats from '../stats/statsPage'
-// import { logoutUser } from '../../services/api'
-import { userRole } from '../../constants'
+import User from '../UsersPage';
+import Stats from '../stats/statsPage';
+import { userRole } from '../../constants';
 
-import Modal from '../Modal'
-import './MainPage.scss'
-let currentUser
+import Modal from '../Modal';
+import './MainPage.scss';
+let currentUser;
 
 const routes = [
   {
@@ -31,11 +30,11 @@ const routes = [
     path: '/posts',
     main: () => <h2 className='section-header'>Posts</h2>
   }
-]
+];
 
 export default function Main(props) {
-  const { mainUser, userLogOut } = props
-  currentUser = mainUser
+  const { mainUser, userLogOut } = props;
+  currentUser = mainUser;
 
   return (
     <>
@@ -46,7 +45,7 @@ export default function Main(props) {
             <div className='user'>
               <img
                 src={
-                  currentUser.photo.length > 0
+                  currentUser.photo && currentUser.photo.length > 0
                     ? currentUser.photo[0].storePath +
                       currentUser.photo[0].fileName
                     : './img/user.svg'
@@ -111,7 +110,7 @@ export default function Main(props) {
         </div>
       </Router>
     </>
-  )
+  );
 }
 
 function AdminPrivateRoute({ children, ...rest }) {
@@ -131,5 +130,5 @@ function AdminPrivateRoute({ children, ...rest }) {
         )
       }
     />
-  )
+  );
 }

@@ -1,6 +1,5 @@
-import modal from './modal'
-import select from './select'
-import user from './user'
-import formMessage from './formMessage'
+import modal from './modal';
+import select from './select';
+import userAction from './userAction';
 
-export { modal, select, user, formMessage }
+export { modal, select, userAction };

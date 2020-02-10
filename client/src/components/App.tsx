@@ -1,23 +1,23 @@
-import React from 'react'
+import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
   RouteProps
-} from 'react-router-dom'
-import Main from './Main/MainPageComtainer'
-import LoginPage from './LoginPage/LoginPageCotainer'
-import SingupPage from './signUp/signup'
+} from 'react-router-dom';
+import Main from './Main/MainPageContainer';
+import LoginPage from './LoginPage/LoginPageCotainer';
+import SingupPage from './signUp/signup';
 
-let isAuthenticated = false
+let isAuthenticated = false;
 interface iApp {
-  isLogined: boolean
+  isLogined: boolean;
 }
 
 const App: React.FC<iApp> = props => {
-  const { isLogined } = props
-  isAuthenticated = isLogined
+  const { isLogined } = props;
+  isAuthenticated = isLogined;
   return (
     <div>
       <Router>
@@ -34,8 +34,8 @@ const App: React.FC<iApp> = props => {
         </Switch>
       </Router>
     </div>
-  )
-}
+  );
+};
 
 const PrivateRoute: React.SFC<RouteProps> = ({ children, ...rest }) => {
   return (
@@ -54,7 +54,7 @@ const PrivateRoute: React.SFC<RouteProps> = ({ children, ...rest }) => {
         )
       }
     />
-  )
-}
+  );
+};
 
-export default App
+export default App;

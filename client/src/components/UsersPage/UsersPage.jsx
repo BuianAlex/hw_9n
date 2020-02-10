@@ -1,109 +1,109 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
-import './UserPage.scss'
+import React, { useState, useEffect } from 'react';
+import './UserPage.scss';
 
-import Pagination from 'rc-pagination'
-import 'rc-pagination/assets/index.css'
-import { getAllUsers, deleteUser, sendCsv } from '../../services/api'
-import { TableContext } from './tablecontext'
-import Spiner from '../spinner/spinner'
-import UserCard from '../userCard/UserCardContainer'
-import TableRow from './userTableRow'
-import SelectFild from '../selectFild/selectFild'
-import FormMessage from '../FormMessage/FormMessage'
-import tablePageRange from '../../utils/tablePageRange'
-import { userRole } from '../../constants'
+import Pagination from 'rc-pagination';
+import 'rc-pagination/assets/index.css';
+import { getAllUsers, deleteUser, sendCsv } from '../../services/api';
+import { TableContext } from './tablecontext';
+import Spiner from '../spinner/spinner';
+import UserCard from '../userCard/UserCardContainer';
+import TableRow from './userTableRow';
+import SelectFild from '../selectFild/selectFild';
+import FormMessage from '../FormMessage/FormMessage';
+import tablePageRange from '../../utils/tablePageRange';
+import { userRole } from '../../constants';
 
 const UsersPage = props => {
-  const { sendUsersCsv, setTableSize, tableSize, mainUser } = props
-  const [userData, setUserData] = useState([])
+  const { sendUsersCsv, setTableSize, tableSize, mainUser } = props;
+  const [userData, setUserData] = useState([]);
   const [userCard, setUserCard] = useState({
     open: false,
     data: {}
-  })
-  const [usersSelected, setUsersSelected] = useState(0)
-  const [spinnerState, setSpinerState] = useState(false)
-  const [formMessage, setFormMessage] = useState(Object || Boolean)
-  const [selectAll, setSelectAll] = useState(false)
-  const [total, setTotal] = useState(0)
-  const [curentPage, setCurentPage] = useState(1)
+  });
+  const [usersSelected, setUsersSelected] = useState(0);
+  const [spinnerState, setSpinerState] = useState(false);
+  const [formMessage, setFormMessage] = useState(Object || Boolean);
+  const [selectAll, setSelectAll] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [curentPage, setCurentPage] = useState(1);
 
   useEffect(() => {
-    getUsers()
-  }, [curentPage])
+    getUsers();
+  }, [curentPage]);
 
   useEffect(() => {
     if (curentPage === 1) {
-      getUsers()
+      getUsers();
     }
-    setCurentPage(1)
-  }, [tableSize])
+    setCurentPage(1);
+  }, [tableSize]);
 
   const getUsers = async () => {
-    setSpinerState(true)
-    const apiRes = await getAllUsers(tableSize, curentPage)
-    setSpinerState(false)
-    setFormMessage(false)
-    setUsersSelected(0)
+    setSpinerState(true);
+    const apiRes = await getAllUsers(tableSize, curentPage);
+    setSpinerState(false);
+    setFormMessage(false);
+    setUsersSelected(0);
     if (!apiRes.error) {
-      setUserData(apiRes.result.usersList)
-      setTotal(apiRes.result.totalUsers)
+      setUserData(apiRes.result.usersList);
+      setTotal(apiRes.result.totalUsers);
     } else {
       setFormMessage({
         msg: apiRes.error,
         type: 2
-      })
+      });
     }
-  }
+  };
 
   const actionCardClose = () => {
-    setUserCard(state => ({ ...state, open: false, data: {} }))
-  }
+    setUserCard(state => ({ ...state, open: false, data: {} }));
+  };
 
   const actionAddNew = () => {
-    setUserCard(state => ({ ...state, open: true }))
-  }
+    setUserCard(state => ({ ...state, open: true }));
+  };
 
   const actionShowUser = (e, id) => {
     if (
       e.target.type !== 'checkbox' &&
       !e.target.classList.contains('checkbox')
     ) {
-      const user = userData.find(item => item.userId === id)
-      setUserCard(state => ({ ...state, open: true, data: user }))
+      const user = userData.find(item => item.userId === id);
+      setUserCard(state => ({ ...state, open: true, data: user }));
     }
-  }
+  };
 
   const actionSelect = id => {
-    let calcSelected = 0
+    let calcSelected = 0;
     const data = userData.map(item => {
       if (item.userId === id || !id) {
-        item.isSelected = !item.isSelected
+        item.isSelected = !item.isSelected;
       }
       if (item.isSelected) {
-        calcSelected += 1
+        calcSelected += 1;
       }
-      return item
-    })
-    setUserData(data)
-    setUsersSelected(calcSelected)
-  }
+      return item;
+    });
+    setUserData(data);
+    setUsersSelected(calcSelected);
+  };
 
   const actionDeleteSelected = async () => {
-    setSpinerState(true)
-    let toDelete = []
+    setSpinerState(true);
+    let toDelete = [];
     userData.forEach(item => {
       if (item.isSelected) {
-        toDelete.push(item.userId)
+        toDelete.push(item.userId);
       }
-    })
-    const apiRes = await deleteUser(toDelete)
-    setSpinerState(false)
+    });
+    const apiRes = await deleteUser(toDelete);
+    setSpinerState(false);
     if (apiRes.result) {
-      getUsers()
+      getUsers();
     } else {
-      setFormMessage({ msg: apiRes.error, type: 2 })
+      setFormMessage({ msg: apiRes.error, type: 2 });
     }
-  }
+  };
 
   // const actionSendCsv = async e => {
   //   e.preventDefault()
@@ -167,8 +167,8 @@ const UsersPage = props => {
                     name='select'
                     checked={selectAll}
                     onChange={() => {
-                      setSelectAll(!selectAll)
-                      actionSelect()
+                      setSelectAll(!selectAll);
+                      actionSelect();
                     }}
                   />
                 </th>
@@ -185,7 +185,7 @@ const UsersPage = props => {
             <tbody>
               {userData
                 ? userData.map(item => {
-                    return <TableRow key={item.userId} userData={item} />
+                    return <TableRow key={item.userId} userData={item} />;
                   })
                 : false}
             </tbody>
@@ -236,6 +236,6 @@ const UsersPage = props => {
         </div>
       </TableContext.Provider>
     </>
-  )
-}
-export default UsersPage
+  );
+};
+export default UsersPage;

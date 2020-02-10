@@ -1,20 +1,20 @@
-import React from 'react'
-import './Modal.scss'
-import FormMessage from '../FormMessage/FormMessage'
+import React from 'react';
+import './Modal.scss';
+
 interface IResult {
-  saved: Array<object>
-  schemaError: Array<object>
-  duplicate: Array<object>
-  unnounError: Array<object>
+  saved: Array<object>;
+  schemaError: Array<object>;
+  duplicate: Array<object>;
+  unnounError: Array<object>;
 }
 
 interface IModal {
-  mainModal: { open: Boolean; result?: any; title: string; error?: string }
-  closeModal: () => void
+  mainModal: { open: Boolean; result?: any; title: string; error?: string };
+  closeModal: () => void;
 }
 
 const Modal: React.FC<IModal> = ({ mainModal, closeModal }) => {
-  const { open, result, title, error } = mainModal
+  const { open, result, title, error } = mainModal;
 
   return (
     <>
@@ -30,7 +30,7 @@ const Modal: React.FC<IModal> = ({ mainModal, closeModal }) => {
                       {item}:<span>{result[item].length}</span>
                     </p>
                   </div>
-                )
+                );
               })}
 
             {/* {error && <FormMessage />} */}
@@ -43,7 +43,7 @@ const Modal: React.FC<IModal> = ({ mainModal, closeModal }) => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default Modal
+export default Modal;
