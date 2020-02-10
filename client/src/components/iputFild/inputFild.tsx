@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Dispatch } from 'react';
-import Validator from '../../utils/validator';
+import Validator from './../../utils/validator';
 import './inputFild.scss';
 
 interface IOptions {
@@ -27,17 +27,13 @@ interface IErrorMsg {
 }
 
 const InputFild: React.FC<IProps> = ({ options, onValid }) => {
-  const startIsValid = options.isRequired ? false : true;
-  const [fild, setFild] = useState<IFild>({
-    isValid: startIsValid,
-    validValue: options.value
-  });
+  const startIsValid = options.isRequired ? true : false;
+  const [fildValue, setfildValue] = useState<string>(options.value);
   const [errorMessage, setErrorMessage] = useState<IErrorMsg>({
-    hasError: false,
+    hasError: startIsValid,
     msgError: ''
   });
   const [isBlur, setIsBlur] = useState<boolean>(false);
-  let noError = true;
 
   const fildChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     let inputValue: string = e.target.value.trim();
@@ -46,7 +42,7 @@ const InputFild: React.FC<IProps> = ({ options, onValid }) => {
     //if get special char show err
     if (isSpecial) {
       setIsBlur(true);
-      noError = false;
+
       setErrorMessage({
         hasError: true,
         msgError: `Not allowed special characters ( -/^$*?()|[]{})`
@@ -55,13 +51,11 @@ const InputFild: React.FC<IProps> = ({ options, onValid }) => {
       switch (e.target.id) {
         case 'login':
           if (!testValue.maxLength(50)) {
-            noError = false;
             setErrorMessage({
               hasError: true,
               msgError: 'Login is too long!'
             });
           } else if (!testValue.minLength(3)) {
-            noError = false;
             setErrorMessage({
               hasError: true,
               msgError: 'Login is too short!'
@@ -77,7 +71,6 @@ const InputFild: React.FC<IProps> = ({ options, onValid }) => {
         case 'password':
           switch (testValue.testPassword()) {
             case 0:
-              noError = false;
               setErrorMessage({
                 hasError: true,
                 msgError:
@@ -99,62 +92,63 @@ const InputFild: React.FC<IProps> = ({ options, onValid }) => {
               hasError: true,
               msgError: 'Email Address not valid'
             });
+          } else {
+            setErrorMessage({
+              hasError: false,
+              msgError: ''
+            });
           }
           break;
 
         case 'phone':
-          if (typeof inputValue === 'string') {
+          if (!testValue.isPhoneNumber()) {
             if (inputValue.length < 4) {
               inputValue = '+38';
               setErrorMessage({
                 hasError: false,
                 msgError: ''
               });
+            } else if (
+              !/(^\+38\d+$)/.test(inputValue) &&
+              inputValue.length > 3
+            ) {
+              inputValue = fildValue;
+              setErrorMessage({
+                hasError: true,
+                msgError: 'Phone number is not valid'
+              });
+            } else if (inputValue.length < 13) {
+              setErrorMessage({
+                hasError: true,
+                msgError: 'Phone number is not valid'
+              });
             } else {
-              if (!/(^\+38\d+$)/.test(inputValue) && inputValue.length > 3) {
-                setErrorMessage({
-                  hasError: true,
-                  msgError: 'Phone number is not valid'
-                });
-                inputValue = fild.validValue;
-              } else if (inputValue.length < 13 && !testValue.isPhoneNumber()) {
-                setErrorMessage({
-                  hasError: true,
-                  msgError: 'Phone number is not valid'
-                });
-              } else {
-                inputValue = fild.validValue;
-              }
+              inputValue = fildValue;
             }
           } else {
             setErrorMessage({
-              hasError: true,
-              msgError: 'Phone number is not valid'
+              hasError: false,
+              msgError: ''
             });
           }
-
           break;
         default:
           break;
       }
-
-      setFild({
-        isValid: noError,
-        validValue: inputValue
-      });
+      setfildValue(inputValue);
     }
   };
 
   useEffect(() => {
-    onValid(fild);
-  }, [errorMessage, fild, onValid]);
+    onValid({ isValid: !errorMessage.hasError, validValue: fildValue });
+  }, [errorMessage, fildValue, onValid]);
 
   return (
     <div className='mui-textfield'>
       <input
         type={options.type}
         id={options.id}
-        value={fild.validValue}
+        value={fildValue}
         onChange={fildChange}
         onBlur={e => {
           setIsBlur(true);

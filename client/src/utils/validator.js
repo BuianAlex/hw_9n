@@ -1,4 +1,4 @@
-export default function Validator(str) {
+export default function validator(str) {
   const testStr = str.trim();
   this.maxLength = function(len) {
     if (testStr.length > len) {
@@ -20,12 +20,14 @@ export default function Validator(str) {
     }
     return false;
   };
-  this.isPhoneNumber = function() {
+
+  this.isPhoneNumber = () => {
     if (/\+38[0-9]{10,10}$/.test(testStr)) {
       return true;
     }
     return false;
   };
+
   this.noSpeсialChar = function() {
     if (/[-\/\\^$*?()|[\]{}]/g.test(testStr)) {
       return true;
@@ -35,10 +37,10 @@ export default function Validator(str) {
 
   this.testPassword = function() {
     const mediumRegex = new RegExp(
-      "^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})"
+      '^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})'
     );
     const strongRegex = new RegExp(
-      "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
+      '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
     );
     if (strongRegex.test(testStr)) {
       return 2;
@@ -48,4 +50,5 @@ export default function Validator(str) {
     }
     return 0;
   };
+  return false;
 }

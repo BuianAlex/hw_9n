@@ -9,6 +9,8 @@ import { userRole } from '../../constants';
 import * as moment from 'moment';
 
 export default function Card({ userData, onClose, updateTable, mainUser }) {
+  console.log(userData);
+
   const [login, setLogin] = useState({
     isValid: false,
     validValue: ''
@@ -39,7 +41,7 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
       ? userData.photo[0].storePath
       : false
   );
-  const [uploadMsg, setUploadMsg] = useState(false);
+  const [uploadMsg, setUploadMsg] = useState({ state: false });
 
   useEffect(() => {
     if (
@@ -77,9 +79,13 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
       setImgPath(`/uploads/`);
     }
     if (apiRes.error) {
-      setUploadMsg({ msg: apiRes.error, type: 2 });
+      setUploadMsg({
+        state: true,
+        messageText: apiRes.error,
+        messageType: 2
+      });
     } else {
-      setUploadMsg(false);
+      setUploadMsg({ state: false });
     }
   };
 
@@ -91,7 +97,7 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
       const apiRes = await updateUser(userData.userId, {
         loginName: login.validValue,
         email: email.validValue,
-        phone: phone.validValue,
+        phone: phone.validValue === '+38' ? '' : phone.validValue,
         usergroup: usergroup,
         photo: userPhoto
       });
@@ -115,12 +121,14 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
         loginName: login.validValue,
         password: password.validValue,
         email: email.validValue,
-        phone: phone.validValue,
+        phone: phone.validValue === '+38' ? '' : phone.validValue,
         usergroup: usergroup,
         photo: userPhoto
       });
       setSpinerState(false);
-      if (apiRes.result) {
+      console.log(apiRes);
+
+      if (!apiRes.error) {
         setFormMessage({
           state: true,
           messageText: 'New user was created successfully',
@@ -154,8 +162,11 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
               <button className='mui-btn mui-btn--raised'>Upload photo</button>
               <input type='file' name='myfile' onChange={uploadPhoto} />
             </div>
-            {uploadMsg && (
-              <FormMessage messange={uploadMsg.msg} type={uploadMsg.type} />
+            {uploadMsg.state && (
+              <FormMessage
+                messageText={uploadMsg.messageText}
+                messageType={uploadMsg.messageType}
+              />
             )}
           </div>
           <div className='text-filds'>
@@ -164,7 +175,7 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
                 type: 'text',
                 id: 'login',
                 label: 'Login:',
-                value: userData.loginName,
+                value: userData.loginName || '',
                 disabled: mainUser.usergroup !== userRole.USER_ADMIN
               }}
               onValid={setLogin}
@@ -186,7 +197,7 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
                 type: 'text',
                 id: 'email',
                 label: 'E-mail:',
-                value: userData.email,
+                value: userData.email || '',
                 disabled: mainUser.usergroup !== userRole.USER_ADMIN
               }}
               onValid={setEmail}
@@ -196,7 +207,7 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
                 type: 'text',
                 id: 'phone',
                 label: 'Phone:',
-                // value: userData.phone || '+38',
+                value: userData.phone || '+38',
                 disabled: mainUser.usergroup !== userRole.USER_ADMIN
               }}
               onValid={setPhone}
