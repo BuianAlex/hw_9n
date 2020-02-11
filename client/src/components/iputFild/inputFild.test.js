@@ -2,48 +2,103 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import InputFild from './inputFild';
+const domTestingLib = require('@testing-library/dom');
+const { queryHelpers } = domTestingLib;
+
+const queryById = queryHelpers.queryByAttribute.bind(null, 'id');
 
 describe('<InputFild /> tests', () => {
-  it('should render as default button', () => {
-    const options = {
-      type: 'text',
-      id: 'login',
-      label: 'Login:',
-      isRequired: true,
-      value: '',
-      disabled: false
-    };
+  describe('Login input', () => {
+    it('test if value is not entered should be no valid', () => {
+      const handleChange = jest.fn();
+      const options = {
+        type: 'text',
+        id: 'login',
+        label: 'Login:',
+        isRequired: true,
+        value: '',
+        disabled: false
+      };
+      const { container } = render(
+        <InputFild options={options} onValid={handleChange} />
+      );
 
-    const { container } = render(
-      <InputFild options={options} onValid={() => {}} />
-    );
-    const inp = expect(container.firstChild).toMatchSnapshot();
-    // console.log(container.firstChild);
+      expect(handleChange).toHaveBeenCalledTimes(1);
+      expect(handleChange).toHaveBeenLastCalledWith({
+        isValid: false,
+        validValue: ''
+      });
+    });
+
+    it('test with value which has min allowable length should be valid', () => {
+      const handleChange = jest.fn();
+      const options = {
+        type: 'text',
+        id: 'login',
+        label: 'Login:',
+        isRequired: true,
+        value: '',
+        disabled: false
+      };
+      const { container } = render(
+        <InputFild options={options} onValid={handleChange} />
+      );
+      const input = queryById(container, 'login');
+      fireEvent.change(input, { target: { value: 'aqq' } });
+
+      expect(handleChange).toHaveBeenCalledTimes(2);
+      expect(handleChange).toHaveBeenLastCalledWith({
+        isValid: true,
+        validValue: 'aqq'
+      });
+    });
+
+    it('test with value which has length > 50 should be no valid', () => {
+      const tooLongVal = 'qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopq';
+      const handleChange = jest.fn();
+      const options = {
+        type: 'text',
+        id: 'login',
+        label: 'Login:',
+        isRequired: true,
+        value: '',
+        disabled: false
+      };
+      const { container } = render(
+        <InputFild options={options} onValid={handleChange} />
+      );
+      const input = queryById(container, 'login');
+      fireEvent.change(input, { target: { value: tooLongVal } });
+
+      expect(handleChange).toHaveBeenCalledTimes(2);
+      expect(handleChange).toHaveBeenLastCalledWith({
+        isValid: false,
+        validValue: tooLongVal
+      });
+    });
+
+    it('test with value which has speсial char should be no valid', () => {
+      const withSpecVal = `<script>alert('test');</script>`;
+      const handleChange = jest.fn();
+      const options = {
+        type: 'text',
+        id: 'login',
+        label: 'Login:',
+        isRequired: true,
+        value: '',
+        disabled: false
+      };
+      const { container } = render(
+        <InputFild options={options} onValid={handleChange} />
+      );
+      const input = queryById(container, 'login');
+      fireEvent.change(input, { target: { value: withSpecVal } });
+
+      expect(handleChange).toHaveBeenCalledTimes(2);
+      expect(handleChange).toHaveBeenLastCalledWith({
+        isValid: false,
+        validValue: ''
+      });
+    });
   });
-
-  // it('button should has class', () => {
-  //   const color = 'red'
-
-  //   const { container } = render(<Button color={`${color}`} callback={() => {}} />)
-  //   expect(container.firstChild).toHaveClass(`button-${color}`)
-  // })
-
-  // it('button should has children', () => {
-  //   const color = 'red'
-  //   const children = 'test'
-
-  //   const { getByText } = render(<Button color={`${color}`} callback={() => {}}>{children}</Button>)
-  //   getByText(children)
-  // })
-
-  // it('button should call callback on click', () => {
-  //   const color = 'red'
-  //   const children = 'test'
-  //   const content = 'button'
-  //   const onClick = jest.fn()
-
-  //   const { getByTestId } = render(<Button color={`${color}`} onClick={onClick}>{children}</Button>)
-  //   fireEvent.click(getByTestId(content))
-  //   expect(onClick).toHaveBeenCalledTimes(1)
-  // })
 });
