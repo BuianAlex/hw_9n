@@ -3,7 +3,7 @@ import './UserPage.scss';
 
 import Pagination from 'rc-pagination';
 import 'rc-pagination/assets/index.css';
-import { getAllUsers, deleteUser, sendCsv } from '../../services/api';
+import { getAllUsers, deleteUser } from '../../services/api';
 import { TableContext } from './tablecontext';
 import Spiner from '../spinner/spinner';
 import UserCard from '../userCard/UserCardContainer';
@@ -14,18 +14,23 @@ import tablePageRange from '../../utils/tablePageRange';
 import { userRole } from '../../constants';
 
 const UsersPage = props => {
-  const { sendUsersCsv, setTableSize, tableSize, mainUser } = props;
+  const { sendUsersCsv, setTableSize, tableSize, mainUser, isSpinner } = props;
   const [userData, setUserData] = useState([]);
   const [userCard, setUserCard] = useState({
     open: false,
     data: {}
   });
   const [usersSelected, setUsersSelected] = useState(0);
-  const [spinnerState, setSpinerState] = useState(false);
+  const [spinnerState, setSpinerState] = useState(isSpinner);
   const [formMessage, setFormMessage] = useState(Object || Boolean);
   const [selectAll, setSelectAll] = useState(false);
   const [total, setTotal] = useState(0);
   const [curentPage, setCurentPage] = useState(1);
+
+  //temp
+  useEffect(() => {
+    setSpinerState(isSpinner);
+  }, [isSpinner]);
 
   useEffect(() => {
     getUsers();
@@ -156,6 +161,7 @@ const UsersPage = props => {
           <button>Filter</button> */}
         </div>
       )}
+      {spinnerState && <Spiner />}
       <TableContext.Provider value={{ actionSelect, actionShowUser }}>
         <div className='user-table'>
           <table>
@@ -194,7 +200,7 @@ const UsersPage = props => {
               <td></td> */}</tr>
             </tfoot>
           </table>
-          {spinnerState && <Spiner />}
+
           {formMessage && (
             <FormMessage messange={formMessage.msg} type={formMessage.type} />
           )}

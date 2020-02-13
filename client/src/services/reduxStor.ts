@@ -1,13 +1,13 @@
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux';
 import reducers from '../reducers';
 import thunk from 'redux-thunk';
-import { persistCombineReducers, persistReducer } from 'redux-persist';
+import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // or whatever storage you are using
 
 const config = {
   key: 'root',
   storage,
-  blacklist: ['user']
+  blacklist: ['user', 'spinner']
 };
 
 const userPersistConfig = {
@@ -16,10 +16,11 @@ const userPersistConfig = {
   blacklist: ['isLoginError', 'isWaitResponse']
 };
 
-const { user, modal, select } = reducers;
+const { user, modal, select, spinner } = reducers;
 const rootReducer = combineReducers({
   modal: modal,
   select: select,
+  spinner: spinner,
   user: persistReducer(userPersistConfig, user)
 });
 

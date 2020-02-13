@@ -155,7 +155,7 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
           <div className='user-photo-wr '>
             <img
               src={userPhoto ? imgPath + userPhoto : '/img/user.svg'}
-              alt='user-photo'
+              alt='user'
               className='user-photo'
             />
             <div className='upload-btn-wrapper'>

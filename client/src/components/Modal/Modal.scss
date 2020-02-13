@@ -27,3 +27,15 @@
     }
   }
 }
+.link-btn {
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  cursor: pointer;
+  color: #0077cc;
+}
+.link-btn:hover {
+  text-decoration: underline;
+}
