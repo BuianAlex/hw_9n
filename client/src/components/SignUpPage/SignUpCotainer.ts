@@ -1,8 +1,13 @@
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import LoginPage from './LoginPage';
-import { userLogIn } from '../../actions/userAction';
-import { IFormMessage } from './LoginPageInterfaces';
+import SignUp from './SignUp';
+import { userSignUp } from '../../actions/userAction';
+
+export interface IFormMessage {
+  state: boolean;
+  type?: number;
+  msg?: string;
+}
 
 const mapStateToProps = (state: any) => {
   return {
@@ -14,13 +19,10 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    ...bindActionCreators({ userLogIn }, dispatch)
+    ...bindActionCreators({ userSignUp }, dispatch)
   };
 };
 
-const LoginPageContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginPage);
+const SignUpContainer = connect(mapStateToProps, mapDispatchToProps)(SignUp);
 
-export default LoginPageContainer;
+export default SignUpContainer;

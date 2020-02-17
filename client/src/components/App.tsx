@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import Main from './Main/MainPageContainer';
 import LoginPage from './LoginPage/LoginPageCotainer';
-import SingupPage from './signUp/signup';
+import SingupPage from './SignUpPage/SignUpCotainer';
 
 let isAuthenticated = false;
 interface iApp {

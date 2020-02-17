@@ -2,37 +2,37 @@ import axios from 'axios';
 
 //axios.defaults.baseURL = process.env.REACT_APP_API_HOST;
 
-export async function loginUser(user) {
-  return axios.post('./users/login', user);
-  // let apiRes = {}
-  // try {
-  //   const servRes = await axios.post('./users/login', user)
-  //   if (typeof servRes.data.result === 'object') {
-  //     setLocalUser(servRes.data.result)
-  //     apiRes.result = true
-  //   }
-  // } catch (error) {
-  //   if (error.response.status === 500) {
-  //     apiRes.error = 'Server does not respond.'
-  //   } else {
-  //     apiRes.error = error.response.data.message
-  //   }
-  // }
-  // console.log(apiRes)
-
-  // return apiRes
+export function loginUser(user) {
+  return axios
+    .post('./users/login', user)
+    .then(servRes => {
+      return servRes.data.result;
+    })
+    .catch(error => {
+      let errMsg;
+      if (error.response.status === 500) {
+        errMsg = 'Server does not respond.';
+      } else {
+        errMsg = error.response.data.message;
+      }
+      return Promise.reject(errMsg);
+    });
 }
 
-export async function logoutUser() {
-  try {
-    await axios.get('./users/logout');
-    document.location.href = '/';
-  } catch (error) {
-    if (error.response.status === 500) {
-      return 'Server does not respond.';
-    }
-    return error.response.data.message;
-  }
+export function logoutUser() {
+  return axios
+    .get('./users/logout')
+    .then(() => {
+      return true;
+    })
+    .catch(error => {
+      let errMsg;
+      if (error.response.status === 500) {
+        errMsg = 'Server does not respond.';
+      }
+      errMsg = error.response.data.message;
+      return errMsg;
+    });
 }
 
 export async function getAllUsers(limit, page) {
@@ -74,25 +74,40 @@ export async function deleteUser(usersId) {
   return apiRes;
 }
 
-export async function createUser(userData) {
+export function createUser(userData) {
+  return axios
+    .post('/users/create', userData)
+    .then(servRes => {
+      return servRes.data.result;
+    })
+    .catch(error => {
+      let errMsg;
+      if (error.response.status === 500) {
+        errMsg = 'Server does not respond.';
+      } else {
+        errMsg = error.response.data.message;
+      }
+      return Promise.reject(errMsg);
+    });
+
   //temp userData.photo
   // userData.photo = "user.svg";
-  let apiRes = {};
-  try {
-    const servRes = await axios.post('/users/create', userData);
-    if (servRes.data.status === 1) {
-      apiRes.result = true;
-    } else {
-      apiRes.error = servRes.data.error;
-    }
-  } catch (error) {
-    if (error.response && error.response.status === 500) {
-      apiRes.error = 'Server does not respond.';
-    }
-    apiRes.error = error.response.data.message;
-    // TODO: type of user
-  }
-  return apiRes;
+  // let apiRes = {};
+  // try {
+  //   const servRes = await axios.post('/users/create', userData);
+  //   if (servRes.data.status === 1) {
+  //     apiRes.result = true;
+  //   } else {
+  //     apiRes.error = servRes.data.error;
+  //   }
+  // } catch (error) {
+  //   if (error.response && error.response.status === 500) {
+  //     apiRes.error = 'Server does not respond.';
+  //   }
+  //   apiRes.error = error.response.data.message;
+  //   // TODO: type of user
+  // }
+  // return apiRes;
 }
 
 export async function updateUser(id, userData) {

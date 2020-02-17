@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import MainPage from './MainPage';
 import modal from '../../actions/modal';
-import userAction from '../../actions/userAction';
+import { userLogIn, userLogOut } from '../../actions/userAction';
 
 const mapStateToProps = (state: any) => {
   return {
@@ -11,7 +11,7 @@ const mapStateToProps = (state: any) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
-  const { userLogOut } = userAction;
+  // const { userLogOut } = userAction;
   const { openModal } = modal;
   return bindActionCreators({ openModal, userLogOut }, dispatch);
 };

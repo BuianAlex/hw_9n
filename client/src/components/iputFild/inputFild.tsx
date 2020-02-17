@@ -7,7 +7,7 @@ interface IOptions {
   id: string;
   isRequired?: boolean;
   value: string;
-  disabled: boolean;
+  disabled?: boolean;
   label: string;
 }
 

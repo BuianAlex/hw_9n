@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Switch, Redirect } from 'react-router-dom';
 import './signup.scss';
 import InputFild from '../iputFild/inputFild';
 import Spiner from '../spinner/spinner';
 import FormMessage from '../FormMessage/FormMessage';
-import { createUser } from '../../services/api';
 
-export default function Login() {
+export default function SignUp(props: any) {
+  const { userSignUp, isWaitResponse, formMessage, isLogined } = props;
+
   const [login, setLogin] = useState({
     isValid: false,
     validValue: ''
@@ -23,12 +24,7 @@ export default function Login() {
     isValid: false,
     validValue: ''
   });
-  const [formMessage, setFormMessage] = useState({
-    isValid: false,
-    validValue: ''
-  });
   const [saveBtn, setSaveBtn] = useState(false);
-  const [spinnerState, setSpinerState] = useState(false);
 
   useEffect(() => {
     if (login.isValid && password.isValid && email.isValid && phone.isValid) {
@@ -37,28 +33,6 @@ export default function Login() {
       setSaveBtn(false);
     }
   }, [login, password, email, phone]);
-
-  const actionSignup = async e => {
-    setSpinerState(true);
-    e.preventDefault();
-    const user = {
-      loginName: login.validValue,
-      password: password.validValue,
-      email: email.validValue,
-      phone: phone.validValue
-    };
-    const servRes = await createUser(user);
-    setSpinerState(false);
-    if (!servRes.error) {
-      //TODO: loader and message if OK
-      setFormMessage({ msg: 'registration successful', type: 0 });
-      setTimeout(() => {
-        document.location.href = '/';
-      }, 2000);
-    } else {
-      setFormMessage({ msg: servRes.error, type: 2 });
-    }
-  };
 
   return (
     <>
@@ -103,16 +77,27 @@ export default function Login() {
           }}
           onValid={setPhone}
         />
-        {spinnerState && <Spiner />}
-        {formMessage && (
-          <FormMessage messange={formMessage.msg} type={formMessage.type} />
+        {isWaitResponse && <Spiner />}
+        {formMessage.state && (
+          <FormMessage
+            messageType={formMessage.type}
+            messageText={formMessage.msg}
+          />
         )}
         <div className='form-bottom'>
           <Link to='/ligin' className='mui-btn mui-btn--flat'>
             Login
           </Link>
           <button
-            onClick={actionSignup}
+            onClick={e => {
+              e.preventDefault();
+              userSignUp({
+                loginName: login.validValue,
+                password: password.validValue,
+                email: email.validValue,
+                phone: phone.validValue
+              });
+            }}
             disabled={!saveBtn}
             className='mui-btn   mui-btn--raised mui-btn--primary'
           >
@@ -120,6 +105,15 @@ export default function Login() {
           </button>
         </div>
       </form>
+      <Switch>
+        {isLogined && (
+          <Redirect
+            to={{
+              pathname: '/'
+            }}
+          />
+        )}
+      </Switch>
     </>
   );
 }

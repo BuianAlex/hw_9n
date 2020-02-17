@@ -2,7 +2,7 @@ import { applyMiddleware, compose, createStore, combineReducers } from 'redux';
 import reducers from '../reducers';
 import thunk from 'redux-thunk';
 import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // or whatever storage you are using
+import storage from 'redux-persist/lib/storage';
 
 const config = {
   key: 'root',
@@ -13,7 +13,7 @@ const config = {
 const userPersistConfig = {
   key: 'user',
   storage,
-  blacklist: ['isLoginError', 'isWaitResponse']
+  blacklist: ['isFormMsg', 'isWaitResponse', 'isSignOk']
 };
 
 const { user, modal, select, spinner } = reducers;
