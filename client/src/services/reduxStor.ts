@@ -1,8 +1,12 @@
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux';
+import { createBrowserHistory } from 'history';
 import reducers from '../reducers';
 import thunk from 'redux-thunk';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { routerMiddleware, connectRouter } from 'connected-react-router';
+
+export const history = createBrowserHistory();
 
 const config = {
   key: 'root',
@@ -18,6 +22,7 @@ const userPersistConfig = {
 
 const { user, modal, select, spinner } = reducers;
 const rootReducer = combineReducers({
+  router: connectRouter(history),
   modal: modal,
   select: select,
   spinner: spinner,
@@ -26,10 +31,8 @@ const rootReducer = combineReducers({
 
 const reducer = persistReducer(config, rootReducer);
 
-const store = createStore(
+export const store = createStore(
   reducer,
   undefined,
-  compose(applyMiddleware(...[thunk]))
+  compose(applyMiddleware(...[thunk, routerMiddleware(history)]))
 );
-
-export default store;

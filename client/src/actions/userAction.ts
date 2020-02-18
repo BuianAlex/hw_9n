@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux';
 import { actions } from '../constants';
 import { loginUser, logoutUser, createUser } from '../services/api';
+import { push } from 'connected-react-router';
 
 export function userLogIn(loginName: string, password: string) {
   return (dispatch: Dispatch) => {
@@ -46,6 +47,7 @@ export function userSignUp(userData: TCreateUser) {
         dispatch({ type: actions.SIGNUP_SUCCESS, payload: msg });
         setTimeout(() => {
           dispatch({ type: actions.SIGNUP_REDIRECT, payload: true });
+          dispatch(push('/login'));
         }, 2000);
       })
       .catch((error: any) => {

@@ -78,6 +78,8 @@ export function createUser(userData) {
   return axios
     .post('/users/create', userData)
     .then(servRes => {
+      console.log(1);
+
       return servRes.data.result;
     })
     .catch(error => {

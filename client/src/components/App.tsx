@@ -1,26 +1,22 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-  RouteProps
-} from 'react-router-dom';
+import { Switch, Route, Redirect, RouteProps } from 'react-router-dom';
+import { ConnectedRouter } from 'connected-react-router';
 import Main from './Main/MainPageContainer';
 import LoginPage from './LoginPage/LoginPageCotainer';
 import SingupPage from './SignUpPage/SignUpCotainer';
+import { history } from './../services/reduxStor';
 
 let isAuthenticated = false;
-interface iApp {
-  isLogined: boolean;
+interface IAppProps {
+  isLogined?: boolean;
 }
 
-const App: React.FC<iApp> = props => {
+const App: React.FC<IAppProps> = props => {
   const { isLogined } = props;
-  isAuthenticated = isLogined;
+  isAuthenticated = isLogined || false;
   return (
-    <div>
-      <Router>
+    <ConnectedRouter history={history}>
+      <>
         <Switch>
           <Route path='/login'>
             <LoginPage />
@@ -32,8 +28,8 @@ const App: React.FC<iApp> = props => {
             <Main />
           </PrivateRoute>
         </Switch>
-      </Router>
-    </div>
+      </>
+    </ConnectedRouter>
   );
 };
 
