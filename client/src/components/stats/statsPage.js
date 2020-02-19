@@ -6,12 +6,16 @@ export default function Stats() {
   return (
     <>
       <h1 className='section-header'>APP Stat</h1>
-      <h3>Bar</h3>
-      <Bar
-        data='https://raw.githubusercontent.com/jwilber/random_data/master/flavors.csv'
-        labels='flavor'
-        values='price'
-      />
+      <h3>Users Stats</h3>
+      <div class='mui-panel'>
+        <h4>Gender</h4>
+        <Bar
+          data='https://raw.githubusercontent.com/jwilber/random_data/master/flavors.csv'
+          labels='flavor'
+          values='price'
+        />
+      </div>
+
       <h3>Pie</h3>
       <Pie
         data={{
