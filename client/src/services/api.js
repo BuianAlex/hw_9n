@@ -35,28 +35,37 @@ export function logoutUser() {
     });
 }
 
-export async function getAllUsers(limit, page) {
-  let apiRes = {};
-  try {
-    const servRes = await axios.get(`/users/get`, {
-      params: {
-        limit,
-        page
-      }
-    });
-    if (servRes.data.result.usersList.length > 0) {
-      apiRes.result = servRes.data.result;
-    } else {
-      apiRes.error = 'No users in the database';
+export function getAllUsers(limit, page) {
+  return axios.get(`/users/get`, {
+    params: {
+      limit,
+      page
     }
-  } catch (error) {
-    if (error.response && error.response.status === 401) {
-      document.location.href = '/';
-    } else {
-      apiRes.error = 'Server does not respond.';
-    }
-  }
-  return apiRes;
+  });
+  // let apiRes = {};
+  // try {
+  //   const servRes = await axios.get(`/users/get`, {
+  //     params: {
+  //       limit,
+  //       page
+  //     }
+  //   });
+  //   if (servRes.data.result.usersList.length > 0) {
+  //     apiRes.result = servRes.data.result;
+  //   } else {
+  //     apiRes.error = 'No users in the database';
+  //   }
+  // } catch (error) {
+  //   if (error.response && error.response.status === 401) {
+  //     // document.location.href = '/';
+  //   } else {
+  //     apiRes.error = 'Server does not respond.';
+  //   }
+  //   console.log(apiRes.error);
+
+  //   return error;
+  // }
+  // return apiRes;
 }
 
 export async function deleteUser(usersId) {

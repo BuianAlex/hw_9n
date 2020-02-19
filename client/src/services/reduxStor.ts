@@ -20,12 +20,13 @@ const userPersistConfig = {
   blacklist: ['isFormMsg', 'isWaitResponse', 'isSignOk']
 };
 
-const { user, modal, select, spinner } = reducers;
+const { user, modal, select, spinner, usersPage } = reducers;
 const rootReducer = combineReducers({
   router: connectRouter(history),
   modal: modal,
   select: select,
   spinner: spinner,
+  usersPage,
   user: persistReducer(userPersistConfig, user)
 });
 

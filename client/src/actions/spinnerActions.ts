@@ -1,7 +1,7 @@
 import { actions } from '../constants';
 import { Dispatch } from 'redux';
 
-const showSlider = () => {
+const showSpiner = () => {
   return (dispatch: Dispatch) => {
     dispatch({
       type: actions.SPINNER_ON
@@ -9,7 +9,7 @@ const showSlider = () => {
   };
 };
 
-const hideSlider = () => {
+const hideSpiner = () => {
   return (dispatch: Dispatch) => {
     dispatch({
       type: actions.SPINNER_OFF
@@ -17,4 +17,4 @@ const hideSlider = () => {
   };
 };
 
-export default { showSlider, hideSlider };
+export default { showSpiner, hideSpiner };

@@ -8,7 +8,7 @@ import {
   Redirect
 } from 'react-router-dom';
 
-import User from '../UsersPage';
+import User from '../UsersPage/UsersPageContainer';
 import Stats from '../stats/statsPage';
 import { userRole } from '../../constants';
 

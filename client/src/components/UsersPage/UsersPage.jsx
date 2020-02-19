@@ -14,51 +14,64 @@ import tablePageRange from '../../utils/tablePageRange';
 import { userRole } from '../../constants';
 
 const UsersPage = props => {
-  const { sendUsersCsv, setTableSize, tableSize, mainUser, isSpinner } = props;
+  const {
+    sendUsersCsv,
+    setTableSize,
+    tableSize,
+    mainUser,
+    isWaitResponse,
+    formMessage,
+    getUserList,
+    usersData
+  } = props;
   const [userData, setUserData] = useState([]);
   const [userCard, setUserCard] = useState({
     open: false,
     data: {}
   });
   const [usersSelected, setUsersSelected] = useState(0);
-  const [spinnerState, setSpinerState] = useState(isSpinner);
-  const [formMessage, setFormMessage] = useState(Object || Boolean);
+  // const [spinnerState, setSpinerState] = useState(isSpinner);
+  // const [formMessage, setFormMessage] = useState(Object || Boolean);
   const [selectAll, setSelectAll] = useState(false);
   const [total, setTotal] = useState(0);
   const [curentPage, setCurentPage] = useState(1);
 
   //temp
-  useEffect(() => {
-    setSpinerState(isSpinner);
-  }, [isSpinner]);
+  // useEffect(() => {
+  //   setSpinerState(isSpinner);
+  // }, [isSpinner]);
 
   useEffect(() => {
-    getUsers();
-  }, [curentPage]);
+    getUserList(tableSize, curentPage);
+  }, [curentPage, getUserList, tableSize]);
 
-  useEffect(() => {
-    if (curentPage === 1) {
-      getUsers();
-    }
-    setCurentPage(1);
-  }, [tableSize]);
+  // useEffect(() => {
+  //   getUsers();
+  // }, [curentPage]);
 
-  const getUsers = async () => {
-    setSpinerState(true);
-    const apiRes = await getAllUsers(tableSize, curentPage);
-    setSpinerState(false);
-    setFormMessage(false);
-    setUsersSelected(0);
-    if (!apiRes.error) {
-      setUserData(apiRes.result.usersList);
-      setTotal(apiRes.result.totalUsers);
-    } else {
-      setFormMessage({
-        msg: apiRes.error,
-        type: 2
-      });
-    }
-  };
+  // useEffect(() => {
+  //   if (curentPage === 1) {
+  //     getUsers();
+  //   }
+  //   setCurentPage(1);
+  // }, [curentPage, tableSize]);
+
+  // const getUsers = useCallback(async () => {
+  //   setSpinerState(true);
+  //   const apiRes = await getAllUsers(tableSize, curentPage);
+  //   setSpinerState(false);
+  //   setFormMessage(false);
+  //   setUsersSelected(0);
+  //   if (!apiRes.error) {
+  //     setUserData(apiRes.result.usersList);
+  //     setTotal(apiRes.result.totalUsers);
+  //   } else {
+  //     setFormMessage({
+  //       msg: apiRes.error,
+  //       type: 2
+  //     });
+  //   }
+  // });
 
   const actionCardClose = () => {
     setUserCard(state => ({ ...state, open: false, data: {} }));
@@ -94,20 +107,20 @@ const UsersPage = props => {
   };
 
   const actionDeleteSelected = async () => {
-    setSpinerState(true);
-    let toDelete = [];
-    userData.forEach(item => {
-      if (item.isSelected) {
-        toDelete.push(item.userId);
-      }
-    });
-    const apiRes = await deleteUser(toDelete);
-    setSpinerState(false);
-    if (apiRes.result) {
-      getUsers();
-    } else {
-      setFormMessage({ msg: apiRes.error, type: 2 });
-    }
+    // setSpinerState(true);
+    // let toDelete = [];
+    // userData.forEach(item => {
+    //   if (item.isSelected) {
+    //     toDelete.push(item.userId);
+    //   }
+    // });
+    // const apiRes = await deleteUser(toDelete);
+    // setSpinerState(false);
+    // if (apiRes.result) {
+    //   getUsers();
+    // } else {
+    //   setFormMessage({ msg: apiRes.error, type: 2 });
+    // }
   };
 
   // const actionSendCsv = async e => {
@@ -121,13 +134,13 @@ const UsersPage = props => {
 
   return (
     <>
-      {userCard.open && (
+      {/* {userCard.open && (
         <UserCard
           onClose={actionCardClose}
           userData={userCard.data}
           updateTable={getUsers}
         />
-      )}
+      )} */}
       <h2 className='section-header'>Users</h2>
       {mainUser.usergroup === userRole.USER_ADMIN && (
         <div className='action-bar'>
@@ -161,7 +174,13 @@ const UsersPage = props => {
           <button>Filter</button> */}
         </div>
       )}
-      {spinnerState && <Spiner />}
+      {isWaitResponse && <Spiner />}
+      {formMessage.state && (
+        <FormMessage
+          messageType={formMessage.type}
+          messageText={formMessage.msg}
+        />
+      )}
       <TableContext.Provider value={{ actionSelect, actionShowUser }}>
         <div className='user-table'>
           <table>
@@ -190,7 +209,7 @@ const UsersPage = props => {
             </thead>
             <tbody>
               {userData
-                ? userData.map(item => {
+                ? usersData.usersList.map(item => {
                     return <TableRow key={item.userId} userData={item} />;
                   })
                 : false}
@@ -201,14 +220,11 @@ const UsersPage = props => {
             </tfoot>
           </table>
 
-          {formMessage && (
-            <FormMessage messange={formMessage.msg} type={formMessage.type} />
-          )}
           <div className='table-footer'>
             <span>Selected: {usersSelected}</span>
             <Pagination
               current={curentPage}
-              total={total}
+              total={usersData.totalUsers}
               pageSize={tableSize}
               hideOnSinglePage={true}
               onChange={setCurentPage}
@@ -217,9 +233,9 @@ const UsersPage = props => {
             <div className='table-footer-right-side'>
               <span>
                 {'Users ' +
-                  tablePageRange(curentPage, total, tableSize) +
+                  tablePageRange(curentPage, usersData.totalUsers, tableSize) +
                   ' of ' +
-                  total}
+                  usersData.totalUsers}
               </span>
 
               <SelectFild

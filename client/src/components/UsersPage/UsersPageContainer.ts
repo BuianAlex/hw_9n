@@ -3,9 +3,9 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { sendCsv } from '../../services/api';
 
 import UsersPage from './UsersPage';
-import { modal } from '../../actions';
-import { select } from '../../actions';
-import { actions } from './../../constants';
+import { modal, select, userPageActions } from '../../actions';
+
+import { actions } from '../../constants';
 
 function sendUsersCsv(file: HTMLInputElement & EventTarget) {
   const { openModal } = modal;
@@ -41,17 +41,20 @@ function sendUsersCsv(file: HTMLInputElement & EventTarget) {
 
 const mapStateToProps = (state: any) => {
   return {
-    isSpinner: state.spinner.spinnerState,
+    isWaitResponse: state.usersPage.isWaitResponse,
     tableSize: parseInt(state.select.tableSize.limit, 10),
-    mainUser: state.user.userInfo
+    mainUser: state.user.userInfo,
+    formMessage: state.usersPage.isFormMsg,
+    usersData: state.usersPage.usersData
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
+  const { getUserList } = userPageActions;
   const { setTableSize } = select;
   const { openModal } = modal;
   return bindActionCreators(
-    { openModal, sendUsersCsv, setTableSize },
+    { openModal, sendUsersCsv, setTableSize, getUserList },
     dispatch
   );
 };

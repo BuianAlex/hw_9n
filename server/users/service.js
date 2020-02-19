@@ -30,22 +30,18 @@ const get = async (limit, page) => {
     const resultDB = { totalUsers, pages, usersList: usersNormal };
     return resultDB;
   } catch (error) {
-    console.error('getUsers' + error);
+    console.error(`getUsers${error}`);
   }
 };
 
 const getOne = id =>
   UserQuery.findOne({ userId: id })
     .populate('photo')
-    .then(data => {
-      return data;
-    })
-    .catch(err => {
-      return { status: 0, errorMessage: 'Not found' };
-    });
+    .then(data => data)
+    .catch(err => ({ status: 0, errorMessage: 'Not found' }));
 
-const update = (id, body) => {
-  return new Promise((resolve, reject) => {
+const update = (id, body) =>
+  new Promise((resolve, reject) => {
     UserQuery.findOne({ userId: id })
       .populate('photo')
       .then(async data => {
@@ -67,14 +63,12 @@ const update = (id, body) => {
             }
           });
           return data.save();
-        } else {
-          return null;
         }
+        return null;
       })
       .then(resolve)
       .catch(reject);
   });
-};
 
 const create = async body => {
   const testIfExist = await UserQuery.find({ loginName: body.loginName });
@@ -101,14 +95,14 @@ const create = async body => {
 };
 
 const addFromCsv = async data => {
-  let isValid = [];
-  let dbRes = {
+  const isValid = [];
+  const dbRes = {
     saved: [],
     schemaError: [],
     duplicate: [],
     unnounError: []
   };
-  //validator
+  // validator
   data.map(user => {
     if (validator.create(user)) {
       isValid.push(user);
@@ -116,7 +110,7 @@ const addFromCsv = async data => {
       dbRes.schemaError.push(user);
     }
   });
-  //save to db
+  // save to db
   if (isValid.length) {
     const promisMap = isValid.map(async user => {
       let reqDb;
@@ -134,9 +128,8 @@ const addFromCsv = async data => {
     });
     await Promise.all(promisMap);
     return dbRes;
-  } else {
-    return dbRes;
   }
+  return dbRes;
 };
 
 const remove = id => UserQuery.findByIdAndRemove(id);
