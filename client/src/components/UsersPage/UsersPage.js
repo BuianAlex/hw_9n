@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import './UserPage.scss';
-
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'rc-pagination';
 import 'rc-pagination/assets/index.css';
-import { getAllUsers, deleteUser } from '../../services/api';
+import { Bar, Pie, Donut } from 'react-roughviz';
+import './UserPage.scss';
+
+import { getAllUsers, deleteUser, usersStats } from '../../services/api';
 import { TableContext } from './tablecontext';
 import Spiner from '../spinner/spinner';
 import UserCard from '../userCard/UserCardContainer';
@@ -30,11 +32,64 @@ const UsersPage = props => {
     data: {}
   });
   const [usersSelected, setUsersSelected] = useState(0);
+<<<<<<< HEAD:client/src/components/UsersPage/UsersPage.jsx
   // const [spinnerState, setSpinerState] = useState(isSpinner);
   // const [formMessage, setFormMessage] = useState(Object || Boolean);
+=======
+  const [spinnerState, setSpinerState] = useState(isSpinner);
+  const [formMessage, setFormMessage] = useState(false);
+>>>>>>> app-stats:client/src/components/UsersPage/UsersPage.js
   const [selectAll, setSelectAll] = useState(false);
   const [total, setTotal] = useState(0);
   const [curentPage, setCurentPage] = useState(1);
+  const [statData, setStatData] = useState({});
+  const [waitStats, setWaitStats] = useState(false);
+
+  async function getUsers() {
+    setSpinerState(true);
+    const apiRes = await getAllUsers(tableSize, curentPage);
+    setSpinerState(false);
+    setFormMessage(false);
+    setUsersSelected(0);
+    if (!apiRes.error) {
+      setUserData(apiRes.result.usersList);
+      setTotal(apiRes.result.totalUsers);
+    } else {
+      console.log('apiRes');
+      setFormMessage({
+        msg: apiRes.error,
+        type: 2
+      });
+    }
+  }
+
+  async function getUserStats() {
+    setWaitStats(true);
+    usersStats()
+      .then(res => {
+        setWaitStats(false);
+        const { countries } = res.data;
+        let other = { calc: 0, country: {} };
+        let majority = {};
+        Object.keys(countries).forEach(item => {
+          if (countries[item] < 3) {
+            other.country[item] = countries[item];
+            other.calc += countries[item];
+          } else {
+            majority[item] = countries[item];
+          }
+        });
+        majority['other < 3'] = other.calc;
+        res.data.countries = majority;
+
+        console.log(res.data.userGroup);
+
+        setStatData(res.data);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
 
   //temp
   // useEffect(() => {
@@ -42,6 +97,7 @@ const UsersPage = props => {
   // }, [isSpinner]);
 
   useEffect(() => {
+<<<<<<< HEAD:client/src/components/UsersPage/UsersPage.jsx
     getUserList(tableSize, curentPage);
   }, [curentPage, getUserList, tableSize]);
 
@@ -72,6 +128,29 @@ const UsersPage = props => {
   //     });
   //   }
   // });
+=======
+    getUserStats();
+  }, []);
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  useEffect(() => {
+    console.log(curentPage);
+
+    getUsers();
+  }, [curentPage]);
+
+  useEffect(() => {
+    console.log('ere');
+
+    if (curentPage === 1) {
+      getUsers();
+    }
+    setCurentPage(1);
+  }, [tableSize]);
+>>>>>>> app-stats:client/src/components/UsersPage/UsersPage.js
 
   const actionCardClose = () => {
     setUserCard(state => ({ ...state, open: false, data: {} }));
@@ -174,8 +253,14 @@ const UsersPage = props => {
           <button>Filter</button> */}
         </div>
       )}
+<<<<<<< HEAD:client/src/components/UsersPage/UsersPage.jsx
       {isWaitResponse && <Spiner />}
       {formMessage.state && (
+=======
+      {spinnerState && <Spiner />}
+
+      {formMessage && (
+>>>>>>> app-stats:client/src/components/UsersPage/UsersPage.js
         <FormMessage
           messageType={formMessage.type}
           messageText={formMessage.msg}
@@ -257,6 +342,78 @@ const UsersPage = props => {
           </div>
         </div>
       </TableContext.Provider>
+      <div className='mui-container-fluid'>
+        <h3>Users Stats</h3>
+        <button
+          onClick={getUserStats}
+          className='mui-btn mui-btn--small mui-btn--raised '
+        >
+          Update
+        </button>
+        <div className='mui-row stat-row'>
+          <div class='mui-panel mui-col-md-4 stat-panel'>
+            {waitStats && <Spiner />}
+            {formMessage && (
+              <FormMessage
+                messageType={formMessage.type}
+                messageText={formMessage.msg}
+              />
+            )}
+            {statData.gender && (
+              <Pie
+                data={{
+                  labels: Object.keys(statData.gender),
+                  values: Object.values(statData.gender)
+                }}
+                title='Gender'
+                colors={['pink', 'skyblue', 'orange']}
+                roughness={5}
+                strokeWidth={3}
+              />
+            )}
+          </div>
+          <div class='mui-panel mui-col-md-4 stat-panel'>
+            {waitStats && <Spiner />}
+            {formMessage && (
+              <FormMessage
+                messageType={formMessage.type}
+                messageText={formMessage.msg}
+              />
+            )}
+            {statData.countries && (
+              <Bar
+                title='By country'
+                data={{
+                  labels: Object.keys(statData.countries),
+                  values: Object.values(statData.countries)
+                }}
+                labels='flavor'
+                values='price'
+              />
+            )}
+          </div>
+          <div class='mui-panel mui-col-md-4 stat-panel'>
+            {waitStats && <Spiner />}
+            {formMessage && (
+              <FormMessage
+                messageType={formMessage.type}
+                messageText={formMessage.msg}
+              />
+            )}
+            {statData.userGroup && (
+              <Donut
+                title='By user group'
+                data={{
+                  labels: Object.keys(statData.userGroup),
+                  values: Object.values(statData.userGroup)
+                }}
+                labels='flavor'
+                values='price'
+              />
+            )}
+          </div>
+        </div>
+      </div>
     </>
   );
 };

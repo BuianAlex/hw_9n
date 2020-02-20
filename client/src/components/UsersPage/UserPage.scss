@@ -92,3 +92,20 @@ button {
 .name {
   width: 150px;
 }
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+}
+.stat-panel {
+  position: relative;
+  width: 420px;
+  min-height: 400px;
+  text-align: center;
+  .form-message,
+  .sweet-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

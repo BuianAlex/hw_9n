@@ -35,11 +35,34 @@ export function logoutUser() {
     });
 }
 
+<<<<<<< HEAD
 export function getAllUsers(limit, page) {
   return axios.get(`/users/get`, {
     params: {
       limit,
       page
+=======
+export async function getAllUsers(limit, page) {
+  let apiRes = {};
+  try {
+    const servRes = await axios.get(`/users/get`, {
+      params: {
+        limit,
+        page
+      }
+    });
+    if (servRes.data.result.usersList.length > 0) {
+      apiRes.result = servRes.data.result;
+    } else {
+      apiRes.error = 'No users in the database';
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      localStorage.clear(); //temp
+      document.location.href = '/';
+    } else {
+      apiRes.error = 'Server does not respond.';
+>>>>>>> app-stats
     }
   });
   // let apiRes = {};
@@ -173,4 +196,8 @@ export function sendCsv(file) {
   //     return "Server does not respond.";
   //   }
   // });
+}
+
+export function usersStats() {
+  return axios.get('/users/stats');
 }

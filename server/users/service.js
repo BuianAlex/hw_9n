@@ -136,6 +136,28 @@ const remove = id => UserQuery.findByIdAndRemove(id);
 
 const deleteMany = idS => UserQuery.deleteMany({ userId: idS });
 
+function calcObjectValue(holder, kayName, object) {
+  let value = holder[object[kayName]];
+  if (!value) {
+    value = 0;
+  }
+  value += 1;
+  holder[object[kayName]] = value;
+}
+
+const getStats = async () => {
+  const userList = await UserQuery.find();
+  const userGroup = {};
+  const gender = {};
+  const countries = {};
+  userList.map(user => {
+    calcObjectValue(userGroup, 'usergroup', user);
+    calcObjectValue(gender, 'gender', user);
+    calcObjectValue(countries, 'country', user);
+  });
+  return { userGroup, gender, countries };
+};
+
 module.exports = {
   get,
   getOne,
@@ -143,5 +165,6 @@ module.exports = {
   update,
   remove,
   deleteMany,
-  addFromCsv
+  addFromCsv,
+  getStats
 };
