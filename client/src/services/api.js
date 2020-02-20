@@ -51,6 +51,7 @@ export async function getAllUsers(limit, page) {
     }
   } catch (error) {
     if (error.response && error.response.status === 401) {
+      localStorage.clear(); //temp
       document.location.href = '/';
     } else {
       apiRes.error = 'Server does not respond.';
@@ -164,4 +165,8 @@ export function sendCsv(file) {
   //     return "Server does not respond.";
   //   }
   // });
+}
+
+export function usersStats() {
+  return axios.get('/users/stats');
 }
