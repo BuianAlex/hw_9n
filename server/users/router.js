@@ -155,7 +155,7 @@ router.post('/csv', checkPermissios.onlyAdmin, (req, res, next) => {
   });
 });
 
-router.get('/stats', (req, res, next) => {
+router.get('/stats', checkPermissios.onlyAuthenficated, (req, res, next) => {
   service
     .getStats()
     .then(statData => {
