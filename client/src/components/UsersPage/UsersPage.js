@@ -23,45 +23,44 @@ const UsersPage = props => {
     mainUser,
     isWaitResponse,
     formMessage,
-    getUserList,
-    usersData
+    actionGetUsersList,
+    usersData,
+    actionSelectRow,
+    rowSelected
   } = props;
+  console.log(usersData);
+
   const [userData, setUserData] = useState([]);
   const [userCard, setUserCard] = useState({
     open: false,
     data: {}
   });
   const [usersSelected, setUsersSelected] = useState(0);
-<<<<<<< HEAD:client/src/components/UsersPage/UsersPage.jsx
   // const [spinnerState, setSpinerState] = useState(isSpinner);
-  // const [formMessage, setFormMessage] = useState(Object || Boolean);
-=======
-  const [spinnerState, setSpinerState] = useState(isSpinner);
-  const [formMessage, setFormMessage] = useState(false);
->>>>>>> app-stats:client/src/components/UsersPage/UsersPage.js
+  // const [formMessage, setFormMessage] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [total, setTotal] = useState(0);
   const [curentPage, setCurentPage] = useState(1);
   const [statData, setStatData] = useState({});
   const [waitStats, setWaitStats] = useState(false);
 
-  async function getUsers() {
-    setSpinerState(true);
-    const apiRes = await getAllUsers(tableSize, curentPage);
-    setSpinerState(false);
-    setFormMessage(false);
-    setUsersSelected(0);
-    if (!apiRes.error) {
-      setUserData(apiRes.result.usersList);
-      setTotal(apiRes.result.totalUsers);
-    } else {
-      console.log('apiRes');
-      setFormMessage({
-        msg: apiRes.error,
-        type: 2
-      });
-    }
-  }
+  // async function getUsers() {
+  //   setSpinerState(true);
+  //   const apiRes = await getAllUsers(tableSize, curentPage);
+  //   setSpinerState(false);
+  //   setFormMessage(false);
+  //   setUsersSelected(0);
+  //   if (!apiRes.error) {
+  //     setUserData(apiRes.result.usersList);
+  //     setTotal(apiRes.result.totalUsers);
+  //   } else {
+  //     console.log('apiRes');
+  //     setFormMessage({
+  //       msg: apiRes.error,
+  //       type: 2
+  //     });
+  //   }
+  // }
 
   async function getUserStats() {
     setWaitStats(true);
@@ -97,60 +96,27 @@ const UsersPage = props => {
   // }, [isSpinner]);
 
   useEffect(() => {
-<<<<<<< HEAD:client/src/components/UsersPage/UsersPage.jsx
-    getUserList(tableSize, curentPage);
-  }, [curentPage, getUserList, tableSize]);
-
-  // useEffect(() => {
-  //   getUsers();
-  // }, [curentPage]);
-
-  // useEffect(() => {
-  //   if (curentPage === 1) {
-  //     getUsers();
-  //   }
-  //   setCurentPage(1);
-  // }, [curentPage, tableSize]);
-
-  // const getUsers = useCallback(async () => {
-  //   setSpinerState(true);
-  //   const apiRes = await getAllUsers(tableSize, curentPage);
-  //   setSpinerState(false);
-  //   setFormMessage(false);
-  //   setUsersSelected(0);
-  //   if (!apiRes.error) {
-  //     setUserData(apiRes.result.usersList);
-  //     setTotal(apiRes.result.totalUsers);
-  //   } else {
-  //     setFormMessage({
-  //       msg: apiRes.error,
-  //       type: 2
-  //     });
-  //   }
-  // });
-=======
     getUserStats();
   }, []);
 
   useEffect(() => {
-    getUsers();
+    actionGetUsersList();
   }, []);
 
-  useEffect(() => {
-    console.log(curentPage);
+  // useEffect(() => {
+  //   console.log(curentPage);
 
-    getUsers();
-  }, [curentPage]);
+  //   getUsers();
+  // }, [curentPage]);
 
-  useEffect(() => {
-    console.log('ere');
+  // useEffect(() => {
+  //   console.log('ere');
 
-    if (curentPage === 1) {
-      getUsers();
-    }
-    setCurentPage(1);
-  }, [tableSize]);
->>>>>>> app-stats:client/src/components/UsersPage/UsersPage.js
+  //   if (curentPage === 1) {
+  //     getUsers();
+  //   }
+  //   setCurentPage(1);
+  // }, [tableSize]);
 
   const actionCardClose = () => {
     setUserCard(state => ({ ...state, open: false, data: {} }));
@@ -188,12 +154,7 @@ const UsersPage = props => {
   const actionDeleteSelected = async () => {
     // setSpinerState(true);
     // let toDelete = [];
-    // userData.forEach(item => {
-    //   if (item.isSelected) {
-    //     toDelete.push(item.userId);
-    //   }
-    // });
-    // const apiRes = await deleteUser(toDelete);
+    // userData.forEach(item => {ally
     // setSpinerState(false);
     // if (apiRes.result) {
     //   getUsers();
@@ -253,14 +214,8 @@ const UsersPage = props => {
           <button>Filter</button> */}
         </div>
       )}
-<<<<<<< HEAD:client/src/components/UsersPage/UsersPage.jsx
       {isWaitResponse && <Spiner />}
       {formMessage.state && (
-=======
-      {spinnerState && <Spiner />}
-
-      {formMessage && (
->>>>>>> app-stats:client/src/components/UsersPage/UsersPage.js
         <FormMessage
           messageType={formMessage.type}
           messageText={formMessage.msg}
@@ -278,7 +233,7 @@ const UsersPage = props => {
                     checked={selectAll}
                     onChange={() => {
                       setSelectAll(!selectAll);
-                      actionSelect();
+                      actionSelectRow();
                     }}
                   />
                 </th>
@@ -293,9 +248,18 @@ const UsersPage = props => {
               </tr>
             </thead>
             <tbody>
-              {userData
+              {usersData.usersList
                 ? usersData.usersList.map(item => {
-                    return <TableRow key={item.userId} userData={item} />;
+                    const inSelectList =
+                      rowSelected.indexOf(item.userId) === -1 ? false : true;
+                    return (
+                      <TableRow
+                        key={item.userId}
+                        userData={item}
+                        onSelect={actionSelectRow}
+                        select={inSelectList}
+                      />
+                    );
                   })
                 : false}
             </tbody>
@@ -306,7 +270,7 @@ const UsersPage = props => {
           </table>
 
           <div className='table-footer'>
-            <span>Selected: {usersSelected}</span>
+            <span>Selected: {rowSelected.length}</span>
             <Pagination
               current={curentPage}
               total={usersData.totalUsers}

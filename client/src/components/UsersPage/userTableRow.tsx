@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
 import { TableContext } from './tablecontext';
 import moment from 'moment';
 
-interface IProps {
+interface userData {
   userId: string;
   loginName: string;
   email: string;
@@ -12,18 +13,32 @@ interface IProps {
   registrated: moment.Moment;
 }
 
-const Row: React.FC<IProps> = userData => {
-  const { sel, setSel } = useState<boolean>(false);
-  const { actionSelect, actionShowUser } = useContext(TableContext);
+interface IProps {
+  key: string;
+  userData: userData;
+  select: boolean;
+  onSelect: (id: string) => {};
+}
 
-  useEffect(() => {
-    setSel(!sel);
-  }, [sel, setSel]);
+const Row: React.FC<IProps> = props => {
+  const { userData, onSelect, select } = props;
+  const [isSelected, setSelected] = useState<boolean>(false);
+
+  // const { sel, setSel } = useState<boolean>('gfhfg');
+  // const { actionSelect, actionShowUser } = useContext(TableContext);
+
+  // useEffect(() => {
+  //
+  // }, [isSelected]);
+  function onChange() {
+    setSelected(!isSelected);
+    onSelect(userData.userId);
+  }
 
   return (
     <tr
       onClick={e => {
-        actionShowUser(e, userData.userId);
+        // actionShowUser(e, userData.userId);
       }}
     >
       <td className='checkbox'>
@@ -31,9 +46,9 @@ const Row: React.FC<IProps> = userData => {
           className='checkbox-input'
           type='checkbox'
           name='select'
-          checked={selected}
+          checked={select}
           onChange={() => {
-            actionSelect(userData.userId);
+            onChange(); // actionSelect(userData.userId);
           }}
         />
       </td>

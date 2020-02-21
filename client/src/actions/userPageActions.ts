@@ -3,7 +3,7 @@ import { actions } from '../constants';
 import { getAllUsers } from '../services/api';
 import { push } from 'connected-react-router';
 
-function getUserList(limit: number, page: number) {
+function actionGetUsersList(limit: number, page: number) {
   console.log('sdsdfewfsdwefw');
 
   return (dispatch: Dispatch) => {
@@ -45,6 +45,13 @@ function getUserList(limit: number, page: number) {
   };
 }
 
+function actionSelectRow(id: string) {
+  return (dispatch: Dispatch) => {
+    dispatch({ type: actions.USER_TABLE_SELECT_ROW, payload: id });
+  };
+}
+
 export default {
-  getUserList
+  actionGetUsersList,
+  actionSelectRow
 };

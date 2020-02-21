@@ -40,21 +40,30 @@ function sendUsersCsv(file: HTMLInputElement & EventTarget) {
 }
 
 const mapStateToProps = (state: any) => {
+  console.log(state);
+
   return {
     isWaitResponse: state.usersPage.isWaitResponse,
     tableSize: parseInt(state.select.tableSize.limit, 10),
     mainUser: state.user.userInfo,
     formMessage: state.usersPage.isFormMsg,
-    usersData: state.usersPage.usersData
+    usersData: state.usersPage.usersData,
+    rowSelected: state.usersPage.rowSelected
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
-  const { getUserList } = userPageActions;
+  const { actionGetUsersList, actionSelectRow } = userPageActions;
   const { setTableSize } = select;
   const { openModal } = modal;
   return bindActionCreators(
-    { openModal, sendUsersCsv, setTableSize, getUserList },
+    {
+      openModal,
+      sendUsersCsv,
+      setTableSize,
+      actionGetUsersList,
+      actionSelectRow
+    },
     dispatch
   );
 };
