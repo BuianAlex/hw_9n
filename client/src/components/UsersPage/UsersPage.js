@@ -26,12 +26,15 @@ const UsersPage = props => {
     actionGetUsersList,
     usersData,
     actionSelectRow,
-    rowSelected
+    rowSelected,
+    actionDeleteUser,
+    userCard,
+    actionCreateNewUser,
+    actionEditUser
   } = props;
-  console.log(usersData);
 
   const [userData, setUserData] = useState([]);
-  const [userCard, setUserCard] = useState({
+  const [ertert, setUserCard] = useState({
     open: false,
     data: {}
   });
@@ -80,9 +83,6 @@ const UsersPage = props => {
         });
         majority['other < 3'] = other.calc;
         res.data.countries = majority;
-
-        console.log(res.data.userGroup);
-
         setStatData(res.data);
       })
       .catch(err => {
@@ -136,20 +136,20 @@ const UsersPage = props => {
     }
   };
 
-  const actionSelect = id => {
-    let calcSelected = 0;
-    const data = userData.map(item => {
-      if (item.userId === id || !id) {
-        item.isSelected = !item.isSelected;
-      }
-      if (item.isSelected) {
-        calcSelected += 1;
-      }
-      return item;
-    });
-    setUserData(data);
-    setUsersSelected(calcSelected);
-  };
+  // const actionSelect = id => {
+  //   let calcSelected = 0;
+  //   const data = userData.map(item => {
+  //     if (item.userId === id || !id) {
+  //       item.isSelected = !item.isSelected;
+  //     }
+  //     if (item.isSelected) {
+  //       calcSelected += 1;
+  //     }
+  //     return item;
+  //   });
+  //   setUserData(data);
+  //   setUsersSelected(calcSelected);
+  // };
 
   const actionDeleteSelected = async () => {
     // setSpinerState(true);
@@ -171,21 +171,22 @@ const UsersPage = props => {
   //   console.log(apiRes)
   //   getUsers()
   // }
+  const getUsers = () => {};
 
   return (
     <>
-      {/* {userCard.open && (
+      {userCard.state && (
         <UserCard
           onClose={actionCardClose}
           userData={userCard.data}
           updateTable={getUsers}
         />
-      )} */}
+      )}
       <h2 className='section-header'>Users</h2>
       {mainUser.usergroup === userRole.USER_ADMIN && (
         <div className='action-bar'>
           <button
-            onClick={actionAddNew}
+            onClick={actionCreateNewUser}
             className='mui-btn mui-btn--small mui-btn--raised'
           >
             ADD User
@@ -203,8 +204,10 @@ const UsersPage = props => {
           {/* <input type="text" placeholder="Find user" />
           <button>Find</button> */}
           <button
-            onClick={actionDeleteSelected}
-            disabled={usersSelected === 0}
+            onClick={() => {
+              actionDeleteUser(rowSelected);
+            }}
+            disabled={rowSelected.length === 0}
             className='mui-btn mui-btn--small mui-btn--raised mui-btn--danger'
           >
             Delete
@@ -221,91 +224,92 @@ const UsersPage = props => {
           messageText={formMessage.msg}
         />
       )}
-      <TableContext.Provider value={{ actionSelect, actionShowUser }}>
-        <div className='user-table'>
-          <table>
-            <thead>
-              <tr>
-                <th className='checkbox'>
-                  <input
-                    type='checkbox'
-                    name='select'
-                    checked={selectAll}
-                    onChange={() => {
-                      setSelectAll(!selectAll);
-                      actionSelectRow();
-                    }}
-                  />
-                </th>
-                {/* <th>Name</th> */}
-                <th>Login Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Usergroup</th>
-                <th>Last Visit</th>
-                <th>Registrated</th>
-                {/* <th>ID</th> */}
-              </tr>
-            </thead>
-            <tbody>
-              {usersData.usersList
-                ? usersData.usersList.map(item => {
-                    const inSelectList =
-                      rowSelected.indexOf(item.userId) === -1 ? false : true;
-                    return (
-                      <TableRow
-                        key={item.userId}
-                        userData={item}
-                        onSelect={actionSelectRow}
-                        select={inSelectList}
-                      />
-                    );
-                  })
-                : false}
-            </tbody>
-            <tfoot>
-              <tr>{/* <td>/td>
+
+      <div className='user-table'>
+        <table>
+          <thead>
+            <tr>
+              <th className='checkbox'>
+                <input
+                  type='checkbox'
+                  name='select'
+                  checked={selectAll}
+                  onChange={() => {
+                    // setSelectAll(!selectAll);
+                    actionSelectRow();
+                  }}
+                />
+              </th>
+              {/* <th>Name</th> */}
+              <th>Login Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Usergroup</th>
+              <th>Last Visit</th>
+              <th>Registrated</th>
+              {/* <th>ID</th> */}
+            </tr>
+          </thead>
+          <tbody>
+            {usersData.usersList
+              ? usersData.usersList.map(item => {
+                  const inSelectList =
+                    rowSelected.indexOf(item.userId) === -1 ? false : true;
+                  return (
+                    <TableRow
+                      key={item.userId}
+                      userData={item}
+                      onSelect={actionSelectRow}
+                      select={inSelectList}
+                      onEdit={actionEditUser}
+                    />
+                  );
+                })
+              : false}
+          </tbody>
+          <tfoot>
+            <tr>{/* <td>/td>
               <td></td> */}</tr>
-            </tfoot>
-          </table>
+          </tfoot>
+        </table>
 
-          <div className='table-footer'>
-            <span>Selected: {rowSelected.length}</span>
-            <Pagination
-              current={curentPage}
-              total={usersData.totalUsers}
-              pageSize={tableSize}
-              hideOnSinglePage={true}
-              onChange={setCurentPage}
-              showTitle={false}
+        <div className='table-footer'>
+          <span>Selected: {rowSelected.length}</span>
+          <Pagination
+            current={curentPage}
+            total={usersData.totalUsers}
+            pageSize={tableSize}
+            hideOnSinglePage={true}
+            onChange={setCurentPage}
+            showTitle={false}
+          />
+          <div className='table-footer-right-side'>
+            <span>
+              {'Users ' +
+                tablePageRange(curentPage, usersData.totalUsers, tableSize) +
+                ' of ' +
+                usersData.totalUsers}
+            </span>
+
+            <SelectFild
+              options={{
+                id: 'userLimit',
+                value: tableSize,
+                addClasses: 'footer-select',
+                disabled: false,
+                selectors: [
+                  { val: 10, name: '10' },
+                  { val: 20, name: '20' },
+                  { val: 50, name: '50' },
+                  { val: 100, name: '100' }
+                ]
+              }}
+              onChange={setTableSize}
             />
-            <div className='table-footer-right-side'>
-              <span>
-                {'Users ' +
-                  tablePageRange(curentPage, usersData.totalUsers, tableSize) +
-                  ' of ' +
-                  usersData.totalUsers}
-              </span>
-
-              <SelectFild
-                options={{
-                  id: 'userLimit',
-                  value: tableSize,
-                  addClasses: 'footer-select',
-                  disabled: false,
-                  selectors: [
-                    { val: 10, name: '10' },
-                    { val: 20, name: '20' },
-                    { val: 50, name: '50' },
-                    { val: 100, name: '100' }
-                  ]
-                }}
-                onChange={setTableSize}
-              />
-            </div>
           </div>
         </div>
-      </TableContext.Provider>
+      </div>
+
       <div className='mui-container-fluid'>
         <h3>Users Stats</h3>
         <button
@@ -315,7 +319,7 @@ const UsersPage = props => {
           Update
         </button>
         <div className='mui-row stat-row'>
-          <div class='mui-panel mui-col-md-4 stat-panel'>
+          <div className='mui-panel mui-col-md-4 stat-panel'>
             {waitStats && <Spiner />}
             {formMessage && (
               <FormMessage
@@ -336,7 +340,7 @@ const UsersPage = props => {
               />
             )}
           </div>
-          <div class='mui-panel mui-col-md-4 stat-panel'>
+          <div className='mui-panel mui-col-md-4 stat-panel'>
             {waitStats && <Spiner />}
             {formMessage && (
               <FormMessage
@@ -356,7 +360,7 @@ const UsersPage = props => {
               />
             )}
           </div>
-          <div class='mui-panel mui-col-md-4 stat-panel'>
+          <div className='mui-panel mui-col-md-4 stat-panel'>
             {waitStats && <Spiner />}
             {formMessage && (
               <FormMessage

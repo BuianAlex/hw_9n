@@ -7,11 +7,18 @@ interface IUserData {
   usersList: [];
 }
 
+interface IUsewrCard {
+  state: boolean;
+  cardType: string;
+  data: object;
+}
+
 const initialState = {
   isFormMsg: { state: false, type: 0, msg: '' },
   isWaitResponse: false as boolean,
   usersData: {} as IUserData,
-  rowSelected: [] as number[]
+  rowSelected: [] as number[],
+  userCard: { state: false, cardType: 'create', data: {} } as IUsewrCard
 };
 
 function addToListSelected(id: number, selectedList: number[]): void {
@@ -35,7 +42,8 @@ export default (state = initialState, action: any) => {
       return update(state, {
         usersData: { $set: action.payload },
         isFormMsg: { $set: initialState.isFormMsg },
-        isWaitResponse: { $set: false }
+        isWaitResponse: { $set: false },
+        rowSelected: { $set: initialState.rowSelected }
       });
 
     case actions.REQUEST_ERROR:
@@ -56,6 +64,28 @@ export default (state = initialState, action: any) => {
       }
       return update(state, {
         rowSelected: { $set: selectedList }
+      });
+
+    case actions.USER_TABLE_CLEAR_SELECT_LIST:
+      return update(state, {
+        rowSelected: { $set: initialState.rowSelected }
+      });
+
+    case actions.CREATE_NEW_USER:
+      return update(state, {
+        userCard: { $set: { state: true, cardType: 'create', data: {} } }
+      });
+
+    case actions.EDIT_USER:
+      return update(state, {
+        userCard: {
+          $set: { state: true, cardType: 'edit', data: action.payload }
+        }
+      });
+
+    case actions.USER_CARD_CLOSE:
+      return update(state, {
+        userCard: { $set: initialState.userCard }
       });
 
     default:

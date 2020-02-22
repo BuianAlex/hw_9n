@@ -8,7 +8,14 @@ import { createUser, updateUser, uploadUserPhoto } from '../../services/api';
 import { userRole } from '../../constants';
 import * as moment from 'moment';
 
-export default function Card({ userData, onClose, updateTable, mainUser }) {
+export default function Card({
+  userData,
+  onClose,
+  updateTable,
+  mainUser,
+  actionCardClose,
+  actionUserSave
+}) {
   console.log(userData);
 
   const [login, setLogin] = useState({
@@ -63,12 +70,25 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
     } else {
       setSaveBtn(false);
     }
-  }, [login, password, email, phone, usergroup, userPhoto]);
+  }, [
+    login,
+    password,
+    email,
+    phone,
+    usergroup,
+    userPhoto,
+    mainUser.usergroup,
+    userData.loginName,
+    userData.email,
+    userData.phone,
+    userData.usergroup,
+    userData.photo
+  ]);
 
-  const cardClose = e => {
-    e.preventDefault();
-    onClose();
-  };
+  // const cardClose = e => {
+  //   e.preventDefault();
+  //   onClose();
+  // };
 
   const uploadPhoto = async e => {
     e.preventDefault();
@@ -89,8 +109,7 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
     }
   };
 
-  const cardSave = async e => {
-    e.preventDefault();
+  const cardSave = async () => {
     setFormMessage(false);
     setSpinerState(true);
     if (userData.userId) {
@@ -252,13 +271,22 @@ export default function Card({ userData, onClose, updateTable, mainUser }) {
           )}
           {saveBtn && (
             <button
-              onClick={cardSave}
+              onClick={e => {
+                e.preventDefault();
+                cardSave();
+                actionUserSave();
+              }}
               className='mui-btn  mui-btn--raised mui-btn--primary'
             >
               Save
             </button>
           )}
-          <button onClick={cardClose} className='mui-btn mui-btn--raised'>
+          <button
+            onClick={() => {
+              actionCardClose();
+            }}
+            className='mui-btn mui-btn--raised'
+          >
             Close
           </button>
         </div>

@@ -69,18 +69,19 @@ export function getAllUsers(limit, page) {
 }
 
 export async function deleteUser(usersId) {
-  let apiRes = {};
-  try {
-    const servRes = await axios.post('/users/delete', usersId);
-    apiRes.result = servRes.data.result;
-  } catch (error) {
-    if (error.response && error.response.status === 500) {
-      apiRes.error = 'Server does not respond.';
-    } else {
-      apiRes.error = error.response.data.message;
-    }
-  }
-  return apiRes;
+  return axios.post('/users/delete', usersId);
+  // let apiRes = {};
+  // try {
+  //   const servRes = await axios.post('/users/delete', usersId);
+  //   apiRes.result = servRes.data.result;
+  // } catch (error) {
+  //   if (error.response && error.response.status === 500) {
+  //     apiRes.error = 'Server does not respond.';
+  //   } else {
+  //     apiRes.error = error.response.data.message;
+  //   }
+  // }
+  // return apiRes;
 }
 
 export function createUser(userData) {

@@ -6,6 +6,7 @@ import UsersPage from './UsersPage';
 import { modal, select, userPageActions } from '../../actions';
 
 import { actions } from '../../constants';
+import { store } from '../../services/reduxStor';
 
 function sendUsersCsv(file: HTMLInputElement & EventTarget) {
   const { openModal } = modal;
@@ -40,20 +41,25 @@ function sendUsersCsv(file: HTMLInputElement & EventTarget) {
 }
 
 const mapStateToProps = (state: any) => {
-  console.log(state);
-
   return {
     isWaitResponse: state.usersPage.isWaitResponse,
     tableSize: parseInt(state.select.tableSize.limit, 10),
     mainUser: state.user.userInfo,
     formMessage: state.usersPage.isFormMsg,
     usersData: state.usersPage.usersData,
-    rowSelected: state.usersPage.rowSelected
+    rowSelected: state.usersPage.rowSelected,
+    userCard: state.usersPage.userCard
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
-  const { actionGetUsersList, actionSelectRow } = userPageActions;
+  const {
+    actionGetUsersList,
+    actionSelectRow,
+    actionDeleteUser,
+    actionCreateNewUser,
+    actionEditUser
+  } = userPageActions;
   const { setTableSize } = select;
   const { openModal } = modal;
   return bindActionCreators(
@@ -62,7 +68,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
       sendUsersCsv,
       setTableSize,
       actionGetUsersList,
-      actionSelectRow
+      actionSelectRow,
+      actionDeleteUser,
+      actionCreateNewUser,
+      actionEditUser
     },
     dispatch
   );

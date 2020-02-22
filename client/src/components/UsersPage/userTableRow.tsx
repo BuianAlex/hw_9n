@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
-import { TableContext } from './tablecontext';
 import moment from 'moment';
 
 interface userData {
@@ -18,10 +17,11 @@ interface IProps {
   userData: userData;
   select: boolean;
   onSelect: (id: string) => {};
+  onEdit: (userData: object) => {};
 }
 
 const Row: React.FC<IProps> = props => {
-  const { userData, onSelect, select } = props;
+  const { userData, onSelect, select, onEdit } = props;
   const [isSelected, setSelected] = useState<boolean>(false);
 
   // const { sel, setSel } = useState<boolean>('gfhfg');
@@ -35,10 +35,17 @@ const Row: React.FC<IProps> = props => {
     onSelect(userData.userId);
   }
 
+  function openUserCard(target: HTMLInputElement): void {
+    if (!target.classList.contains('checkbox') && target.type !== 'checkbox') {
+      onEdit(userData);
+    }
+  }
+
   return (
     <tr
-      onClick={e => {
-        // actionShowUser(e, userData.userId);
+      onClick={(e: React.SyntheticEvent) => {
+        const target = e.target as HTMLInputElement;
+        openUserCard(target);
       }}
     >
       <td className='checkbox'>
@@ -48,7 +55,7 @@ const Row: React.FC<IProps> = props => {
           name='select'
           checked={select}
           onChange={() => {
-            onChange(); // actionSelect(userData.userId);
+            onChange();
           }}
         />
       </td>
