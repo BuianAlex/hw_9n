@@ -16,9 +16,14 @@ interface IUsewrCard {
 const initialState = {
   isFormMsg: { state: false, type: 0, msg: '' },
   isWaitResponse: false as boolean,
+  isWaitSatsResponse: true as boolean,
   usersData: {} as IUserData,
+  statData: { countries: false, gender: false, userGroup: false } as object,
+  isStatsRequestError: { state: false, type: 0, msg: '' },
   rowSelected: [] as number[],
-  userCard: { state: false, cardType: 'create', data: {} } as IUsewrCard
+  userCard: { state: false, cardType: 'create', data: {} } as IUsewrCard,
+  tableSize: 10,
+  tablePage: 1
 };
 
 function addToListSelected(id: number, selectedList: number[]): void {
@@ -52,7 +57,7 @@ export default (state = initialState, action: any) => {
         isWaitResponse: { $set: false }
       });
 
-    case actions.USER_TABLE_SELECT_ROW:
+    case actions.USERS_TABLE_SELECT_ROW:
       let selectedList = [...state.rowSelected];
       if (action.payload) {
         addToListSelected(action.payload, selectedList);
@@ -66,7 +71,18 @@ export default (state = initialState, action: any) => {
         rowSelected: { $set: selectedList }
       });
 
-    case actions.USER_TABLE_CLEAR_SELECT_LIST:
+    case actions.USERS_TABLE_SIZE:
+      console.log(action.payload);
+      return update(state, {
+        tableSize: { $set: action.payload }
+      });
+
+    case actions.USERS_TABLE_PAGE:
+      return update(state, {
+        tablePage: { $set: action.payload }
+      });
+
+    case actions.USERS_TABLE_CLEAR_SELECT_LIST:
       return update(state, {
         rowSelected: { $set: initialState.rowSelected }
       });
@@ -86,6 +102,24 @@ export default (state = initialState, action: any) => {
     case actions.USER_CARD_CLOSE:
       return update(state, {
         userCard: { $set: initialState.userCard }
+      });
+
+    case actions.USERS_STATS_REQUEST:
+      return update(state, {
+        isStatsRequestError: { $set: initialState.isStatsRequestError },
+        isWaitSatsResponse: { $set: true }
+      });
+
+    case actions.USERS_STATS_SHOW:
+      return update(state, {
+        isWaitSatsResponse: { $set: false },
+        statData: { $set: action.payload }
+      });
+
+    case actions.USERS_STATS_SHOW_ERROR:
+      return update(state, {
+        isWaitSatsResponse: { $set: false },
+        isStatsRequestError: { $set: action.payload }
       });
 
     default:

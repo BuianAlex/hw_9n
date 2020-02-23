@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import Pagination from 'rc-pagination';
 import 'rc-pagination/assets/index.css';
 import { Bar, Pie, Donut } from 'react-roughviz';
@@ -18,7 +18,7 @@ import { userRole } from '../../constants';
 const UsersPage = props => {
   const {
     sendUsersCsv,
-    setTableSize,
+    actionSetTableSize,
     tableSize,
     mainUser,
     isWaitResponse,
@@ -30,8 +30,16 @@ const UsersPage = props => {
     actionDeleteUser,
     userCard,
     actionCreateNewUser,
-    actionEditUser
+    actionEditUser,
+    actionsGetStats,
+    isWaitSatsResponse,
+    statData,
+    isStatsRequestError,
+    actionSetPage,
+    tablePage
   } = props;
+
+  console.log(tablePage, tableSize);
 
   const [userData, setUserData] = useState([]);
   const [ertert, setUserCard] = useState({
@@ -44,63 +52,12 @@ const UsersPage = props => {
   const [selectAll, setSelectAll] = useState(false);
   const [total, setTotal] = useState(0);
   const [curentPage, setCurentPage] = useState(1);
-  const [statData, setStatData] = useState({});
+  // const [statData, setStatData] = useState({});
   const [waitStats, setWaitStats] = useState(false);
 
-  // async function getUsers() {
-  //   setSpinerState(true);
-  //   const apiRes = await getAllUsers(tableSize, curentPage);
-  //   setSpinerState(false);
-  //   setFormMessage(false);
-  //   setUsersSelected(0);
-  //   if (!apiRes.error) {
-  //     setUserData(apiRes.result.usersList);
-  //     setTotal(apiRes.result.totalUsers);
-  //   } else {
-  //     console.log('apiRes');
-  //     setFormMessage({
-  //       msg: apiRes.error,
-  //       type: 2
-  //     });
-  //   }
-  // }
-
-  async function getUserStats() {
-    setWaitStats(true);
-    usersStats()
-      .then(res => {
-        setWaitStats(false);
-        const { countries } = res.data;
-        let other = { calc: 0, country: {} };
-        let majority = {};
-        Object.keys(countries).forEach(item => {
-          if (countries[item] < 3) {
-            other.country[item] = countries[item];
-            other.calc += countries[item];
-          } else {
-            majority[item] = countries[item];
-          }
-        });
-        majority['other < 3'] = other.calc;
-        res.data.countries = majority;
-        setStatData(res.data);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }
-
-  //temp
-  // useEffect(() => {
-  //   setSpinerState(isSpinner);
-  // }, [isSpinner]);
-
   useEffect(() => {
-    getUserStats();
-  }, []);
-
-  useEffect(() => {
-    actionGetUsersList();
+    actionsGetStats();
+    actionGetUsersList(tableSize, tablePage);
   }, []);
 
   // useEffect(() => {
@@ -136,21 +93,6 @@ const UsersPage = props => {
     }
   };
 
-  // const actionSelect = id => {
-  //   let calcSelected = 0;
-  //   const data = userData.map(item => {
-  //     if (item.userId === id || !id) {
-  //       item.isSelected = !item.isSelected;
-  //     }
-  //     if (item.isSelected) {
-  //       calcSelected += 1;
-  //     }
-  //     return item;
-  //   });
-  //   setUserData(data);
-  //   setUsersSelected(calcSelected);
-  // };
-
   const actionDeleteSelected = async () => {
     // setSpinerState(true);
     // let toDelete = [];
@@ -163,14 +105,6 @@ const UsersPage = props => {
     // }
   };
 
-  // const actionSendCsv = async e => {
-  //   e.preventDefault()
-
-  //   const apiRes = await sendCsv(e.target.files)
-  //   setcsvRes({ data: apiRes, show: true })
-  //   console.log(apiRes)
-  //   getUsers()
-  // }
   const getUsers = () => {};
 
   return (
@@ -276,17 +210,17 @@ const UsersPage = props => {
         <div className='table-footer'>
           <span>Selected: {rowSelected.length}</span>
           <Pagination
-            current={curentPage}
+            current={tablePage}
             total={usersData.totalUsers}
             pageSize={tableSize}
             hideOnSinglePage={true}
-            onChange={setCurentPage}
+            onChange={actionSetPage}
             showTitle={false}
           />
           <div className='table-footer-right-side'>
             <span>
               {'Users ' +
-                tablePageRange(curentPage, usersData.totalUsers, tableSize) +
+                tablePageRange(tablePage, usersData.totalUsers, tableSize) +
                 ' of ' +
                 usersData.totalUsers}
             </span>
@@ -304,7 +238,7 @@ const UsersPage = props => {
                   { val: 100, name: '100' }
                 ]
               }}
-              onChange={setTableSize}
+              onChange={actionSetTableSize}
             />
           </div>
         </div>
@@ -313,18 +247,18 @@ const UsersPage = props => {
       <div className='mui-container-fluid'>
         <h3>Users Stats</h3>
         <button
-          onClick={getUserStats}
+          onClick={actionsGetStats}
           className='mui-btn mui-btn--small mui-btn--raised '
         >
           Update
         </button>
         <div className='mui-row stat-row'>
           <div className='mui-panel mui-col-md-4 stat-panel'>
-            {waitStats && <Spiner />}
-            {formMessage && (
+            {isWaitSatsResponse && <Spiner />}
+            {isStatsRequestError.state && (
               <FormMessage
-                messageType={formMessage.type}
-                messageText={formMessage.msg}
+                messageType={isStatsRequestError.type}
+                messageText={isStatsRequestError.msg}
               />
             )}
             {statData.gender && (
@@ -341,11 +275,11 @@ const UsersPage = props => {
             )}
           </div>
           <div className='mui-panel mui-col-md-4 stat-panel'>
-            {waitStats && <Spiner />}
-            {formMessage && (
+            {isWaitSatsResponse && <Spiner />}
+            {isStatsRequestError.state && (
               <FormMessage
-                messageType={formMessage.type}
-                messageText={formMessage.msg}
+                messageType={isStatsRequestError.type}
+                messageText={isStatsRequestError.msg}
               />
             )}
             {statData.countries && (
@@ -361,11 +295,11 @@ const UsersPage = props => {
             )}
           </div>
           <div className='mui-panel mui-col-md-4 stat-panel'>
-            {waitStats && <Spiner />}
-            {formMessage && (
+            {isWaitSatsResponse && <Spiner />}
+            {isStatsRequestError.state && (
               <FormMessage
-                messageType={formMessage.type}
-                messageText={formMessage.msg}
+                messageType={isStatsRequestError.type}
+                messageText={isStatsRequestError.msg}
               />
             )}
             {statData.userGroup && (

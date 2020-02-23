@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { store } from './../services/reduxStor';
 import pageAction from './userPageActions';
 
-const { select } = store.getState();
+const { usersPage } = store.getState();
 
 function actionCardClose() {
   return (dispatch: Dispatch) => {
@@ -15,7 +15,7 @@ function actionCardClose() {
 // TODO
 function actionUserSave() {
   return (dispatch: Dispatch) => {
-    dispatch<any>(pageAction.actionGetUsersList(select.tableSize.limit, 1));
+    dispatch<any>(pageAction.actionGetUsersList(usersPage.tableSize, 1));
   };
 }
 
