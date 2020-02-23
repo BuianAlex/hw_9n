@@ -1,49 +1,11 @@
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { sendCsv } from '../../services/api';
-
 import UsersPage from './UsersPage';
-import { modal, userPageActions } from '../../actions';
-
-import { actions } from '../../constants';
-import { store } from '../../services/reduxStor';
-
-function sendUsersCsv(file: HTMLInputElement & EventTarget) {
-  const { openModal } = modal;
-  return function(dispatch: Dispatch) {
-    dispatch({ type: actions.SPINNER_ON });
-    return sendCsv(file)
-      .then((result: any) => {
-        dispatch({ type: actions.SPINNER_OFF });
-        dispatch(
-          openModal({ title: 'ADD from csv', result: result.data.result })
-        );
-      })
-      .catch((error: any) => {
-        dispatch({ type: actions.SPINNER_OFF });
-        if (error.response && error.response.status < 500) {
-          dispatch(
-            openModal({
-              title: 'ADD from csv',
-              error: error.response.statusText
-            })
-          );
-        } else {
-          dispatch(
-            openModal({
-              title: 'ADD from csv',
-              error: 'Server does not respond.'
-            })
-          );
-        }
-      });
-  };
-}
+import { modalActions, userPageActions } from '../../actions';
 
 const mapStateToProps = (state: any) => {
   return {
     isWaitResponse: state.usersPage.isWaitResponse,
-    // tableSize: parseInt(state.select.tableSize.limit, 10),
     mainUser: state.user.userInfo,
     formMessage: state.usersPage.isFormMsg,
     usersData: state.usersPage.usersData,
@@ -66,13 +28,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     actionEditUser,
     actionsGetStats,
     actionSetTableSize,
-    actionSetPage
+    actionSetPage,
+    actionImportCSV
   } = userPageActions;
-  const { openModal } = modal;
+  const { openModal } = modalActions;
   return bindActionCreators(
     {
       openModal,
-      sendUsersCsv,
       actionGetUsersList,
       actionSelectRow,
       actionDeleteUser,
@@ -80,7 +42,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
       actionEditUser,
       actionsGetStats,
       actionSetTableSize,
-      actionSetPage
+      actionSetPage,
+      actionImportCSV
     },
     dispatch
   );

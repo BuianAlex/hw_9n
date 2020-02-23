@@ -1,8 +1,5 @@
-import modal from './modal';
-
-// import {userAction} from './userAction';
-import spinnerActions from './spinnerActions';
+import modalActions from './modalActions';
 import userPageActions from './userPageActions';
 import userCardActions from './userCadrActions';
 
-export { modal, spinnerActions, userPageActions, userCardActions };
+export { modalActions, userPageActions, userCardActions };

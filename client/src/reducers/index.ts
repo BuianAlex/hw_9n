@@ -1,4 +1,4 @@
-import modal from './modal';
+import modal from './modalReducer';
 import user from './user';
 import spinner from './spinner';
 import usersPage from './usersPageReduser';

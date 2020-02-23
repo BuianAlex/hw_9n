@@ -10,7 +10,6 @@ import * as moment from 'moment';
 
 export default function Card({
   userData,
-  onClose,
   updateTable,
   mainUser,
   actionCardClose,

@@ -4,9 +4,6 @@ import Pagination from 'rc-pagination';
 import 'rc-pagination/assets/index.css';
 import { Bar, Pie, Donut } from 'react-roughviz';
 import './UserPage.scss';
-
-import { getAllUsers, deleteUser, usersStats } from '../../services/api';
-import { TableContext } from './tablecontext';
 import Spiner from '../spinner/spinner';
 import UserCard from '../userCard/UserCardContainer';
 import TableRow from './userTableRow';
@@ -36,85 +33,23 @@ const UsersPage = props => {
     statData,
     isStatsRequestError,
     actionSetPage,
-    tablePage
+    tablePage,
+    actionImportCSV
   } = props;
 
-  console.log(tablePage, tableSize);
-
-  const [userData, setUserData] = useState([]);
-  const [ertert, setUserCard] = useState({
-    open: false,
-    data: {}
-  });
-  const [usersSelected, setUsersSelected] = useState(0);
-  // const [spinnerState, setSpinerState] = useState(isSpinner);
-  // const [formMessage, setFormMessage] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
-  const [total, setTotal] = useState(0);
-  const [curentPage, setCurentPage] = useState(1);
-  // const [statData, setStatData] = useState({});
-  const [waitStats, setWaitStats] = useState(false);
 
   useEffect(() => {
     actionsGetStats();
     actionGetUsersList(tableSize, tablePage);
   }, []);
 
-  // useEffect(() => {
-  //   console.log(curentPage);
-
-  //   getUsers();
-  // }, [curentPage]);
-
-  // useEffect(() => {
-  //   console.log('ere');
-
-  //   if (curentPage === 1) {
-  //     getUsers();
-  //   }
-  //   setCurentPage(1);
-  // }, [tableSize]);
-
-  const actionCardClose = () => {
-    setUserCard(state => ({ ...state, open: false, data: {} }));
-  };
-
-  const actionAddNew = () => {
-    setUserCard(state => ({ ...state, open: true }));
-  };
-
-  const actionShowUser = (e, id) => {
-    if (
-      e.target.type !== 'checkbox' &&
-      !e.target.classList.contains('checkbox')
-    ) {
-      const user = userData.find(item => item.userId === id);
-      setUserCard(state => ({ ...state, open: true, data: user }));
-    }
-  };
-
-  const actionDeleteSelected = async () => {
-    // setSpinerState(true);
-    // let toDelete = [];
-    // userData.forEach(item => {ally
-    // setSpinerState(false);
-    // if (apiRes.result) {
-    //   getUsers();
-    // } else {
-    //   setFormMessage({ msg: apiRes.error, type: 2 });
-    // }
-  };
-
   const getUsers = () => {};
 
   return (
     <>
       {userCard.state && (
-        <UserCard
-          onClose={actionCardClose}
-          userData={userCard.data}
-          updateTable={getUsers}
-        />
+        <UserCard userData={userCard.data} updateTable={getUsers} />
       )}
       <h2 className='section-header'>Users</h2>
       {mainUser.usergroup === userRole.USER_ADMIN && (
@@ -132,7 +67,7 @@ const UsersPage = props => {
             <input
               type='file'
               name='myfile'
-              onChange={e => sendUsersCsv(e.target.files)}
+              onChange={e => actionImportCSV(e.target.files)}
             />
           </div>
           {/* <input type="text" placeholder="Find user" />
@@ -169,7 +104,7 @@ const UsersPage = props => {
                   name='select'
                   checked={selectAll}
                   onChange={() => {
-                    // setSelectAll(!selectAll);
+                    setSelectAll(!selectAll);
                     actionSelectRow();
                   }}
                 />

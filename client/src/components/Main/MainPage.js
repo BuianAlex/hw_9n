@@ -12,7 +12,7 @@ import User from '../UsersPage/UsersPageContainer';
 import Stats from '../stats/statsPage';
 import { userRole } from '../../constants';
 
-import Modal from '../Modal';
+import Modal from '../Modal/ModalContainer';
 import './MainPage.scss';
 let currentUser;
 

@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import { actions } from '../constants';
-import { getAllUsers, deleteUser, usersStats } from '../services/api';
+import { getAllUsers, deleteUser, usersStats, sendCsv } from '../services/api';
 import { push } from 'connected-react-router';
 import { store } from './../services/reduxStor';
 
@@ -10,12 +10,9 @@ function actionGetUsersList(limit: number, page: number) {
     return getAllUsers(limit, page)
       .then((res: any) => {
         const { result } = res.data;
-        console.log(result.pages);
-
         const { usersPage } = store.getState();
         if (result.usersList.length === 0) {
           if (result.pages === 1) {
-            console.log('cccc');
             dispatch<any>(actionSetPage(1));
           } else {
             dispatch<any>(actionSetPage(usersPage.tablePage - 1));
@@ -218,6 +215,60 @@ function actionsGetStats() {
   };
 }
 
+function actionImportCSV(file: HTMLInputElement & EventTarget) {
+  return function(dispatch: Dispatch) {
+    dispatch({ type: actions.WAIT_FOR_RESPONSE });
+    return sendCsv(file)
+      .then((result: any) => {
+        const { usersPage } = store.getState();
+        dispatch<any>(
+          actionGetUsersList(usersPage.tableSize, usersPage.tablePage)
+        );
+        dispatch({
+          type: actions.OPEN_MODAL,
+          payload: { title: 'Import from csv', result: result.data.result }
+        });
+      })
+      .catch((error: any) => {
+        let errorMsg = {
+          state: true,
+          type: 2,
+          msg: ''
+        };
+        if (error.response) {
+          switch (error.response.status) {
+            case 401:
+              dispatch({
+                type: actions.LOGOUT
+              });
+              dispatch(push('/login'));
+              break;
+            case 403:
+              dispatch({
+                type: actions.LOGOUT
+              });
+              dispatch(push('/login'));
+              break;
+            case 500:
+              errorMsg.msg = 'Server does not respond.';
+              dispatch({
+                type: actions.USERS_STATS_SHOW_ERROR,
+                payload: errorMsg
+              });
+              break;
+            default:
+              errorMsg.msg = error.response.statusText;
+              dispatch({
+                type: actions.REQUEST_ERROR,
+                payload: errorMsg
+              });
+              break;
+          }
+        }
+      });
+  };
+}
+
 export default {
   actionGetUsersList,
   actionSelectRow,
@@ -226,5 +277,6 @@ export default {
   actionEditUser,
   actionsGetStats,
   actionSetTableSize,
-  actionSetPage
+  actionSetPage,
+  actionImportCSV
 };
