@@ -1,5 +1,5 @@
 import update from 'immutability-helper';
-import { actions } from '../constants';
+import { actions, userCardType } from '../constants';
 
 interface IUserData {
   totalUsers: number;
@@ -89,13 +89,19 @@ export default (state = initialState, action: any) => {
 
     case actions.CREATE_NEW_USER:
       return update(state, {
-        userCard: { $set: { state: true, cardType: 'create', data: {} } }
+        userCard: {
+          $set: { state: true, cardType: userCardType.CARD_CREATE, data: {} }
+        }
       });
 
     case actions.EDIT_USER:
       return update(state, {
         userCard: {
-          $set: { state: true, cardType: 'edit', data: action.payload }
+          $set: {
+            state: true,
+            cardType: userCardType.CARD_EDIT,
+            data: action.payload
+          }
         }
       });
 

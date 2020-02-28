@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, Switch, Redirect } from 'react-router-dom';
 import './LoginPage.scss';
 import { IProps, IFild } from './LoginPageInterfaces';
-import InputFild from '../iputFild/inputFild';
+import InputFild from '../IputFild/InputFild';
 import Spiner from '../spinner/spinner';
 import FormMessage from '../FormMessage/FormMessage';
 

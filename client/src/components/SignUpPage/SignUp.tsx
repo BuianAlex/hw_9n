@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Switch, Redirect } from 'react-router-dom';
-import './signup.scss';
-import InputFild from '../iputFild/inputFild';
+import './Signup.scss';
+import InputFild from '../IputFild/InputFild';
 import Spiner from '../spinner/spinner';
 import FormMessage from '../FormMessage/FormMessage';
 
-export default function SignUp(props: any) {
+const SignUp: React.FC = (props: any) => {
   const { userSignUp, isWaitResponse, formMessage, isLogined } = props;
 
   const [login, setLogin] = useState({
@@ -116,4 +116,5 @@ export default function SignUp(props: any) {
       </Switch>
     </>
   );
-}
+};
+export default SignUp;

@@ -53,6 +53,12 @@
     display: block;
     margin: 1rem auto;
   }
+  .sweet-loading,
+  .form-message {
+    width: 100%;
+    position: absolute;
+    top: 80px;
+  }
 
   //margin-right: 2rem;
 }
@@ -123,4 +129,7 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+}
+i {
+  color: rgba(0, 0, 0, 0.54);
 }

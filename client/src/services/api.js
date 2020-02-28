@@ -123,18 +123,19 @@ export function createUser(userData) {
 }
 
 export async function updateUser(id, userData) {
-  let apiRes = {};
-  try {
-    const servRes = await axios.put(`/users/update/${id}`, userData);
-    apiRes.result = servRes.data.result;
-  } catch (error) {
-    if (error.response.status === 500) {
-      apiRes.error = 'Server does not respond.';
-    } else {
-      apiRes.error = error.response.data.message;
-    }
-  }
-  return apiRes;
+  return axios.put(`/users/update/${id}`, userData);
+  // let apiRes = {};
+  // try {
+  //   const servRes = await
+  //   apiRes.result = servRes.data.result;
+  // } catch (error) {
+  //   if (error.response.status === 500) {
+  //     apiRes.error = 'Server does not respond.';
+  //   } else {
+  //     apiRes.error = error.response.data.message;
+  //   }
+  // }
+  // return apiRes;
 }
 
 export async function uploadUserPhoto(file) {

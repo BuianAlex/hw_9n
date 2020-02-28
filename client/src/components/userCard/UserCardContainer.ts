@@ -5,13 +5,20 @@ import UserCard from './UserCard';
 
 const mapStateToProps = (state: any) => {
   return {
-    mainUser: state.user.userInfo ///!!!
+    mainUser: state.user.userInfo, ///!!!
+    isWaitResponse: state.userCard.isWaitResponse,
+    isWaitPhotoUpload: state.userCard.isWaitPhotoUpload,
+    isSaveRequestError: state.userCard.isSaveRequestError,
+    isUploadError: state.userCard.isUploadError
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
-  const { actionCardClose, actionUserSave } = userCardActions;
-  return bindActionCreators({ actionCardClose, actionUserSave }, dispatch);
+  const { actionCloseCard, actionSaveUser, actionEditUser } = userCardActions;
+  return bindActionCreators(
+    { actionCloseCard, actionSaveUser, actionEditUser },
+    dispatch
+  );
 };
 
 const UserCardContainer = connect(

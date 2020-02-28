@@ -1,6 +1,6 @@
-import React from "react";
-import { ScaleLoader } from "react-spinners";
-import "./spinner.scss";
+import React from 'react';
+import { ScaleLoader } from 'react-spinners';
+import './spinner.scss';
 
 const override = `
   display: block;
@@ -10,14 +10,8 @@ const override = `
 
 const Spiner: React.FC = () => {
   return (
-    <div className="sweet-loading">
-      <ScaleLoader
-        css={override}
-        //size={150}
-        //size={"150px"} this also works
-        color={"#065a69"}
-        //loading={}
-      />
+    <div className='sweet-loading'>
+      <ScaleLoader css={override} color={'#065a69'} />
     </div>
   );
 };
