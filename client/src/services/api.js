@@ -85,22 +85,21 @@ export async function deleteUser(usersId) {
 }
 
 export function createUser(userData) {
-  return axios
-    .post('/users/create', userData)
-    .then(servRes => {
-      console.log(1);
+  return axios.post('/users/create', userData);
+  // .then(servRes => {
+  //   console.log(1);
 
-      return servRes.data.result;
-    })
-    .catch(error => {
-      let errMsg;
-      if (error.response.status === 500) {
-        errMsg = 'Server does not respond.';
-      } else {
-        errMsg = error.response.data.message;
-      }
-      return Promise.reject(errMsg);
-    });
+  //   return servRes.data.result;
+  // })
+  // .catch(error => {
+  //   let errMsg;
+  //   if (error.response.status === 500) {
+  //     errMsg = 'Server does not respond.';
+  //   } else {
+  //     errMsg = error.response.data.message;
+  //   }
+  //   return Promise.reject(errMsg);
+  // });
 
   //temp userData.photo
   // userData.photo = "user.svg";
@@ -139,24 +138,24 @@ export async function updateUser(id, userData) {
 }
 
 export async function uploadUserPhoto(file) {
-  let apiRes = {};
-  try {
-    const formData = new FormData();
-    formData.append('photo', file[0]);
-    const servRes = await axios.post('files/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    apiRes.fileName = servRes.data.result;
-  } catch (error) {
-    if (error.response.status === 500) {
-      apiRes.error = 'Server does not respond.';
-    } else {
-      apiRes.error = error.response.data.message;
+  // let apiRes = {};
+  // try {
+  const formData = new FormData();
+  formData.append('photo', file[0]);
+  return axios.post('files/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
     }
-  }
-  return apiRes;
+  });
+  //   apiRes.fileName = servRes.data.result;
+  // } catch (error) {
+  //   if (error.response.status === 500) {
+  //     apiRes.error = 'Server does not respond.';
+  //   } else {
+  //     apiRes.error = error.response.data.message;
+  //   }
+  // }
+  // return apiRes;
 }
 
 export function sendCsv(file) {

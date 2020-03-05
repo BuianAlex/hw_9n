@@ -105,14 +105,15 @@ function actionDeleteUser(listToDelete: number[]) {
 
 function actionCreateNewUser() {
   return (dispatch: Dispatch) => {
-    dispatch({ type: actions.CREATE_NEW_USER });
-    return;
+    dispatch({ type: actions.USER_CARD_OPEN });
+    dispatch({ type: actions.USER_CARD_CREATE });
   };
 }
 
 function actionEditUser(userData: object) {
   return (dispatch: Dispatch) => {
-    dispatch({ type: actions.EDIT_USER, payload: userData });
+    dispatch({ type: actions.USER_CARD_OPEN });
+    dispatch({ type: actions.USER_CARD_EDIT, payload: userData });
   };
 }
 

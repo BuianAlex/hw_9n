@@ -9,14 +9,22 @@ const mapStateToProps = (state: any) => {
     isWaitResponse: state.userCard.isWaitResponse,
     isWaitPhotoUpload: state.userCard.isWaitPhotoUpload,
     isSaveRequestError: state.userCard.isSaveRequestError,
-    isUploadError: state.userCard.isUploadError
+    isUploadError: state.userCard.isUploadError,
+    userPhoto: state.userCard.userPhoto,
+    userData: state.userCard.userData,
+    cardType: state.userCard.cardType
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
-  const { actionCloseCard, actionSaveUser, actionEditUser } = userCardActions;
+  const {
+    actionCloseCard,
+    actionSaveUser,
+    actionEditUser,
+    actionUploadPhoto
+  } = userCardActions;
   return bindActionCreators(
-    { actionCloseCard, actionSaveUser, actionEditUser },
+    { actionCloseCard, actionSaveUser, actionEditUser, actionUploadPhoto },
     dispatch
   );
 };

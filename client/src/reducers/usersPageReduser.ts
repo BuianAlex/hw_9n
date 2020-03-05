@@ -21,7 +21,7 @@ const initialState = {
   statData: { countries: false, gender: false, userGroup: false } as object,
   isStatsRequestError: { state: false, type: 0, msg: '' },
   rowSelected: [] as number[],
-  userCard: { state: false, cardType: 'create', data: {} } as IUsewrCard,
+  userCard: false,
   tableSize: 10,
   tablePage: 1
 };
@@ -87,22 +87,27 @@ export default (state = initialState, action: any) => {
         rowSelected: { $set: initialState.rowSelected }
       });
 
-    case actions.CREATE_NEW_USER:
-      return update(state, {
-        userCard: {
-          $set: { state: true, cardType: userCardType.CARD_CREATE, data: {} }
-        }
-      });
+    // case actions.CREATE_NEW_USER:
+    //   return update(state, {
+    //     userCard: {
+    //       $set: { state: true, cardType: userCardType.CARD_CREATE, data: {} }
+    //     }
+    //   });
 
-    case actions.EDIT_USER:
+    // case actions.EDIT_USER:
+    //   return update(state, {
+    //     userCard: {
+    //       $set: {
+    //         state: true,
+    //         cardType: userCardType.CARD_EDIT,
+    //         data: action.payload
+    //       }
+    //     }
+    //   });
+
+    case actions.USER_CARD_OPEN:
       return update(state, {
-        userCard: {
-          $set: {
-            state: true,
-            cardType: userCardType.CARD_EDIT,
-            data: action.payload
-          }
-        }
+        userCard: { $set: true }
       });
 
     case actions.USER_CARD_CLOSE:

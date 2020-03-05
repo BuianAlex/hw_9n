@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, Switch, Redirect } from 'react-router-dom';
 import './Signup.scss';
 import InputFild from '../IputFild/InputFild';
-import Spiner from '../spinner/spinner';
+import Spiner from '../Spinner/Spinner';
 import FormMessage from '../FormMessage/FormMessage';
 
 const SignUp: React.FC = (props: any) => {

@@ -3,7 +3,7 @@ import { Link, Switch, Redirect } from 'react-router-dom';
 import './LoginPage.scss';
 import { IProps, IFild } from './LoginPageInterfaces';
 import InputFild from '../IputFild/InputFild';
-import Spiner from '../spinner/spinner';
+import Spiner from '../Spinner/Spinner';
 import FormMessage from '../FormMessage/FormMessage';
 
 const LoginPage: React.FC<IProps> = props => {

@@ -1,0 +1,15 @@
+.mui-textfield {
+  margin-bottom: 1.8rem;
+}
+label {
+  display: block;
+}
+.errors {
+  width: 100%;
+  position: absolute;
+  color: red;
+  font-size: 0.6rem;
+  left: 50%;
+  bottom: -2%;
+  transform: translate(-50%, 100%);
+}
