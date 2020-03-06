@@ -91,7 +91,13 @@ const create = async body => {
   }
 
   const newUser = new UserQuery(body);
-  newUser.save();
+  return new Promise((resolve, reject) => {
+    newUser.save(err => {
+      if (err) return reject(err);
+      resolve();
+      // saved!
+    });
+  });
 };
 
 const addFromCsv = async data => {

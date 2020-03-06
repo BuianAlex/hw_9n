@@ -43,31 +43,24 @@ const Card: React.FC<IProps> = ({
   const [usergroup, setUsergroup] = useState(userData.usergroup || 'user');
   const [saveBtn, setSaveBtn] = useState(false);
 
-  const [photo, setPhoto] = useState(userPhoto);
+  const [photo, setPhoto] = useState(userPhoto.fileName);
   const [dataToSend, setDataToSend] = useState();
 
   useEffect(() => {
-    console.log(photo.fileName !== userPhoto.fileName);
-
-    console.log('login.isValid', login.isValid);
-
-    console.log('password.isValid', password.isValid);
-    console.log('email.isValid', email.isValid);
-    console.log('phone.isValid', phone.isValid);
     if (login.isValid && password.isValid && email.isValid && phone.isValid) {
       if (
         userData.loginName !== login.validValue ||
         userData.email !== email.validValue ||
         userData.phone !== phone.validValue ||
         userData.usergroup !== usergroup ||
-        photo.fileName !== userPhoto.fileName
+        photo !== userPhoto.fileName
       ) {
         const reqData: IReqData = {
           loginName: login.validValue,
           email: email.validValue,
-          phone: phone.validValue === '+38' ? '' : phone.validValue,
+          phone: phone.validValue,
           usergroup: usergroup,
-          photo: userPhoto.fileName
+          photo: userPhoto.fileName !== 'user.svg' ? userPhoto.fileName : ''
         };
         if (userCardType.CARD_CREATE === cardType) {
           reqData.password = password.validValue;
@@ -79,10 +72,6 @@ const Card: React.FC<IProps> = ({
       setSaveBtn(false);
     }
   }, [login, password, email, phone, usergroup, userPhoto]);
-
-  useEffect(() => {
-    console.log(login);
-  }, [setLogin]);
 
   const uploadPhoto = (e: React.ChangeEvent<HTMLInputElement>): void => {
     e.preventDefault();

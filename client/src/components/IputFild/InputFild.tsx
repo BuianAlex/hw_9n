@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, Dispatch } from 'react';
 import Validator from '../../utils/validator';
 import './InputFild.scss';
@@ -28,15 +29,15 @@ interface IErrorMsg {
 
 const InputFild: React.FC<IProps> = ({ options, onValid }) => {
   const startIsValid = options.isRequired ? true : false;
-  const [fildValue, setfildValue] = useState<string>(options.value);
+  const [fildValue, setfildValue] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<IErrorMsg>({
     hasError: startIsValid,
     msgError: ''
   });
   const [isBlur, setIsBlur] = useState<boolean>(false);
 
-  const fildChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    let inputValue: string = e.target.value.trim();
+  const fildTest = (value: string): void => {
+    let inputValue: string = value.trim();
     const testValue = new Validator(inputValue);
     const isSpecial: boolean = testValue.noSpeсialChar();
     //if get special char show err
@@ -48,7 +49,7 @@ const InputFild: React.FC<IProps> = ({ options, onValid }) => {
         msgError: `Not allowed special characters ( -/^$*?()|[]{})`
       });
     } else {
-      switch (e.target.id) {
+      switch (options.id) {
         case 'login':
           if (!testValue.maxLength(50)) {
             setErrorMessage({
@@ -140,9 +141,18 @@ const InputFild: React.FC<IProps> = ({ options, onValid }) => {
   };
 
   useEffect(() => {
-    console.log({ isValid: !errorMessage.hasError, validValue: fildValue });
+    if (options.value) {
+      fildTest(options.value);
+    }
+  }, []);
 
-    onValid({ isValid: !errorMessage.hasError, validValue: fildValue });
+  useEffect(() => {
+    let resVal = fildValue;
+    if (fildValue === '+38' && options.id === 'phone') {
+      resVal = '';
+    }
+
+    onValid({ isValid: !errorMessage.hasError, validValue: resVal });
   }, [errorMessage, fildValue, onValid, options.type]);
 
   return (
@@ -151,7 +161,9 @@ const InputFild: React.FC<IProps> = ({ options, onValid }) => {
         type={options.type}
         id={options.id}
         value={fildValue}
-        onChange={fildChange}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          fildTest(e.target.value);
+        }}
         onBlur={e => {
           setIsBlur(true);
         }}

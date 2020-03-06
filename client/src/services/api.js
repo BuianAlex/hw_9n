@@ -86,55 +86,10 @@ export async function deleteUser(usersId) {
 
 export function createUser(userData) {
   return axios.post('/users/create', userData);
-  // .then(servRes => {
-  //   console.log(1);
-
-  //   return servRes.data.result;
-  // })
-  // .catch(error => {
-  //   let errMsg;
-  //   if (error.response.status === 500) {
-  //     errMsg = 'Server does not respond.';
-  //   } else {
-  //     errMsg = error.response.data.message;
-  //   }
-  //   return Promise.reject(errMsg);
-  // });
-
-  //temp userData.photo
-  // userData.photo = "user.svg";
-  // let apiRes = {};
-  // try {
-  //   const servRes = await axios.post('/users/create', userData);
-  //   if (servRes.data.status === 1) {
-  //     apiRes.result = true;
-  //   } else {
-  //     apiRes.error = servRes.data.error;
-  //   }
-  // } catch (error) {
-  //   if (error.response && error.response.status === 500) {
-  //     apiRes.error = 'Server does not respond.';
-  //   }
-  //   apiRes.error = error.response.data.message;
-  //   // TODO: type of user
-  // }
-  // return apiRes;
 }
 
 export async function updateUser(id, userData) {
   return axios.put(`/users/update/${id}`, userData);
-  // let apiRes = {};
-  // try {
-  //   const servRes = await
-  //   apiRes.result = servRes.data.result;
-  // } catch (error) {
-  //   if (error.response.status === 500) {
-  //     apiRes.error = 'Server does not respond.';
-  //   } else {
-  //     apiRes.error = error.response.data.message;
-  //   }
-  // }
-  // return apiRes;
 }
 
 export async function uploadUserPhoto(file) {
