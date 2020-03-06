@@ -37,8 +37,3 @@
         node starterDB.js
 
 ## Test
-
-    /server
-      npm test not finished
-    /client
-      npm test not finished
